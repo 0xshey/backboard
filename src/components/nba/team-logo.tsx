@@ -4,12 +4,14 @@ interface TeamLogoProps {
 	teamId: string;
 	alt?: string;
 	size?: number;
+	className?: string;
 }
 
 export default function TeamLogo({
 	teamId,
 	alt = "",
 	size = 48,
+	className = "",
 }: TeamLogoProps) {
 	return (
 		<Image
@@ -17,6 +19,7 @@ export default function TeamLogo({
 			alt={alt || "Team Logo"}
 			width={size}
 			height={size}
+			className={className}
 		/>
 	);
 }

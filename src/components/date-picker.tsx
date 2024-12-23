@@ -17,10 +17,10 @@ export default function DatePicker({
 	const isNow = date.toDateString() === new Date().toDateString();
 
 	return (
-		<div className={`flex items-center gap-8 ${className}`}>
+		<div className={`flex items-center gap-8 p-2 ${className}`}>
 			{/* Prev. Date Button */}
 			<Button
-				variant="secondary"
+				variant="outline"
 				size="icon"
 				onClick={() =>
 					setDate(new Date(date.setDate(date.getDate() - 1)))
@@ -50,7 +50,7 @@ export default function DatePicker({
 							date.toLocaleString("en-US", {
 								timeZone: serverTZ,
 							}),
-							isNow ? "EEEE, MMMM do" : "EEEE"
+							isNow ? "EEEE — MMM do, yyyy" : "EEEE"
 						)}
 					</h2>
 				</div>
@@ -59,7 +59,7 @@ export default function DatePicker({
 
 			{/* Next Date Button */}
 			<Button
-				variant="ghost"
+				variant="outline"
 				size="icon"
 				onClick={() =>
 					setDate(new Date(date.setDate(date.getDate() + 1)))
