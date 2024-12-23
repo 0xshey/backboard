@@ -1,17 +1,28 @@
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { VersionBadge } from "@/components/version-badge";
 
 export default function Home() {
 	return (
-		<div className="w-full min-h-[70vh] flex flex-col gap-8 items-center justify-center border rounded-xl">
-			<h1 className="text-6xl tracking-tight max-w-1/4">
-				YF Tools Fantasy Dashboard
-			</h1>
-
-			<Button asChild>
-				<Link href="/overview">Overview</Link>
-			</Button>
-		</div>
+		<section className="container w-full">
+			<div className="grid place-items-center lg:max-w-screen-xl gap-16 mx-auto py-20 md:py-32">
+				<VersionBadge />
+				<div className="flex flex-col items-center gap-8">
+					<h1 className="text-center text-4xl md:text-5xl tracking-tight max-w-1/4">
+						NBA Fantasy Point Rankings Daily
+					</h1>
+					<p className="text-center text-balance tracking-wide text-muted-foreground">
+						See todays top &#40;and bottom&#41; NBA players ranked
+						by their fantasy points.
+					</p>
+					<Button asChild>
+						<Link href="/players">
+							Player Rankings <ArrowRight className="w-6 h-6" />
+						</Link>
+					</Button>
+				</div>
+			</div>
+		</section>
 	);
 }

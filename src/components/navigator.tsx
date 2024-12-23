@@ -31,9 +31,9 @@ export default function Navigator({ className }: { className?: string }) {
 							<div className="flex items-center gap-1">
 								<Image
 									src={
-										theme == "dark"
-											? "/logo-white.svg"
-											: "/logo.svg"
+										theme && theme == "light"
+											? "/logo.svg"
+											: "/logo-white.svg"
 									}
 									alt="Logo"
 									width={32}

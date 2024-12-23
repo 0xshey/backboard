@@ -74,7 +74,7 @@ export const columns: ColumnDef<PlayerGameRow>[] = [
 						}
 						className="px-1"
 					>
-						<span>δ</span>
+						<span>FP</span>
 						{column.getIsSorted() === "asc" ? (
 							<ArrowUp size={12} />
 						) : column.getIsSorted() === "desc" ? (
