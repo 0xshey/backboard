@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { PlayerGameRow } from "@/lib/types";
 import { parseDuration } from "@/lib/utils";
 
@@ -8,7 +8,6 @@ import { ArrowUpDown, ArrowDown, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import TeamLogo from "@/components/nba/team-logo";
-// const columnHelper = createColumnHelper<PlayerGameRow>();
 
 export const columns: ColumnDef<PlayerGameRow>[] = [
 	{

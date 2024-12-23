@@ -22,7 +22,6 @@ export default function PlayersPage() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
 	const [updating, setUpdating] = useState(false);
-	const [tagFilter, setTagFilter] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchData = async (date: Date, updating = false) => {
@@ -54,6 +53,14 @@ export default function PlayersPage() {
 
 		return () => clearInterval(interval);
 	}, [date]);
+
+	if (loading) {
+		return <Skeleton className="w-full max-w-xl h-40" />;
+	}
+
+	if (error) {
+		return <p>Error: {error.message}</p>;
+	}
 
 	return (
 		<div className="w-full max-w-full flex flex-col items-center">

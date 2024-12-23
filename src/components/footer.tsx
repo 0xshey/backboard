@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import { ExternalLink } from "lucide-react";
 
 export default function Footer() {
 	const today = new Date();

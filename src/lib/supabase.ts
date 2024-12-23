@@ -7,8 +7,8 @@ loadEnvConfig(projectDir)
 
 // Client
 const client = createClient(
-	process.env.SUPABASE_URL,
-	process.env.SUPABASE_KEY
+	process.env.SUPABASE_URL as string,
+	process.env.SUPABASE_KEY as string
 )
 
 // Client functions
@@ -38,17 +38,19 @@ async function fetchStandings(date: string) {
 }
 
 async function fetchPlayers(date: string) {
-	console.log(date)
-	let { data, error } = await client
+	console.log("fetching for", date)
+	const { data, error } = await client
 		.from('game_players')
 		.select(`
 			*,
-			games!inner ( * ),
-			team!inner( * ),
-			opposingTeam!inner( * )
+			game( * ),
+			team( * ),
+			opposingTeam( * )
 		`)
-		.eq('games.date', date)
+		.eq('game.date', date)
 		.eq('played', true)
+		.limit(100)
+
 	return { data, error }
 }
 
