@@ -38,19 +38,17 @@ async function fetchStandings(date: string) {
 }
 
 async function fetchPlayers(date: string) {
-	console.log("fetching for", date)
+	console.log('FETCHING game_players for', date)
 	const { data, error } = await client
 		.from('game_players')
 		.select(`
 			*,
-			game( * ),
-			team( * ),
-			opposingTeam( * )
+			game:game_players_gameId_fkey!inner( * ),
+			team:game_players_teamId_fkey!inner( * )
 		`)
 		.eq('game.date', date)
-		.eq('played', true)
-		.limit(100)
 
+	console.log('FETCHED', data?.length, 'game_players')
 	return { data, error }
 }
 

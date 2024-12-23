@@ -44,7 +44,7 @@ export type PlayerGameRow = {
 	reboundsOffensive: number;
 	notPlayingDescription: string;
 	notPlayingReason: string;
-	game: string;
+	gameId: string;
 	stillPlaying: boolean;
 	tags: string[];
 	fpDelta: number;
@@ -59,7 +59,7 @@ export type PlayerGameRow = {
 		name: string;
 	};
 
-	games: {
+	game: {
 		id: string;
 		code: string;
 		date: string; // ISO 8601 date format (e.g., 2024-12-21)

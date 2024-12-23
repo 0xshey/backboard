@@ -81,7 +81,13 @@ export default function PlayersPage() {
 				<p className="text-sm">Official NBA Data</p>
 			</div>
 
-			{/* <pre>{JSON.stringify(players, null, 2)}</pre> */}
+			{/* <pre>
+				{JSON.stringify(
+					players.sort((a, b) => b.fp - a.fp),
+					null,
+					2
+				)}
+			</pre> */}
 
 			<div className="py-8 flex flex-col items-center w-full max-w-xl">
 				<Tabs
