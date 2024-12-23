@@ -3,7 +3,7 @@
 export function VersionBadge() {
 	return (
 		<div className="bg-muted px-4 py-0.5 text-sm rounded-full border border-muted-foreground font-mono font-medium tracking-wide">
-			v0.1.0 (alpha)
+			v0.1.1 (alpha)
 		</div>
 	);
 }
