@@ -26,8 +26,13 @@ export const columns: ColumnDef<PlayerGameRow>[] = [
 						size={20}
 						className="hidden md:inline"
 					/>
-					<span className="ml-1 max-w-20 md:max-w-none whitespace-nowrap truncate">
-						{props.row.original.firstName.charAt(0)}.{" "}
+					<span className="ml-1 max-w-20 md:min-w-48 whitespace-nowrap truncate">
+						<span className="md:hidden">
+							{props.row.original.firstName.charAt(0)}.{" "}
+						</span>
+						<span className="hidden md:inline">
+							{props.row.original.firstName}{" "}
+						</span>
 						{props.row.original.lastName}
 					</span>
 				</div>

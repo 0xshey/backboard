@@ -45,7 +45,7 @@ export default function DatePicker({
 							isNow ? "h:mm a" : "MMM. do"
 						)}
 					</h2>
-					<h2 className="text-sm md:text-lg font-medium">
+					<h2 className="text-lg font-medium">
 						{format(
 							date.toLocaleString("en-US", {
 								timeZone: serverTZ,
@@ -54,7 +54,7 @@ export default function DatePicker({
 						)}
 					</h2>
 				</div>
-				<p className="text-xs text-gray-500">in New York</p>
+				<p className="text-sm text-gray-500">in New York</p>
 			</div>
 
 			{/* Next Date Button */}
