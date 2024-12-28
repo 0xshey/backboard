@@ -16,6 +16,11 @@ export default function Home() {
 						See todays top &#40;and bottom&#41; NBA players ranked
 						by their fantasy points.
 					</p>
+					<div className="border rounded-full border-green-500 bg-green-500 bg-opacity-20 px-4 py-2">
+						<p className={"text-green-500"}>
+							New Visualisation Added!
+						</p>
+					</div>
 					<Button asChild>
 						<Link href="/players">
 							Player Rankings <ArrowRight className="w-6 h-6" />

@@ -17,10 +17,6 @@ export default function Navigator({ className }: { className?: string }) {
 			title: "Players",
 			href: "/players",
 		},
-		{
-			title: "Chart",
-			href: "/chart",
-		},
 	];
 
 	return (

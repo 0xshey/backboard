@@ -8,6 +8,7 @@ import { fetchPlayers } from "@/lib/supabase";
 
 import DatePicker from "@/components/date-picker";
 import { DataTable } from "@/components/data-table";
+import { FantasyScatter } from "@/components/chart";
 import { LoaderIcon, BadgeCheckIcon } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -81,7 +82,19 @@ export default function PlayersPage() {
 				<p className="text-sm">Official NBA Data</p>
 			</div>
 
-			<div className="pt-4 flex flex-col items-center w-full max-w-xl">
+			<div className="pt-8 flex flex-col gap-8 items-center w-full">
+				<div className="w-full max-w-6xl flex flex-col items-center">
+					<FantasyScatter
+						data={players.filter((player) => player.played)}
+					/>
+					<p className="text-center text-balance text-muted-foreground max-w-4xl">
+						This chart shows todays performance along the x-axis
+						against how they performed relative to their season
+						average &#x28;y-axis&#x29;. Players above zero on the y,
+						overperformed. Try hovering over the points to see whoʼs
+						who.
+					</p>
+				</div>
 				<Tabs
 					defaultValue={"good"}
 					className="w-full mt-4 flex flex-col items-center"
@@ -113,6 +126,7 @@ export default function PlayersPage() {
 								.filter((player) =>
 									player.tags.includes("good-list")
 								)
+								.filter((player) => player.fp > 30)
 								.sort((a, b) => b.fp - a.fp)}
 						/>
 					</TabsContent>
