@@ -44,7 +44,8 @@ async function fetchPlayers(date: string) {
 		.select(`
 			*,
 			game:game_players_gameId_fkey!inner( * ),
-			team:game_players_teamId_fkey!inner( * )
+			team:game_players_teamId_fkey!inner( * ),
+			opposingTeam:game_players_opposingTeamId_fkey!inner( * )
 		`)
 		.eq('game.date', date)
 

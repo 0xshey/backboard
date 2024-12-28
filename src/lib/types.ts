@@ -82,7 +82,6 @@ export type PlayerGameRow = {
 			seasonRecord: string;
 		};
 		nationalBroadcaster: string;
-		
 	};
 };
   
