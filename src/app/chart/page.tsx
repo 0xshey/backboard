@@ -10,7 +10,7 @@ import { LoaderIcon, BadgeCheckIcon } from "lucide-react";
 import { fetchPlayers } from "@/lib/supabase";
 
 export default function ChartPage() {
-	const [date, setDate] = useState(() => new Date("2024-12-26"));
+	const [date, setDate] = useState(() => new Date());
 	const [players, setPlayers] = useState<PlayerGameRow[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);

@@ -56,10 +56,10 @@ export class FantasyScatter extends PureComponent<{
 						fontSize={12}
 					>
 						<Label
-							value="FPΔ vs Season"
+							value="Δ FP vs Season Avg."
 							position="insideLeft"
 							angle={-90}
-							offset={80}
+							offset={10}
 							fontSize={12}
 							textAnchor="middle"
 						/>
