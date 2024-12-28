@@ -11,6 +11,7 @@ import {
 	Label,
 } from "recharts";
 import { PlayerGameRow } from "@/lib/types";
+import PlayerHeadshot from "@/components/nba/player-headshot";
 
 export class FantasyScatter extends PureComponent<{
 	data: { fp: number; fpDelta: number }[];
@@ -36,6 +37,8 @@ export class FantasyScatter extends PureComponent<{
 						tickLine={false}
 						tickMargin={10}
 						fontSize={12}
+						minTickGap={5}
+						tickCount={9}
 					>
 						<Label
 							value="Worse ← Today's FP → Better"
@@ -54,12 +57,13 @@ export class FantasyScatter extends PureComponent<{
 						tickLine={false}
 						tickMargin={10}
 						fontSize={12}
+						tickCount={8}
 					>
 						<Label
-							value="Δ FP vs Season Avg."
+							value="Deviation from Season Average"
 							position="insideLeft"
 							angle={-90}
-							offset={10}
+							offset={80}
 							fontSize={12}
 							textAnchor="middle"
 						/>
@@ -72,7 +76,7 @@ export class FantasyScatter extends PureComponent<{
 						name="Daily Performers"
 						data={this.props.data}
 						fill="#8884d8"
-						shape="circle"
+						shape="cross"
 					/>
 				</ScatterChart>
 			</ResponsiveContainer>
@@ -94,36 +98,41 @@ function PlayerTooltip({ active, payload, label }: PlayerTooltipProps) {
 	if (active && payload) {
 		const player = payload[0].payload;
 		return (
-			<div className="custom-tooltip bg-card text-card-foreground shadow rounded border p-2">
-				<p className="name text-lg mb-2 font-semibold flex items-center gap-1">
-					<span>
-						{player.firstName} {player.lastName}
-					</span>
-					<span className="text-muted-foreground">
-						vs. {player.opposingTeam.name} {label}
-					</span>
-				</p>
-				<div className="grid grid-cols-8 text-center text-muted-foreground text-xs">
-					<div className="px-0.5 font-bold">PTS</div>
-					<div className="px-0.5 font-bold">REB</div>
-					<div className="px-0.5 font-bold">AST</div>
-					<div className="px-0.5 font-bold">STL</div>
-					<div className="px-0.5 font-bold">BLK</div>
-					<div className="px-0.5 font-bold">TOV</div>
-					<div className="px-0.5 font-bold">FP</div>
-					<div className="px-0.5 font-bold">&delta;</div>
-					<div className="px-0.5 border-l">{player.points}</div>
-					<div className="px-0.5 border-l">
-						{player.reboundsTotal}
-					</div>
-					<div className="px-0.5 border-l">{player.assists}</div>
-					<div className="px-0.5 border-l">{player.steals}</div>
-					<div className="px-0.5 border-l">{player.blocks}</div>
-					<div className="px-0.5 border-l">{player.turnovers}</div>
-					<div className="px-0.5 border-l">{player.fp}</div>
-					<div className="px-0.5 border-l">
-						{player.fpDelta > 0 ? "+" : ""}
-						{player.fpDelta}
+			<div className="custom-tooltip bg-card text-card-foreground shadow rounded border flex items-end justify-between gap-4">
+				<PlayerHeadshot
+					playerId={String(player.id)}
+					size={96}
+					className="p"
+				/>
+				<div className="p-2">
+					<p className="name text-lg mb-2 font-semibold flex items-center gap-1">
+						<span>
+							{player.firstName} {player.lastName}
+						</span>
+						<span className="text-muted-foreground">
+							vs. {player.opposingTeam.name} {label}
+						</span>
+					</p>
+					<div className="grid grid-cols-8 text-center text-muted-foreground text-xs">
+						<div className="p-0.5 font-bold">PTS</div>
+						<div className="p-0.5 font-bold">REB</div>
+						<div className="p-0.5 font-bold">AST</div>
+						<div className="p-0.5 font-bold">STL</div>
+						<div className="p-0.5 font-bold">BLK</div>
+						<div className="p-0.5 font-bold">TOV</div>
+						<div className="p-0.5 font-bold">FP</div>
+						<div className="p-0.5 font-bold">&delta;</div>
+						<div className="p-0.5">{player.points}</div>
+						<div className="p-0.5">{player.reboundsTotal}</div>
+						<div className="p-0.5l">{player.assists}</div>
+						<div className="p-0.5l">{player.steals}</div>
+						<div className="p-0.5l">{player.blocks}</div>
+						<div className="p-0.5l">{player.turnovers}</div>
+						<div className="p-0.5">{player.fp}</div>
+						<div className="p-0.5">
+							{player.fpDelta > 0 ? "+" : ""}
+							{player.fpDelta}
+						</div>
 					</div>
 				</div>
 			</div>
