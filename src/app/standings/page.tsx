@@ -44,26 +44,25 @@ export default function StandingsPage() {
 	}, [date]);
 
 	return (
-		<div className="flex flex-col items-center w-full gap-4 xl:max-w-6xl max-w-xl">
-			<div className="grid grid-cols-1 xl:grid-cols-2 gap-8 w-full">
-				{["West", "East"].map((conference) => (
-					<div className="text-4xl col-span-1 mx-4" key={conference}>
-						<h2>{conference}</h2>
-						<DataTable
-							columns={columns}
-							data={standings
-								.filter(
-									(row) => row.team.conference === conference
-								)
-								.sort(
-									(a, b) =>
-										b.wins / (b.wins + b.losses) -
-										a.wins / (a.wins + a.losses)
-								)}
-						/>
-					</div>
-				))}
-			</div>
+		<div className="grid grid-cols-1 xl:grid-cols-2 gap-4 w-full xl:max-w-6xl max-w-xl">
+			{["West", "East"].map((conference) => (
+				<div
+					className="text-4xl col-span-1 mx-4 border px-4 py-4 rounded-lg"
+					key={conference}
+				>
+					<h2>{conference}</h2>
+					<DataTable
+						columns={columns}
+						data={standings
+							.filter((row) => row.team.conference === conference)
+							.sort(
+								(a, b) =>
+									b.wins / (b.wins + b.losses) -
+									a.wins / (a.wins + a.losses)
+							)}
+					/>
+				</div>
+			))}
 		</div>
 	);
 }

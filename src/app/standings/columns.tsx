@@ -50,11 +50,21 @@ export const columns: ColumnDef<StandingsRow>[] = [
 			return (
 				<span
 					className={`${
-						row.wins / (row.wins + row.losses) >= 0.6
+						row.wins / (row.wins + row.losses) >= 0.8
+							? "text-green-700"
+							: row.wins / (row.wins + row.losses) >= 0.7
+							? "text-green-600"
+							: row.wins / (row.wins + row.losses) >= 0.6
 							? "text-green-500"
-							: row.wins / (row.wins + row.losses) <= 0.4
+							: row.wins / (row.wins + row.losses) >= 0.5
+							? "text-yellow-500"
+							: row.wins / (row.wins + row.losses) >= 0.4
+							? "text-amber-500"
+							: row.wins / (row.wins + row.losses) >= 0.3
+							? "text-orange-500"
+							: row.wins / (row.wins + row.losses) >= 0.2
 							? "text-red-500"
-							: "text-amber-500"
+							: "text-red-700"
 					}`}
 				>
 					{(row.wins / (row.wins + row.losses)).toFixed(3).slice(1)}
