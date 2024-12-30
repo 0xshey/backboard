@@ -21,6 +21,14 @@ export default function StandingsPage() {
 				const { data, error } = await fetchStandings(formattedDate);
 				if (error) throw error;
 				if (data) {
+					if (data.length === 0) {
+						// set date to yesterday and try again
+						const yesterday = new Date(date);
+						yesterday.setDate(yesterday.getDate() - 1);
+						setDate(yesterday);
+						fetchData(yesterday);
+						return;
+					}
 					setStandings(data as any[]);
 				} else {
 					setStandings([]);

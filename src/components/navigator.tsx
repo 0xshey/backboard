@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useTheme } from "next-themes";
-import { title } from "process";
 
 export default function Navigator({ className }: { className?: string }) {
 	const { theme } = useTheme();

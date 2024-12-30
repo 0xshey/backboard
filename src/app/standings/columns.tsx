@@ -3,9 +3,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { StandingsRow } from "@/lib/types";
 
-import { ArrowUpDown, ArrowDown, ArrowUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
 import TeamLogo from "@/components/nba/team-logo";
 
 export const columns: ColumnDef<StandingsRow>[] = [
