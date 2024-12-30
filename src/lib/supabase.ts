@@ -30,7 +30,7 @@ async function fetchStandings(date: string) {
 	.from('standings')
 	.select(`
 		*, 
-		teams!inner ( * )
+		team:standings_teamId_fkey!inner( * )
 	`)
 	.eq('date', date)
 	

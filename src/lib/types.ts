@@ -85,3 +85,26 @@ export type PlayerGameRow = {
 	};
 };
   
+
+export type TeamInfo = {
+	id: string;
+	city: string;
+	name: string;
+	slug: string;
+	tricode: string;
+	division: string;
+	conference: string;
+};
+
+export type StandingsRow = {
+	date: string;
+	teamId: string;
+	teamCity: string;
+	conference: string;
+	gamesPlayed: number;
+	wins: number;
+	losses: number;
+	homeRecord: string;
+	awayRecord: string;
+	team: TeamInfo;
+};
