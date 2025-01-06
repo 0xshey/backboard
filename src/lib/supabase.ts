@@ -12,27 +12,40 @@ const client = createClient(
 )
 
 // Client functions
-async function fetchGames(date: string) {
+
+async function fetchGames(date: Date) {
+	const startOfDay = new Date(date)
+	startOfDay.setHours(0, 0, 0, 0)
+
+	const endOfDay = new Date(date)
+	endOfDay.setHours(23, 59, 59, 999)
+
+	const { data, error } = await client.rpc('get_games_summary', {
+		start_time: startOfDay.toISOString(),
+		end_time: endOfDay.toISOString()
+	});
+
+	return { data, error }
+}
+
+async function fetchGameTeams(gameIds: string[]) {
 	const { data, error } = await client
-		.from('games')
+		.from('GameTeams_new')
 		.select(`
-			*,
-			homeTeam( * ),
-			awayTeam( * )
+			*
 		`)
-		.eq('date', date)
+		.in('gameId', gameIds)
 
 	return { data, error }
 }
 
 async function fetchStandings(date: string) {
 	const { data, error } = await client
-	.from('standings')
+	.from('Standings_new')
 	.select(`
 		*, 
 		teams!inner ( * )
 	`)
-	.eq('date', date)
 	
 	return { data, error }
 }
@@ -54,4 +67,4 @@ async function fetchPlayers(date: string) {
 }
 
 
-export { fetchGames, fetchStandings, fetchPlayers }
+export { fetchGames, fetchGameTeams, fetchStandings, fetchPlayers }
