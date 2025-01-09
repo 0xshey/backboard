@@ -24,13 +24,11 @@ export type Game = {
 	homeTeamScore: number;
 	homeTeamWins: number;
 	homeTeamLosses: number;
-
 	awayTeamId: string;
 	awayTeamName: string;
 	awayTeamScore: number;
 	awayTeamWins: number;
 	awayTeamLosses: number;
-
 	statusCode: number;
 	dateTimeUTC: string;
 	statusText: string;

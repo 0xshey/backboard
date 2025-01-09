@@ -20,7 +20,7 @@ interface TeamProps {
 	gameStatusCode: number;
 }
 
-function GameCard(game: Game) {
+function GameCard({ game }: { game: Game }) {
 	const awayTeam = {
 		teamId: game.awayTeamId,
 		teamName: game.awayTeamName,

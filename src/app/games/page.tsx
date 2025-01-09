@@ -6,7 +6,7 @@ import { Game } from "@/lib/types";
 import { fetchGames } from "@/lib/supabase";
 import { Skeleton } from "@/components/ui/skeleton";
 import DatePicker from "@/components/date-picker";
-import Game from "@/components/games/game";
+import GameCard from "@/components/game";
 import { LoaderIcon, BadgeCheckIcon } from "lucide-react";
 
 export default function GamesPage() {
@@ -67,7 +67,7 @@ export default function GamesPage() {
 			{error && <p>Error: {error.message}</p>}
 			<div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 mx-2">
 				{games.map((game) => (
-					<Game key={game.gameId} game={game} />
+					<GameCard key={game.gameId} game={game} />
 				))}
 			</div>
 			<pre>{JSON.stringify(games, null, 2)}</pre>
