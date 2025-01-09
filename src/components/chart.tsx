@@ -91,10 +91,10 @@ type PlayerTooltipProps = {
 		value: number;
 		payload: FantasyPlayer;
 	}[];
-	label?: string;
+	// label?: string;
 };
 
-function PlayerTooltip({ active, payload, label }: PlayerTooltipProps) {
+function PlayerTooltip({ active, payload }: PlayerTooltipProps) {
 	if (active && payload) {
 		const player = payload[0].payload;
 		return (
@@ -111,8 +111,8 @@ function PlayerTooltip({ active, payload, label }: PlayerTooltipProps) {
 						<span>
 							{player.firstName} {player.lastName}
 						</span>
-						{/* <span className="text-muted-foreground">
-							vs. {player.opposingTeam.name} {label}
+						{/* <span className="text-muted-foreground hidden">
+							{label}
 						</span> */}
 					</p>
 					<div className="grid grid-cols-6 text-center text-muted-foreground text-xs">

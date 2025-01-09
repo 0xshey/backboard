@@ -26,7 +26,7 @@ async function fetchGames(date: Date) {
 	return { data, error }
 }
 
-async function fetchPlayersNew(date: Date) {
+async function fetchPlayers(date: Date) {
 	const { startTime, endTime } = getStartAndEndOfDay(date)
 
 	console.log('FETCHING players for', startTime, endTime)
@@ -39,33 +39,4 @@ async function fetchPlayersNew(date: Date) {
 	return { data, error }
 }
 
-
-async function fetchStandings(date: string) {
-	const { data, error } = await client
-	.from('Standings_new')
-	.select(`
-		*, 
-		teams!inner ( * )
-	`)
-	
-	return { data, error }
-}
-
-async function fetchPlayers(date: string) {
-	console.log('FETCHING game_players for', date)
-	const { data, error } = await client
-		.from('game_players')
-		.select(`
-			*,
-			game:game_players_gameId_fkey!inner( * ),
-			team:game_players_teamId_fkey!inner( * ),
-			opposingTeam:game_players_opposingTeamId_fkey!inner( * )
-		`)
-		.eq('game.date', date)
-
-	console.log('FETCHED', data?.length, 'game_players')
-	return { data, error }
-}
-
-
-export { fetchGames, fetchStandings, fetchPlayers, fetchPlayersNew }
+export { fetchGames, fetchPlayers}

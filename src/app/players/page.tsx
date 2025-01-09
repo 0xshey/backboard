@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import { cn } from "@/lib/utils";
 import { FantasyPlayer } from "@/lib/types";
-import { fetchPlayersNew } from "@/lib/supabase";
+import { fetchPlayers } from "@/lib/supabase";
 
 import DatePicker from "@/components/date-picker";
 import { DataTable } from "@/components/data-table";
@@ -28,7 +28,7 @@ export default function PlayersPage() {
 			else setLoading(true);
 
 			try {
-				const { data, error } = await fetchPlayersNew(date);
+				const { data, error } = await fetchPlayers(date);
 				if (error) throw error;
 				if (data) {
 					setPlayers(data as FantasyPlayer[]);
