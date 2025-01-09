@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 
 import { cn } from "@/lib/utils";
+import { Game } from "@/lib/types";
 import { fetchGames } from "@/lib/supabase";
 import { Skeleton } from "@/components/ui/skeleton";
 import DatePicker from "@/components/date-picker";
@@ -10,7 +11,7 @@ import { LoaderIcon, BadgeCheckIcon } from "lucide-react";
 
 export default function GamesPage() {
 	const [date, setDate] = useState(new Date()); // using client date
-	const [games, setGames] = useState([]);
+	const [games, setGames] = useState<Game[]>([]);
 	const [error, setError] = useState<Error | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [updating, setUpdating] = useState(false);

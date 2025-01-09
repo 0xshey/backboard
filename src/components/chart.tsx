@@ -10,11 +10,11 @@ import {
 	ResponsiveContainer,
 	Label,
 } from "recharts";
-import { PlayerGameRow } from "@/lib/types";
+import { FantasyPlayer } from "@/lib/types";
 import PlayerHeadshot from "@/components/nba/player-headshot";
 
 export class FantasyScatter extends PureComponent<{
-	data: { fp: number; fpDelta: number }[];
+	data: { fantasyPoints: number; fantasyPointsDelta: number }[];
 }> {
 	render() {
 		return (
@@ -30,7 +30,7 @@ export class FantasyScatter extends PureComponent<{
 					<CartesianGrid fillOpacity={0.5} strokeOpacity={0.1} />
 					<XAxis
 						type="number"
-						dataKey="fp"
+						dataKey="fantasyPoints"
 						name="today"
 						unit="fp"
 						axisLine={false}
@@ -50,7 +50,7 @@ export class FantasyScatter extends PureComponent<{
 
 					<YAxis
 						type="number"
-						dataKey="fpDelta"
+						dataKey="fantasyPointsDelta"
 						name="relative"
 						unit="fp"
 						axisLine={false}
@@ -89,7 +89,7 @@ type PlayerTooltipProps = {
 	payload?: {
 		name: string;
 		value: number;
-		payload: PlayerGameRow;
+		payload: FantasyPlayer;
 	}[];
 	label?: string;
 };
@@ -101,7 +101,7 @@ function PlayerTooltip({ active, payload, label }: PlayerTooltipProps) {
 			<div className="custom-tooltip bg-card text-card-foreground shadow rounded border flex items-center justify-between gap-2">
 				<div className="ml-1 border-b ">
 					<PlayerHeadshot
-						playerId={String(player.id)}
+						playerId={String(player.playerId)}
 						size={96}
 						className="p"
 					/>
@@ -111,9 +111,9 @@ function PlayerTooltip({ active, payload, label }: PlayerTooltipProps) {
 						<span>
 							{player.firstName} {player.lastName}
 						</span>
-						<span className="text-muted-foreground">
+						{/* <span className="text-muted-foreground">
 							vs. {player.opposingTeam.name} {label}
-						</span>
+						</span> */}
 					</p>
 					<div className="grid grid-cols-6 text-center text-muted-foreground text-xs">
 						<div className="p-0.5 font-bold">PTS</div>
@@ -137,11 +137,13 @@ function PlayerTooltip({ active, payload, label }: PlayerTooltipProps) {
 					</div>
 					<div
 						className={`text-sm px-1 rounded ${
-							player.fpDelta > 0 ? "bg-green-500" : "bg-red-500"
+							player.fantasyPointsDelta > 0
+								? "bg-green-500"
+								: "bg-red-500"
 						}`}
 					>
-						{player.fpDelta > 0 ? "+" : ""}
-						{player.fpDelta}
+						{player.fantasyPointsDelta > 0 ? "+" : ""}
+						{player.fantasyPointsDelta}
 					</div>
 				</div>
 			</div>

@@ -95,37 +95,37 @@ export const columns: ColumnDef<FantasyPlayer>[] = [
 			return <div>{props.row.original.fantasyPoints.toFixed(2)}</div>;
 		},
 	},
-	// {
-	// 	accessorKey: "fpDelta",
-	// 	header: ({ column }) => {
-	// 		return (
-	// 			<div className="flex items-center gap-1">
-	// 				<Button
-	// 					variant="ghost"
-	// 					onClick={() =>
-	// 						column.toggleSorting(column.getIsSorted() === "asc")
-	// 					}
-	// 					className="px-1"
-	// 				>
-	// 					<span>δ</span>
-	// 					{column.getIsSorted() === "asc" ? (
-	// 						<ArrowUp size={12} />
-	// 					) : column.getIsSorted() === "desc" ? (
-	// 						<ArrowDown size={12} />
-	// 					) : (
-	// 						<ArrowUpDown size={12} />
-	// 					)}
-	// 				</Button>
-	// 			</div>
-	// 		);
-	// 	},
-	// 	cell: (props) => {
-	// 		return (
-	// 			<div>
-	// 				{props.row.original.fpDelta > 0 ? "+" : ""}
-	// 				{props.row.original.fpDelta}
-	// 			</div>
-	// 		);
-	// 	},
-	// },
+	{
+		accessorKey: "fantasyPointsDelta",
+		header: ({ column }) => {
+			return (
+				<div className="flex items-center gap-1">
+					<Button
+						variant="ghost"
+						onClick={() =>
+							column.toggleSorting(column.getIsSorted() === "asc")
+						}
+						className="px-1"
+					>
+						<span>δ</span>
+						{column.getIsSorted() === "asc" ? (
+							<ArrowUp size={12} />
+						) : column.getIsSorted() === "desc" ? (
+							<ArrowDown size={12} />
+						) : (
+							<ArrowUpDown size={12} />
+						)}
+					</Button>
+				</div>
+			);
+		},
+		cell: (props) => {
+			return (
+				<div>
+					{props.row.original.fantasyPointsDelta > 0 ? "+" : ""}
+					{props.row.original.fantasyPointsDelta.toFixed(2)}
+				</div>
+			);
+		},
+	},
 ];

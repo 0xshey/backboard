@@ -1,29 +1,8 @@
 "use client";
+import { Game } from "@/lib/types";
 import { format } from "date-fns";
 import { ChevronRight } from "lucide-react";
 import TeamLogo from "@/components/nba/team-logo";
-
-interface GameProps {
-	game: {
-		gameId: string;
-		homeTeamId: string;
-		homeTeamName: string;
-		homeTeamScore: number;
-		homeTeamWins: number;
-		homeTeamLosses: number;
-
-		awayTeamId: string;
-		awayTeamName: string;
-		awayTeamScore: number;
-		awayTeamWins: number;
-		awayTeamLosses: number;
-
-		statusCode: number;
-		dateTimeUTC: string;
-		statusText: string;
-		nationalBroadcaster: string;
-	};
-}
 
 interface GameStatusProps {
 	statusCode: number;
@@ -41,7 +20,7 @@ interface TeamProps {
 	gameStatusCode: number;
 }
 
-function Game({ game }: GameProps) {
+function GameCard(game: Game) {
 	const awayTeam = {
 		teamId: game.awayTeamId,
 		teamName: game.awayTeamName,
@@ -152,4 +131,4 @@ function GameStatus({
 	);
 }
 
-export default Game;
+export default GameCard;
