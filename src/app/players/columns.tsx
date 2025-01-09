@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { PlayerGameRow } from "@/lib/types";
+import { FantasyPlayer } from "@/lib/types";
 import { parseDuration } from "@/lib/utils";
 
 import { ArrowUpDown, ArrowDown, ArrowUp } from "lucide-react";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 import TeamLogo from "@/components/nba/team-logo";
 
-export const columns: ColumnDef<PlayerGameRow>[] = [
+export const columns: ColumnDef<FantasyPlayer>[] = [
 	{
 		header: "Player",
 		accessorFn: (player) => player,
@@ -17,12 +17,12 @@ export const columns: ColumnDef<PlayerGameRow>[] = [
 			return (
 				<div className="flex items-center gap-1">
 					<TeamLogo
-						teamId={props.row.original.team.id}
+						teamId={props.row.original.teamId}
 						size={18}
 						className="md:hidden"
 					/>
 					<TeamLogo
-						teamId={props.row.original.team.id}
+						teamId={props.row.original.teamId}
 						size={20}
 						className="hidden md:inline"
 					/>
@@ -92,40 +92,40 @@ export const columns: ColumnDef<PlayerGameRow>[] = [
 			);
 		},
 		cell: (props) => {
-			return <div>{props.row.original.fp.toFixed(2)}</div>;
+			return <div>{props.row.original.fantasyPoints.toFixed(2)}</div>;
 		},
 	},
-	{
-		accessorKey: "fpDelta",
-		header: ({ column }) => {
-			return (
-				<div className="flex items-center gap-1">
-					<Button
-						variant="ghost"
-						onClick={() =>
-							column.toggleSorting(column.getIsSorted() === "asc")
-						}
-						className="px-1"
-					>
-						<span>δ</span>
-						{column.getIsSorted() === "asc" ? (
-							<ArrowUp size={12} />
-						) : column.getIsSorted() === "desc" ? (
-							<ArrowDown size={12} />
-						) : (
-							<ArrowUpDown size={12} />
-						)}
-					</Button>
-				</div>
-			);
-		},
-		cell: (props) => {
-			return (
-				<div>
-					{props.row.original.fpDelta > 0 ? "+" : ""}
-					{props.row.original.fpDelta}
-				</div>
-			);
-		},
-	},
+	// {
+	// 	accessorKey: "fpDelta",
+	// 	header: ({ column }) => {
+	// 		return (
+	// 			<div className="flex items-center gap-1">
+	// 				<Button
+	// 					variant="ghost"
+	// 					onClick={() =>
+	// 						column.toggleSorting(column.getIsSorted() === "asc")
+	// 					}
+	// 					className="px-1"
+	// 				>
+	// 					<span>δ</span>
+	// 					{column.getIsSorted() === "asc" ? (
+	// 						<ArrowUp size={12} />
+	// 					) : column.getIsSorted() === "desc" ? (
+	// 						<ArrowDown size={12} />
+	// 					) : (
+	// 						<ArrowUpDown size={12} />
+	// 					)}
+	// 				</Button>
+	// 			</div>
+	// 		);
+	// 	},
+	// 	cell: (props) => {
+	// 		return (
+	// 			<div>
+	// 				{props.row.original.fpDelta > 0 ? "+" : ""}
+	// 				{props.row.original.fpDelta}
+	// 			</div>
+	// 		);
+	// 	},
+	// },
 ];

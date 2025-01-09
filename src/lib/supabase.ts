@@ -1,43 +1,44 @@
 'use server'
 import { loadEnvConfig } from '@next/env'
 import { createClient } from '@supabase/supabase-js'
+import { getStartAndEndOfDay } from '@/lib/utils'
 
 const projectDir = process.cwd()
 loadEnvConfig(projectDir)
 
-// Client
+// Supabase Client
 const client = createClient(
 	process.env.SUPABASE_URL as string,
 	process.env.SUPABASE_KEY as string
 )
 
-// Client functions
-
+// Supabase functions
 async function fetchGames(date: Date) {
-	const startOfDay = new Date(date)
-	startOfDay.setHours(0, 0, 0, 0)
+	const { startTime, endTime } = getStartAndEndOfDay(date)
 
-	const endOfDay = new Date(date)
-	endOfDay.setHours(23, 59, 59, 999)
+	console.log('FETCHING games for', startTime, endTime)
 
 	const { data, error } = await client.rpc('get_games_summary', {
-		start_time: startOfDay.toISOString(),
-		end_time: endOfDay.toISOString()
+		start_time: startTime,
+		end_time: endTime
 	});
 
 	return { data, error }
 }
 
-async function fetchGameTeams(gameIds: string[]) {
-	const { data, error } = await client
-		.from('GameTeams_new')
-		.select(`
-			*
-		`)
-		.in('gameId', gameIds)
+async function fetchPlayersNew(date: Date) {
+	const { startTime, endTime } = getStartAndEndOfDay(date)
+
+	console.log('FETCHING players for', startTime, endTime)
+
+	const { data, error } = await client.rpc('get_players_page', {
+		start_time: startTime,
+		end_time: endTime
+	});
 
 	return { data, error }
 }
+
 
 async function fetchStandings(date: string) {
 	const { data, error } = await client
@@ -67,4 +68,4 @@ async function fetchPlayers(date: string) {
 }
 
 
-export { fetchGames, fetchGameTeams, fetchStandings, fetchPlayers }
+export { fetchGames, fetchStandings, fetchPlayers, fetchPlayersNew }

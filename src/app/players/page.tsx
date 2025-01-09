@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
-import { PlayerGameRow } from "@/lib/types";
-import { fetchPlayers } from "@/lib/supabase";
+import { FantasyPlayer } from "@/lib/types";
+import { fetchPlayersNew } from "@/lib/supabase";
 
 import DatePicker from "@/components/date-picker";
 import { DataTable } from "@/components/data-table";
@@ -19,7 +19,7 @@ import { columns } from "./columns";
 export default function PlayersPage() {
 	const [date, setDate] = useState(new Date()); // using client date
 
-	const [players, setPlayers] = useState<PlayerGameRow[]>([]);
+	const [players, setPlayers] = useState<FantasyPlayer[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
 	const [updating, setUpdating] = useState(false);
@@ -30,11 +30,10 @@ export default function PlayersPage() {
 			else setLoading(true);
 
 			try {
-				const formattedDate = format(date, "yyyy-MM-dd");
-				const { data, error } = await fetchPlayers(formattedDate);
+				const { data, error } = await fetchPlayersNew(date);
 				if (error) throw error;
 				if (data) {
-					setPlayers(data as PlayerGameRow[]);
+					setPlayers(data as FantasyPlayer[]);
 				} else {
 					setPlayers([]);
 				}
@@ -82,7 +81,7 @@ export default function PlayersPage() {
 				<p className="text-sm">Official NBA Data</p>
 			</div>
 
-			<div className="pt-8 flex flex-col gap-8 items-center w-full">
+			{/* <div className="pt-8 flex flex-col gap-8 items-center w-full">
 				<div className="w-full max-w-6xl flex flex-col items-center">
 					<FantasyScatter
 						data={players.filter((player) => player.played)}
@@ -94,69 +93,14 @@ export default function PlayersPage() {
 						overperformed. Try hovering over the points to see whoʼs
 						who.
 					</p>
-				</div>
-				<Tabs
-					defaultValue={"good"}
-					className="w-full mt-4 flex flex-col items-center"
-				>
-					<TabsList className="grid mx-2 grid-cols-4">
-						<TabsTrigger value="good">Good</TabsTrigger>
-						<TabsTrigger value="bad">Bad</TabsTrigger>
-						<TabsTrigger value="all">All</TabsTrigger>
-						<TabsTrigger value="live">Live</TabsTrigger>
-					</TabsList>
-					<TabsContent value="live">
-						<h2 className="text-4xl text-center font-medium my-4">
-							Playing Now
-						</h2>
-						<DataTable
-							columns={columns}
-							data={players.filter((player) =>
-								player.tags.includes("still-playing")
-							)}
-						/>
-					</TabsContent>
-					<TabsContent value="good">
-						<h2 className="text-4xl text-center font-medium my-4">
-							Good Performers
-						</h2>
-						<DataTable
-							columns={columns}
-							data={players
-								.filter((player) =>
-									player.tags.includes("good-list")
-								)
-								.filter((player) => player.fp > 30)
-								.sort((a, b) => b.fp - a.fp)}
-						/>
-					</TabsContent>
-					<TabsContent value="bad">
-						<h2 className="text-4xl text-center font-medium my-4">
-							Bad Performers
-						</h2>
-						<DataTable
-							columns={columns}
-							data={players
-								.filter((player) =>
-									player.tags.includes("bad-list")
-								)
-								.sort((a, b) => b.fp - a.fp)}
-						/>
-					</TabsContent>
-					<TabsContent value="all">
-						<h2 className="text-4xl text-center font-medium my-4">
-							All Players
-						</h2>
-						<DataTable
-							columns={columns}
-							data={players
-								.filter((player) =>
-									player.tags.includes("played")
-								)
-								.sort((a, b) => b.fp - a.fp)}
-						/>
-					</TabsContent>
-				</Tabs>
+				</div> */}
+			<div className="flex flex-col w-full max-w-4xl items-center">
+				<DataTable
+					columns={columns}
+					data={players.sort(
+						(a, b) => b.fantasyPoints - a.fantasyPoints
+					)}
+				/>
 			</div>
 		</div>
 	);

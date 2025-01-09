@@ -84,4 +84,19 @@ export type PlayerGameRow = {
 		nationalBroadcaster: string;
 	};
 };
-  
+
+export type FantasyPlayer = {
+	gameId: string;
+	playerId: string;
+	teamId: string;
+	firstName: string;
+	lastName: string;
+	minutes: string;
+	points: number;
+	assists: number;
+	reboundsTotal: number;
+	steals: number;
+	blocks: number;
+	turnovers: number;
+	fantasyPoints: number;
+};
