@@ -133,7 +133,7 @@ function PlayerTooltip({ active, payload }: PlayerTooltipProps) {
 				<div className="flex flex-col items-center justify-center min-h-full p-2 aspect-square">
 					<p className="text-xs text-muted-foreground">FP</p>
 					<div className="p-0.5 text-xl font-semibold">
-						{player.fp}
+						{player.fantasyPoints}
 					</div>
 					<div
 						className={`text-sm px-1 rounded ${
