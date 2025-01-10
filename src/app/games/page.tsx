@@ -70,7 +70,6 @@ export default function GamesPage() {
 					<GameCard key={game.gameId} game={game} />
 				))}
 			</div>
-			<pre>{JSON.stringify(games, null, 2)}</pre>
 		</div>
 	);
 }

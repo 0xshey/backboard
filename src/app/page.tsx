@@ -17,15 +17,21 @@ export default function Home() {
 						by their fantasy points.
 					</p>
 					<div className="border rounded-full border-green-500 bg-green-500 bg-opacity-20 px-4 py-2">
-						<p className={"text-green-500"}>
-							New Visualisation Added!
-						</p>
+						<p className={"text-green-500"}>New Games Page!</p>
 					</div>
-					<Button asChild>
-						<Link href="/players">
-							Player Rankings <ArrowRight className="w-6 h-6" />
-						</Link>
-					</Button>
+					<div className="flex items-center gap-4">
+						<Button asChild variant={"default"}>
+							<Link href="/players">
+								Player Rankings{" "}
+								<ArrowRight className="w-6 h-6" />
+							</Link>
+						</Button>
+						<Button asChild variant={"outline"}>
+							<Link href="/games">
+								Daily Games <ArrowRight className="w-6 h-6" />
+							</Link>
+						</Button>
+					</div>
 				</div>
 			</div>
 		</section>

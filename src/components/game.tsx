@@ -113,7 +113,7 @@ function GameStatus({
 	return (
 		<div className="flex flex-col space-y-2 items-end">
 			{statusCode === 1 ? (
-				<p>{format(new Date(dateTimeUTC), "h:mm a")}</p>
+				<p>{format(new Date(dateTimeUTC + "Z"), "h:mm a")}</p>
 			) : statusCode === 2 ? (
 				<div className="flex items-center space-x-3">
 					<div className="relative flex items-center justify-center w-4 h-4 bg-red-500/20 rounded-full animate-pulse">
