@@ -14,6 +14,8 @@ interface GameStatusProps {
 interface TeamProps {
 	teamId: string;
 	teamName: string;
+	conference: string;
+	conferenceRank: number;
 	score: number;
 	record: string;
 	isLeading: boolean;
@@ -42,6 +44,8 @@ function GameCard({ game }: { game: Game }) {
 				<Team
 					teamId={awayTeam.teamId}
 					teamName={awayTeam.teamName}
+					conference={game.awayTeamConference}
+					conferenceRank={game.awayTeamConferenceRank}
 					score={awayTeam.score}
 					record={`${game.awayTeamWins}-${game.awayTeamLosses}`}
 					isLeading={awayTeam.score > homeTeam.score}
@@ -50,6 +54,8 @@ function GameCard({ game }: { game: Game }) {
 				<Team
 					teamId={homeTeam.teamId}
 					teamName={homeTeam.teamName}
+					conference={game.homeTeamConference}
+					conferenceRank={game.homeTeamConferenceRank}
 					score={homeTeam.score}
 					record={`${game.homeTeamWins}-${game.homeTeamLosses}`}
 					isLeading={homeTeam.score > awayTeam.score}
@@ -69,6 +75,8 @@ function GameCard({ game }: { game: Game }) {
 function Team({
 	teamId,
 	teamName,
+	conference,
+	conferenceRank,
 	score,
 	record,
 	isLeading,
@@ -82,23 +90,36 @@ function Team({
 						<ChevronRight size={16} />
 					)}
 				</div>
-				<TeamLogo teamId={teamId} />
+				<div className="relative">
+					<TeamLogo teamId={teamId} />
+					<span
+						className={`absolute backdrop-blur bottom-0 right-0 z-10 text-foreground text-[0.65rem] font-mono leading-none w-4 aspect-square rounded-full flex items-center justify-center ${
+							conference === "East"
+								? "bg-indigo-600/50 dark:bg-blue-900/50"
+								: "bg-red-600/50 dark:bg-red-900/50"
+						}`}
+					>
+						{conferenceRank}
+					</span>
+				</div>
 			</div>
 			<div className="flex flex-col items-start">
 				<p
-					className={`text-xl flex items-center gap-2 ${
+					className={`text-2xl flex items-center gap-2 ${
 						gameStatusCode === 3 && !isLeading
 							? "text-muted-foreground"
 							: "text-foreground"
 					}`}
 				>
 					{gameStatusCode == 1 ? (
-						<span className="font-light">{record}</span>
+						<span className="font-extralight">{record}</span>
 					) : (
-						<span className="font-semibold">{score}</span>
+						<span className="font-medium">{score}</span>
 					)}
 				</p>
-				<p className="text-muted-foreground text-sm">{teamName}</p>
+				<div className="flex items-center gap-2">
+					<p className="text-muted-foreground text-xs">{teamName}</p>
+				</div>
 			</div>
 		</div>
 	);
@@ -117,7 +138,7 @@ function GameStatus({
 			) : statusCode === 2 ? (
 				<div className="flex items-center space-x-3">
 					<div className="relative flex items-center justify-center w-4 h-4 bg-red-500/20 rounded-full animate-pulse">
-						<div className="absolute inset-0 w-1.5 h-1.5 bg-red-500/50 rounded-full animate-pulse"></div>
+						<div className="w-1.5 h-1.5 bg-red-500/50 rounded-full animate-pulse"></div>
 					</div>
 					<p>{statusText}</p>
 				</div>

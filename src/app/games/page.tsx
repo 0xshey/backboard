@@ -66,9 +66,11 @@ export default function GamesPage() {
 			{loading && <Skeleton className="w-full max-w-xl h-40" />}
 			{error && <p>Error: {error.message}</p>}
 			<div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 mx-2">
-				{games.map((game) => (
-					<GameCard key={game.gameId} game={game} />
-				))}
+				{games
+					.sort((a, b) => a.gameId.localeCompare(b.gameId))
+					.map((game) => (
+						<GameCard key={game.gameId} game={game} />
+					))}
 			</div>
 		</div>
 	);
