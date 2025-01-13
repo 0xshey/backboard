@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 import { Game } from "@/lib/types";
 import { format } from "date-fns";
 import { ChevronRight } from "lucide-react";
@@ -36,11 +37,15 @@ function GameCard({ game }: { game: Game }) {
 
 	return (
 		<div
-			className={`flex flex-row justify-between space-x-2 py-4 pr-4 rounded-xl shadow border ${
-				game.statusCode == 2 ? "border-red-500" : ""
-			}`}
+			className={cn(
+				"flex flex-col items-start gap-2 py-3 px-1 rounded-xl shadow border w-full",
+				{
+					"md:flex-row md:justify-between md:p-4 md:w-80": true,
+					"border-red-500": game.statusCode == 2,
+				}
+			)}
 		>
-			<div className="flex flex-col gap-4 items-between">
+			<div className="flex flex-col gap-2 items-between">
 				<Team
 					teamId={awayTeam.teamId}
 					teamName={awayTeam.teamName}
@@ -83,20 +88,20 @@ function Team({
 	gameStatusCode,
 }: TeamProps) {
 	return (
-		<div className="flex space-x-2">
+		<div className="flex justify-start space-x-4 w-40">
 			<div className="flex items-center gap-1">
-				<div className="w-4">
+				<div className="w-2">
 					{gameStatusCode === 3 && isLeading && (
 						<ChevronRight size={16} />
 					)}
 				</div>
 				<div className="relative">
-					<TeamLogo teamId={teamId} />
+					<TeamLogo teamId={teamId} size={48} />
 					<span
-						className={`absolute backdrop-blur bottom-0 right-0 z-10 text-foreground text-[0.65rem] font-mono leading-none w-4 aspect-square rounded-full flex items-center justify-center ${
+						className={`absolute backdrop-blur bottom-0 right-0 z-10 text-foreground text-xs font-mono leading-none w-4 aspect-square rounded-sm flex items-center justify-center ${
 							conference === "East"
-								? "bg-indigo-600/50 dark:bg-blue-900/50"
-								: "bg-red-600/50 dark:bg-red-900/50"
+								? "bg-indigo-600/50 dark:bg-blue-800/50"
+								: "bg-red-600/50 dark:bg-red-800/50"
 						}`}
 					>
 						{conferenceRank}
@@ -105,14 +110,14 @@ function Team({
 			</div>
 			<div className="flex flex-col items-start">
 				<p
-					className={`text-2xl flex items-center gap-2 ${
+					className={`text-xl md:text-2xl flex items-center gap-2 ${
 						gameStatusCode === 3 && !isLeading
 							? "text-muted-foreground"
 							: "text-foreground"
 					}`}
 				>
 					{gameStatusCode == 1 ? (
-						<span className="font-extralight text-[1.1rem] md:text-[1.4rem] whitespace-nowrap">
+						<span className="font-extralight whitespace-nowrap">
 							{record}
 						</span>
 					) : (
@@ -120,7 +125,7 @@ function Team({
 					)}
 				</p>
 				<div className="flex items-center gap-2">
-					<p className="text-muted-foreground text-[0.65rem] md:text-[0.8rem]">
+					<p className="text-muted-foreground text-xs md:text-sm">
 						{teamName}
 					</p>
 				</div>
@@ -136,20 +141,40 @@ function GameStatus({
 	nationalBroadcaster,
 }: GameStatusProps) {
 	return (
-		<div className="flex flex-col space-y-2 items-end text-[0.9rem] md:text-[1rem] text-right whitespace-nowrap">
-			{statusCode === 1 ? (
-				<p>{format(new Date(dateTimeUTC + "Z"), "h:mm a")}</p>
-			) : statusCode === 2 ? (
-				<div className="flex items-center space-x-3">
-					<div className="relative flex items-center justify-center w-4 h-4 bg-red-500/20 rounded-full animate-pulse">
-						<div className="w-1.5 h-1.5 bg-red-500/50 rounded-full animate-pulse"></div>
-					</div>
-					<p>{statusText}</p>
-				</div>
-			) : (
-				<p>{statusText}</p>
+		<div
+			className={cn(
+				"flex flex-row justify-center w-full gap-2 mt-2 items-end text-sm text-right whitespace-nowrap",
+				"md:flex-col md:mt-0"
 			)}
-			<p className="text-muted-foreground">{nationalBroadcaster}</p>
+		>
+			<div
+				className={cn(
+					"flex items-center px-2 py-0.5 bg-foreground/20 text-foreground border-foreground/30 border rounded-full",
+					statusCode === 2
+						? "bg-red-500/20 text-red-500 border-red-500/30"
+						: "bg-foreground/20 text-foreground border-foreground/30"
+				)}
+			>
+				{statusCode === 1 ? (
+					<p>{format(new Date(dateTimeUTC + "Z"), "h:mm a")}</p>
+				) : statusCode === 2 ? (
+					<div className="flex items-center space-x-3">
+						<div className="relative flex items-center justify-center w-2 h-2 bg-red-500/20 rounded-full animate-pulse">
+							<div className="w-1.5 h-1.5 bg-red-500/50 rounded-full animate-pulse"></div>
+						</div>
+						<p>{statusText}</p>
+					</div>
+				) : (
+					<p>{statusText}</p>
+				)}
+			</div>
+			{nationalBroadcaster && (
+				<div className="flex items-center px-2 py-0.5 bg-muted-foreground/20 text-accent-foreground border-muted-foreground/30 border rounded-full">
+					<p className="text-muted-foreground">
+						{nationalBroadcaster}
+					</p>
+				</div>
+			)}
 		</div>
 	);
 }
