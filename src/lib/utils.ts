@@ -15,11 +15,11 @@ export function parseDuration(iso8601Duration: string) {
 
 
 export function getStartAndEndOfDay(date: Date) {
-	const startOfDay = new Date(date)
-	startOfDay.setHours(0, 0, 0, 0)
+	const startOfDay = new Date(date.getTime());
+	startOfDay.setHours(0, 0, 0, 0);
 
-	const endOfDay = new Date(date)
-	endOfDay.setHours(23, 59, 59, 999)
+	const endOfDay = new Date(date.getTime());
+	endOfDay.setHours(23, 59, 59, 999);
 
 	return {
 		startTime: startOfDay.toISOString(),
