@@ -36,7 +36,7 @@ function GameCard({ game }: { game: Game }) {
 
 	return (
 		<div
-			className={`flex flex-row justify-between space-x-4 py-4 pr-4 rounded-xl shadow border ${
+			className={`flex flex-row justify-between space-x-2 py-4 pr-4 rounded-xl shadow border ${
 				game.statusCode == 2 ? "border-red-500" : ""
 			}`}
 		>
@@ -112,13 +112,17 @@ function Team({
 					}`}
 				>
 					{gameStatusCode == 1 ? (
-						<span className="font-extralight">{record}</span>
+						<span className="font-extralight text-[1.1rem] md:text-[1.4rem] whitespace-nowrap">
+							{record}
+						</span>
 					) : (
 						<span className="font-medium">{score}</span>
 					)}
 				</p>
 				<div className="flex items-center gap-2">
-					<p className="text-muted-foreground text-xs">{teamName}</p>
+					<p className="text-muted-foreground text-[0.65rem] md:text-[0.8rem]">
+						{teamName}
+					</p>
 				</div>
 			</div>
 		</div>
@@ -132,7 +136,7 @@ function GameStatus({
 	nationalBroadcaster,
 }: GameStatusProps) {
 	return (
-		<div className="flex flex-col space-y-2 items-end">
+		<div className="flex flex-col space-y-2 items-end text-[0.9rem] md:text-[1rem] text-right whitespace-nowrap">
 			{statusCode === 1 ? (
 				<p>{format(new Date(dateTimeUTC + "Z"), "h:mm a")}</p>
 			) : statusCode === 2 ? (
@@ -143,11 +147,9 @@ function GameStatus({
 					<p>{statusText}</p>
 				</div>
 			) : (
-				<p className="">{statusText}</p>
+				<p>{statusText}</p>
 			)}
-			<p className="text-muted-foreground text-sm">
-				{nationalBroadcaster}
-			</p>
+			<p className="text-muted-foreground">{nationalBroadcaster}</p>
 		</div>
 	);
 }

@@ -13,7 +13,6 @@ export default function DatePicker({
 	setDate: (date: Date) => void;
 	className?: string;
 }) {
-	const serverTZ = "America/New_York";
 	const isNow = date.toDateString() === new Date().toDateString();
 
 	return (
@@ -39,22 +38,17 @@ export default function DatePicker({
 				<div className="flex flex-col items-center gap-1">
 					<h2 className="text-4xl text-center font-medium">
 						{format(
-							date.toLocaleString("en-US", {
-								timeZone: serverTZ,
-							}),
+							date.toLocaleString(),
 							isNow ? "h:mm a" : "MMM. do"
 						)}
 					</h2>
 					<h2 className="text-lg font-medium">
 						{format(
-							date.toLocaleString("en-US", {
-								timeZone: serverTZ,
-							}),
+							date.toLocaleString(),
 							isNow ? "EEEE — MMM do, yyyy" : "EEEE"
 						)}
 					</h2>
 				</div>
-				<p className="text-sm text-gray-500">in New York</p>
 			</div>
 
 			{/* Next Date Button */}
