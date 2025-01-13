@@ -1,5 +1,6 @@
 "use client";
 import React, { PureComponent } from "react";
+import { valueToRGB } from "@/lib/utils";
 import {
 	ScatterChart,
 	Scatter,
@@ -18,7 +19,7 @@ export class FantasyScatter extends PureComponent<{
 }> {
 	render() {
 		return (
-			<ResponsiveContainer width="100%" height={800}>
+			<ResponsiveContainer width="100%" height={500}>
 				<ScatterChart
 					margin={{
 						top: 5,
@@ -136,11 +137,13 @@ function PlayerTooltip({ active, payload }: PlayerTooltipProps) {
 						{player.fantasyPoints}
 					</div>
 					<div
-						className={`text-sm px-1 rounded ${
-							player.fantasyPointsDelta > 0
-								? "bg-green-500"
-								: "bg-red-500"
-						}`}
+						className="text-sm px-1 rounded"
+						style={{
+							backgroundColor: valueToRGB(
+								(player.fantasyPointsDelta + 30) / 60
+							),
+							color: "black",
+						}}
 					>
 						{player.fantasyPointsDelta > 0 ? "+" : ""}
 						{player.fantasyPointsDelta}

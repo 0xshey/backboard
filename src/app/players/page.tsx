@@ -72,7 +72,7 @@ export default function PlayersPage() {
 				className="w-full max-w-lg  rounded"
 			/>
 
-			<div className="w-full flex justify-center items-center py-4 pr-4 gap-2 text-muted-foreground">
+			<div className="w-full flex justify-center items-center py-2 pr-4 gap-2 text-muted-foreground">
 				<LoaderIcon
 					size={16}
 					className={cn("animate-spin", {
@@ -83,55 +83,52 @@ export default function PlayersPage() {
 				<p className="text-sm">Official NBA Data</p>
 			</div>
 
-			<div className="pt-8 flex flex-col gap-8 items-center w-full">
-				{players.filter((player) => player.played).length > 0 ? (
-					<div>
-						<div className="w-full max-w-6xl flex flex-col items-center">
-							<FantasyScatter
-								data={players.filter((player) => player.played)}
-							/>
-							<p className="text-center text-balance text-muted-foreground max-w-4xl">
-								This chart shows todays performance along the
-								x-axis against how they performed relative to
-								their season average &#x28;y-axis&#x29;. Players
-								above zero on the y, overperformed. Try hovering
-								over the points to see whoʼs who.
-							</p>
-						</div>
-
-						<div className="flex flex-col w-full max-w-4xl items-center">
-							<DataTable
-								columns={columns}
-								data={players
-									.filter((player) => player.played)
-									.sort(
-										(a, b) =>
-											b.fantasyPoints - a.fantasyPoints
-									)}
-							/>
-						</div>
-					</div>
-				) : (
-					<div className="flex flex-col items-center gap-8 mt-40">
-						<p className="text-muted-foreground ">
-							No players have played yet today.
+			{players.filter((player) => player.played).length > 0 ? (
+				<div className="pt-8 flex flex-col gap-8 items-center w-full">
+					<div className="w-full max-w-6xl flex flex-col items-center">
+						<FantasyScatter
+							data={players.filter((player) => player.played)}
+						/>
+						<p className="text-sm text-center text-balance text-muted-foreground max-w-4xl">
+							This chart shows todays performance along the x-axis
+							against how they performed relative to their season
+							average &#x28;y-axis&#x29;. Players above zero on
+							the y, overperformed. Try hovering over the points
+							to see whoʼs who.
 						</p>
-						<Button
-							variant={"outline"}
-							onClick={() =>
-								setDate((d) => {
-									const newDate = new Date(d);
-									newDate.setDate(newDate.getDate() - 1);
-									return newDate;
-								})
-							}
-						>
-							<CircleChevronLeftIcon />
-							View Previous Day
-						</Button>
 					</div>
-				)}
-			</div>
+
+					<div className="flex flex-col w-full max-w-4xl items-center">
+						<DataTable
+							columns={columns}
+							data={players
+								.filter((player) => player.played)
+								.sort(
+									(a, b) => b.fantasyPoints - a.fantasyPoints
+								)}
+						/>
+					</div>
+				</div>
+			) : (
+				<div className="flex flex-col items-center gap-8 mt-40">
+					<p className="text-muted-foreground ">
+						No players have played yet today.
+					</p>
+					<Button
+						variant={"outline"}
+						onClick={() =>
+							setDate((d) => {
+								const newDate = new Date(d);
+								newDate.setDate(newDate.getDate() - 1);
+								return newDate;
+							})
+						}
+					>
+						<CircleChevronLeftIcon />
+						View Previous Day
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 }
