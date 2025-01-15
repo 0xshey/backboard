@@ -6,13 +6,13 @@ import { getStartAndEndOfDay } from '@/lib/utils'
 const projectDir = process.cwd()
 loadEnvConfig(projectDir)
 
-// Supabase Client
+// Client
 const client = createClient(
 	process.env.SUPABASE_URL as string,
 	process.env.SUPABASE_KEY as string
 )
 
-// Supabase functions
+// Functions
 async function fetchGames(date: Date) {
 	const { startTime, endTime } = getStartAndEndOfDay(date)
 
@@ -39,4 +39,32 @@ async function fetchPlayers(date: Date) {
 	return { data, error }
 }
 
-export { fetchGames, fetchPlayers}
+async function fetchTeam(teamId: string) {
+	const { data, error } = await client
+		.from('Teams')
+		.select('*')
+		.eq('teamId', teamId)
+		.single()
+
+	return { data, error }
+}
+
+async function fetchTeamPlayers(teamId: string) {
+	const { data, error } = await client
+		.from('PlayerSeasonAverages')
+		.select('*')
+		.eq('teamId', teamId)
+
+	return { data, error }
+}
+
+async function fetchTeamGames(teamId: string) {
+	const { data, error } = await client
+		.from('Games')
+		.select('*')
+		.or(`homeTeamId.eq.${teamId},awayTeamId.eq.${teamId}`)
+
+	return { data, error }
+}
+
+export { fetchGames, fetchPlayers, fetchTeam, fetchTeamPlayers, fetchTeamGames }
