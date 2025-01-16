@@ -8,10 +8,10 @@ export default async function TeamPage({
 	const teamId = (await params).teamId;
 
 	return (
-		<>
+		<div className="mt-16 flex flex-col items-center gap-4 w-full max-w-xl">
 			<TeamHeader teamId={teamId} />
 			<TeamRoster teamId={teamId} />
 			<TeamGames teamId={teamId} />
-		</>
+		</div>
 	);
 }

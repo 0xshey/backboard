@@ -42,7 +42,7 @@ async function fetchPlayers(date: Date) {
 async function fetchTeam(teamId: string) {
 	const { data, error } = await client
 		.from('Teams')
-		.select('*')
+		.select(`*`)
 		.eq('teamId', teamId)
 		.single()
 
@@ -59,10 +59,9 @@ async function fetchTeamPlayers(teamId: string) {
 }
 
 async function fetchTeamGames(teamId: string) {
-	const { data, error } = await client
-		.from('Games')
-		.select('*')
-		.or(`homeTeamId.eq.${teamId},awayTeamId.eq.${teamId}`)
+	const { data, error } = await client.rpc('get_team_games', {
+		team_id: teamId
+	});
 
 	return { data, error }
 }

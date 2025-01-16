@@ -27,10 +27,10 @@ export function getStartAndEndOfDay(date: Date) {
 	}
 }
 
-export function addOrdinalSuffix(num: number): string {
+export function ordinalSuffix(num: number): string {
 	const suffixes = ["th", "st", "nd", "rd"];
 	const value = num % 100;
-	return num + (suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0]);
+	return (suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0]);
 }
 
 export function valueToRGB(
