@@ -215,32 +215,32 @@ export type PlayerSeasonAverage = {
 }
 
 export type Standing = {
-	awayRecord: string | null
-	awayStreak: number | null
-	clinchedConference: boolean | null
-	clinchedDivision: boolean | null
-	clinchedPlayIn: boolean | null
-	clinchedPlayoff: boolean | null
-	conference: string | null
-	conferenceRank: number | null
-	conferenceRecord: string | null
-	division: string | null
-	divisionRank: number | null
-	divisionRecord: string | null
-	eliminatedConference: boolean | null
-	eliminatedDivision: boolean | null
-	gamesPlayed: number | null
-	homeRecord: string | null
-	homeStreak: number | null
-	l10Record: string | null
-	losses: number | null
-	pointsAgainst: number | null
-	pointsFor: number | null
+	awayRecord: string
+	awayStreak: number
+	clinchedConference: boolean
+	clinchedDivision: boolean
+	clinchedPlayIn: boolean
+	clinchedPlayoff: boolean
+	conference: string
+	conferenceRank: number
+	conferenceRecord: string
+	division: string
+	divisionRank: number
+	divisionRecord: string
+	eliminatedConference: boolean
+	eliminatedDivision: boolean
+	gamesPlayed: number
+	homeRecord: string
+	homeStreak: number
+	l10Record: string
+	losses: number
+	pointsAgainst: number
+	pointsFor: number
 	seasonId: string
-	teamCity: string | null
+	teamCity: string
 	teamId: string
-	winPct: number | null
-	wins: number | null
+	winPct: number
+	wins: number
 }
 
 export type TeamHeader = {

@@ -64,4 +64,12 @@ async function fetchTeamGames(teamId: string) {
 	return { data, error }
 }
 
-export { fetchGames, fetchPlayers, fetchTeamHeader, fetchTeamPlayers, fetchTeamGames }
+async function fetchStandings() {
+	const { data, error } = await client
+		.from('Standings')
+		.select('*')
+	
+	return { data, error }
+}
+
+export { fetchGames, fetchPlayers, fetchTeamHeader, fetchTeamPlayers, fetchTeamGames, fetchStandings }
