@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { fetchTeamPlayers } from "@/lib/supabase";
 import { cn, ordinalSuffix } from "@/lib/utils";
 import { PlayerSeasonAverage } from "@/lib/types";
+import PlayerSilo from "@/components/nba/player-silo";
 
 export default function TeamRoster({ teamId }: { teamId: string }) {
 	const [players, setPlayers] = useState<PlayerSeasonAverage[] | null>(null);
@@ -34,7 +35,27 @@ export default function TeamRoster({ teamId }: { teamId: string }) {
 	if (!players || players.length == 0) return <p>No players found</p>;
 
 	return (
-		<div className="px-2 w-full max-w-4xl">
+		<div className="px-2 w-full max-w-4xl flex flex-col items-center">
+			<div className="flex justify-center w-full -space-x-24">
+				{players
+					.sort((a, b) => b.fantasyPoints - a.fantasyPoints)
+					.slice(0, 5)
+					.sort((a, b) => {
+						const order = [4, 2, 1, 3, 5];
+						return (
+							order.indexOf(players.indexOf(a) + 1) -
+							order.indexOf(players.indexOf(b) + 1)
+						);
+					})
+					.map((player) => (
+						<PlayerSilo
+							key={player.playerId}
+							playerId={player.playerId}
+							className="w-[180px] md:w-[300px]"
+							// size={300}
+						/>
+					))}
+			</div>
 			<table className="w-full">
 				<thead>
 					<tr>
