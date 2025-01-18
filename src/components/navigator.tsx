@@ -4,12 +4,10 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { cn } from "@/lib/utils";
 import {
 	NavigationMenu,
 	NavigationMenuContent,
 	NavigationMenuItem,
-	NavigationMenuLink,
 	NavigationMenuList,
 	NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
@@ -38,7 +36,9 @@ export default function Navigator({ className }: { className?: string }) {
 	];
 
 	return (
-		<div className="w-full max-w-full flex justify-center relative z-40">
+		<div
+			className={`w-full max-w-full flex justify-center relative z-40 ${className}`}
+		>
 			<NavigationMenu className="w-full max-w-xl flex justify-between mt-8 py-1 px-4">
 				{/* Home Link */}
 				<Link href="/">
