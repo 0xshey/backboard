@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Game } from "@/lib/types";
+import { GameSummary } from "@/lib/types";
 import { format } from "date-fns";
 import { ChevronRight } from "lucide-react";
 import TeamLogo from "@/components/nba/team-logo";
@@ -23,7 +23,7 @@ interface TeamProps {
 	gameStatusCode: number;
 }
 
-function GameCard({ game }: { game: Game }) {
+function GameCard({ game }: { game: GameSummary }) {
 	const awayTeam = {
 		teamId: game.awayTeamId,
 		teamName: game.awayTeamName,

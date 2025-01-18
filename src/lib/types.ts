@@ -128,8 +128,8 @@ export type Game = {
 
 export type GameSummary = {
 	gameId: string
-	homeTeamId: number
-	awayTeamId: number
+	homeTeamId: string
+	awayTeamId: string
 	homeTeamName: string
 	homeTeamScore: number
 	awayTeamName: string
