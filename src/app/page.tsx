@@ -16,8 +16,8 @@ export default function Home() {
 						See todays top &#40;and bottom&#41; NBA players ranked
 						by their fantasy points.
 					</p>
-					<div className="border rounded-full border-green-500 bg-green-500 bg-opacity-20 px-4 py-2">
-						<p className={"text-green-500"}>New Games Page!</p>
+					<div className="border rounded-full border-green-500 bg-green-500 bg-opacity-20 px-2 py-1">
+						<p className={"text-green-500"}>New Standings Page!</p>
 					</div>
 					<div className="flex items-center gap-4">
 						<Button asChild variant={"default"}>
@@ -27,8 +27,8 @@ export default function Home() {
 							</Link>
 						</Button>
 						<Button asChild variant={"outline"}>
-							<Link href="/games">
-								Daily Games <ArrowRight className="w-6 h-6" />
+							<Link href="/standings">
+								League Standings <ArrowRight className="w-6 h-6" />
 							</Link>
 						</Button>
 					</div>
