@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { fetchTeamGames } from "@/lib/supabase";
-import { TeamGame } from "@/lib/types";
+import { TeamGame, Game } from "@/lib/types";
 import { format } from "date-fns";
 
 import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis } from "recharts";
@@ -28,9 +28,9 @@ export default function TeamGames({ teamId }: { teamId: string }) {
 				if (error) throw error;
 
 				const filteredData = data
-					.filter((game: any) => game.game.statusCode !== 1)
+					.filter((game: TeamGame) => game.game.statusCode !== 1)
 					.sort(
-						(a: any, b: any) =>
+						(a: TeamGame, b: TeamGame) =>
 							new Date(b.game.dateTimeUTC).getTime() -
 							new Date(a.game.dateTimeUTC).getTime()
 					);
@@ -100,7 +100,7 @@ export default function TeamGames({ teamId }: { teamId: string }) {
 								position="top"
 								dataKey="game"
 								fillOpacity={1}
-								formatter={(value: any) => value.opposition}
+								formatter={(value: Game) => value.opposition}
 								className="whitespace-nowrap text-[0.6rem] font-medium"
 							/>
 							{games &&

@@ -95,8 +95,35 @@ export type TeamGame = {
 	twoPointersMade: number
 	twoPointersPercentage: number
 	pointsDifferential: number
-	periods: Json
-	game: Json
+	periods: {
+		period: number
+		periodType: string
+		score: number
+	}[]
+	game: Game
+}
+
+export type Game = {
+	gameId: string
+	homeTeam: {
+		gameId: string
+		teamId: string
+		teamName: string
+		teamCity: string
+		teamTricode: string
+		score: number
+	}
+	awayTeam: {
+		gameId: string
+		teamId: string
+		teamName: string
+		teamCity: string
+		teamTricode: string
+		score: number
+	}
+	dateTimeUTC: string
+	statusCode: number
+	opposition: string
 }
 
 export type GameSummary = {
