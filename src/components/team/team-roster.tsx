@@ -2,9 +2,10 @@
 import { useState, useEffect } from "react";
 import { fetchTeamPlayers } from "@/lib/supabase";
 import { cn, ordinalSuffix } from "@/lib/utils";
+import { PlayerSeasonAverage } from "@/lib/types";
 
 export default function TeamRoster({ teamId }: { teamId: string }) {
-	const [players, setPlayers] = useState(null);
+	const [players, setPlayers] = useState<PlayerSeasonAverage[] | null>(null);
 	const [error, setError] = useState<Error | null>(null);
 	const [loading, setLoading] = useState(false);
 
@@ -33,29 +34,38 @@ export default function TeamRoster({ teamId }: { teamId: string }) {
 	if (!players || players.length == 0) return <p>No players found</p>;
 
 	return (
-		<div className="border p-4 w-full max-w-xl">
-			<table className="w-full max-w-xl">
+		<div className="px-2 w-full max-w-4xl">
+			<table className="w-full">
 				<thead>
 					<tr>
-						<th className="font-medium text-muted text-left">
-							Player
-						</th>
-						{/* <th className="font-medium text-muted">Age</th> */}
-						<th className="font-medium text-muted">GP</th>
-						<th className="font-medium text-muted">PTS</th>
-						<th className="font-medium text-muted">REB</th>
-						<th className="font-medium text-muted">AST</th>
-						<th className="font-medium text-muted">STL</th>
-						<th className="font-medium text-muted">BLK</th>
-						<th className="font-medium text-muted">TOV</th>
-						<th className="font-medium text-muted">FP</th>
+						{[
+							"Player",
+							"GP",
+							"PTS",
+							"REB",
+							"AST",
+							"STL",
+							"BLK",
+							"TOV",
+							"FP",
+						].map((header) => (
+							<th
+								key={header}
+								className={cn(
+									"font-medium text-muted-foreground/40 text-sm md:text-lg",
+									header === "Player" && "text-left"
+								)}
+							>
+								{header}
+							</th>
+						))}
 					</tr>
 				</thead>
 				<tbody>
 					{players
 						.sort((a, b) => b.fantasyPoints - a.fantasyPoints)
 						.map((player) => (
-							<PlayerRow key={player.id} player={player} />
+							<PlayerRow key={player.playerId} player={player} />
 						))}
 				</tbody>
 			</table>
@@ -64,45 +74,64 @@ export default function TeamRoster({ teamId }: { teamId: string }) {
 	);
 }
 
-function StatCell({ value, rank }: { value: string | number; rank?: number }) {
+function StatCell({
+	value,
+	rank,
+	isBad = false,
+}: {
+	value: string | number | null;
+	rank?: number | null;
+	isBad?: boolean;
+}) {
+	const colors = {
+		best: "text-lime-600 bg-lime-600/20 border-lime-600 border-b",
+		better: "text-green-600 bg-green-600/20 border-green-600",
+		good: "text-teal-600 bg-teal-600/20 border-teal-600",
+		average:
+			"opacity-0 group-hover:opacity-100 text-muted-foreground bg-muted-foreground/20 border-muted-foreground",
+		bad: "text-orange-600 bg-orange-600/20 border-red-600",
+		worst: "text-red-600 bg-red-600/20 border-red-600 border-b",
+	};
+
 	const rankColors = [
-		{ maxRank: 3, color: "text-gold-600" },
-		{ maxRank: 10, color: "text-green-600" },
-		{ maxRank: 25, color: "text-blue-600" },
-		{ minRank: 500, color: "text-red-600" },
-		{
-			minRank: 26,
-			maxRank: 499,
-			color: "opacity-0 group-hover:opacity-100",
-		},
+		{ maxRank: 3, color: isBad ? colors.worst : colors.best },
+		{ minRank: 4, maxRank: 10, color: isBad ? colors.bad : colors.better },
+		{ minRank: 11, maxRank: 25, color: isBad ? colors.bad : colors.good },
+		{ minRank: 26, maxRank: 499, color: colors.average },
+		{ minRank: 490, maxRank: 509, color: isBad ? colors.good : colors.bad },
+		{ minRank: 510, color: isBad ? colors.better : colors.worst },
 	];
 
 	const rankColor = rankColors.find(
 		({ minRank = -Infinity, maxRank = Infinity }) =>
-			rank !== undefined && rank >= minRank && rank <= maxRank
+			rank && rank !== undefined && rank >= minRank && rank <= maxRank
 	)?.color;
 
 	const rankClasses = cn(
-		"absolute-center-x bottom-0 text-xs text-muted font-medium",
+		"absolute-center-x bottom-0.5 text-[0.5rem] md:text-[0.6rem] text-muted font-medium rounded-full px-1",
 		rankColor,
 		rank == undefined && "hidden"
 	);
 
 	return (
-		<td className="text-center h-6 relative">
-			<div className="text-lg leading-10 pb-2">{value}</div>
+		<td className="text-center relative">
+			<div className="text-sm md:text-lg md:py-2 leading-10 transition-all duration-300 group-hover:-translate-y-1.5">
+				{value}
+			</div>
 			<span className={rankClasses}>
-				<span>{rank}</span>
-				<span>{ordinalSuffix(rank)}</span>
+				{rank}
+				{ordinalSuffix(rank)}
 			</span>
 		</td>
 	);
 }
 
-function PlayerRow({ player }) {
+function PlayerRow({ player }: { player: PlayerSeasonAverage }) {
 	return (
-		<tr key={player.id} className="group cursor-default border-b">
-			<td>{player.playerName}</td>
+		<tr key={player.playerId} className="group cursor-default border-b">
+			<td className="text-sm md:text-lg whitespace-nowrap truncate pr-4 max-w-28 md:max-w-none">
+				{player.playerName}
+			</td>
 			{/* <StatCell value={player.playerAge} /> */}
 			<StatCell
 				value={player.gamesPlayed}
@@ -116,7 +145,11 @@ function PlayerRow({ player }) {
 			<StatCell value={player.assists} rank={player.assistsRank} />
 			<StatCell value={player.steals} rank={player.stealsRank} />
 			<StatCell value={player.blocks} rank={player.blocksRank} />
-			<StatCell value={player.turnovers} rank={player.turnoversRank} />
+			<StatCell
+				value={player.turnovers}
+				rank={player.turnoversRank}
+				isBad
+			/>
 			<StatCell
 				value={player.fantasyPoints}
 				rank={player.fantasyPointsRank}

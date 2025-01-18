@@ -18,7 +18,7 @@ async function fetchGames(date: Date) {
 
 	console.log('FETCHING games for', startTime, endTime)
 
-	const { data, error } = await client.rpc('get_games_summary', {
+	const { data, error } = await client.rpc('get_games_page', {
 		start_time: startTime,
 		end_time: endTime
 	});
@@ -39,12 +39,10 @@ async function fetchPlayers(date: Date) {
 	return { data, error }
 }
 
-async function fetchTeam(teamId: string) {
-	const { data, error } = await client
-		.from('Teams')
-		.select(`*`)
-		.eq('teamId', teamId)
-		.single()
+async function fetchTeamHeader(teamId: string) {
+	const { data, error } = await client.rpc('get_team_header', {
+		team_id: teamId
+	})
 
 	return { data, error }
 }
@@ -66,4 +64,4 @@ async function fetchTeamGames(teamId: string) {
 	return { data, error }
 }
 
-export { fetchGames, fetchPlayers, fetchTeam, fetchTeamPlayers, fetchTeamGames }
+export { fetchGames, fetchPlayers, fetchTeamHeader, fetchTeamPlayers, fetchTeamGames }

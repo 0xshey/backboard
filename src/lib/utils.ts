@@ -27,7 +27,10 @@ export function getStartAndEndOfDay(date: Date) {
 	}
 }
 
-export function ordinalSuffix(num: number): string {
+export function ordinalSuffix(num: number | null | undefined): string {
+	if (num === null || num === undefined) {
+		return "";
+	}
 	const suffixes = ["th", "st", "nd", "rd"];
 	const value = num % 100;
 	return (suffixes[(value - 20) % 10] || suffixes[value] || suffixes[0]);
