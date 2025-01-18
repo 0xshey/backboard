@@ -1,14 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-
-import {
-	TrophyIcon, // clinched conference
-	AwardIcon, // clinched division
-	LockIcon, // clinched playoffs
-	MergeIcon, // clinched play-in
-	CircleSlashIcon, // eliminated
-} from "lucide-react";
-
 import { fetchTeamHeader } from "@/lib/supabase";
 import type { TeamHeader } from "@/lib/types";
 import { cn, ordinalSuffix } from "@/lib/utils";

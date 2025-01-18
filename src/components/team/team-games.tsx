@@ -11,7 +11,6 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
-import TeamLogo from "@/components/nba/team-logo";
 
 export default function TeamGames({ teamId }: { teamId: string }) {
 	const [games, setGames] = useState<TeamGame[] | null>(null);
