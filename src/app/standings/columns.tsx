@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Standing } from "@/lib/types";
@@ -26,9 +27,12 @@ export const columns: ColumnDef<Standing>[] = [
 						size={20}
 						className="hidden md:inline"
 					/>
-					<span className="ml-1 max-w-20 md:min-w-48 whitespace-nowrap truncate">
+					<Link
+						href={"/team/" + props.row.original.teamId}
+						className="ml-1 max-w-20 md:min-w-48 whitespace-nowrap truncate hover:underline"
+					>
 						{props.row.original.teamCity}
-					</span>
+					</Link>
 				</div>
 			);
 		},

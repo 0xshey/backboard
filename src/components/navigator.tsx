@@ -39,7 +39,7 @@ export default function Navigator({ className }: { className?: string }) {
 	];
 
 	return (
-		<div className="w-full max-w-full flex justify-center relative ">
+		<div className="w-full max-w-full flex justify-center relative z-40">
 			<NavigationMenu className="w-full max-w-xl flex justify-between mt-8 py-1 px-4">
 				{/* Home Link */}
 				<Link href="/">
