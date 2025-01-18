@@ -3,10 +3,6 @@ import Link from "next/link";
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Standing } from "@/lib/types";
-import { parseDuration } from "@/lib/utils";
-
-import { ArrowUpDown, ArrowDown, ArrowUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 import TeamLogo from "@/components/nba/team-logo";
 
