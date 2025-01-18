@@ -11,6 +11,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart";
+import Loader from "@/components/loader";
 
 export default function TeamGames({ teamId }: { teamId: string }) {
 	const [games, setGames] = useState<TeamGame[] | null>(null);
@@ -46,7 +47,7 @@ export default function TeamGames({ teamId }: { teamId: string }) {
 		fetchData(teamId);
 	}, [teamId]);
 
-	if (loading) return <p>Loading...</p>;
+	if (loading) return <Loader className="w-full max-w-4xl" />;
 	if (error) return <p>Error: {error.message}</p>;
 	if (!games) return <p>No games found</p>;
 

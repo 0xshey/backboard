@@ -4,6 +4,7 @@ import { fetchTeamPlayers } from "@/lib/supabase";
 import { cn, ordinalSuffix } from "@/lib/utils";
 import { PlayerSeasonAverage } from "@/lib/types";
 import PlayerSilo from "@/components/nba/player-silo";
+import Loader from "@/components/loader";
 
 export default function TeamRoster({ teamId }: { teamId: string }) {
 	const [players, setPlayers] = useState<PlayerSeasonAverage[] | null>(null);
@@ -30,7 +31,7 @@ export default function TeamRoster({ teamId }: { teamId: string }) {
 		fetchData(teamId);
 	}, [teamId]);
 
-	if (loading) return <p>Loading...</p>;
+	if (loading) return <Loader className="w-full max-w-4xl" />;
 	if (error) return <p>Error: {error.message}</p>;
 	if (!players || players.length == 0) return <p>No players found</p>;
 

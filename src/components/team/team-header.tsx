@@ -5,6 +5,7 @@ import type { TeamHeader } from "@/lib/types";
 import { cn, ordinalSuffix } from "@/lib/utils";
 
 import TeamLogo from "@/components/nba/team-logo";
+import Loader from "@/components/loader";
 
 export default function TeamHeader({ teamId }: { teamId: string }) {
 	const [team, setTeam] = useState<TeamHeader | null>(null);
@@ -31,7 +32,7 @@ export default function TeamHeader({ teamId }: { teamId: string }) {
 		fetchData(teamId);
 	}, [teamId]);
 
-	if (loading) return <p>Loading...</p>;
+	if (loading) return <Loader className="w-full max-w-4xl" />;
 	if (error) return <p>Error: {error.message}</p>;
 	if (!team) return <p>No team found</p>;
 
