@@ -24,13 +24,11 @@ export default function Layout({ children }: LayoutProps) {
 					disableTransitionOnChange
 				>
 					<FontProvider>
-						<div className="h-[100%]">
+						<div className="min-h-dvh">
 							<Navigator />
-							<main className="w-full min-h-dvh flex flex-col items-center">
-								{children}
-							</main>
-							<Footer />
+							{children}
 						</div>
+						<Footer />
 					</FontProvider>
 				</ThemeProvider>
 			</body>

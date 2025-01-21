@@ -63,12 +63,12 @@ export default function TeamHeader({ teamId }: { teamId: string }) {
 		<div className="rounded p-4 w-full max-w-4xl relative min-h-80">
 			<TeamLogo
 				teamId={teamId}
-				size={400}
+				size={300}
 				className="opacity-40 -z-10 absolute-center"
 			/>
 			<div className="flex flex-col items-center gap-1 text-4xl whitespace-nowrap z-10 absolute-center pb-16">
 				<p className="backdrop-blur font-extralight">{team.city}</p>
-				<p className="backdrop-blur font-mono font-bold text-6xl">
+				<p className="backdrop-blur font-mono font-bold text-5xl md:text-6xl">
 					{team.name}
 				</p>
 			</div>

@@ -15,6 +15,7 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
+			// put fonts here
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',

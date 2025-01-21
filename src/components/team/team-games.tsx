@@ -58,10 +58,10 @@ export default function TeamGames({ teamId }: { teamId: string }) {
 	} satisfies ChartConfig;
 
 	return (
-		<div className="mt-8 w-full flex flex-col items-center gap-4">
+		<div className="mt-8 w-full max-w-full flex flex-col items-center gap-4">
 			<h1 className="text-2xl font-medium">Games</h1>
-			<p className="text-muted-foreground">
-				Recent &lt;--- Scroll to see more ---&gt; Older
+			<p className="text-muted-foreground w-fit px-4 text-center">
+				Recent &lt;- Scroll to see more -&gt; Older
 			</p>
 			<div className="max-w-4xl w-full overflow-x-scroll">
 				<ChartContainer

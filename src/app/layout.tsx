@@ -1,6 +1,6 @@
 import Layout from "@/components/layouts/layout";
 
-export default function RootLayout({
+export default function LandingLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;

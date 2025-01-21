@@ -1,4 +1,6 @@
 "use client";
+import Link from "next/link";
+
 import { cn } from "@/lib/utils";
 import { GameSummary } from "@/lib/types";
 import { format } from "date-fns";
@@ -96,7 +98,9 @@ function Team({
 					)}
 				</div>
 				<div className="relative">
-					<TeamLogo teamId={teamId} size={48} />
+					<Link href={`/team/${teamId}`}>
+						<TeamLogo teamId={teamId} size={48} />
+					</Link>
 					<span
 						className={`absolute backdrop-blur bottom-0 right-0 z-10 text-foreground text-xs font-mono leading-none w-4 aspect-square rounded-sm flex items-center justify-center ${
 							conference === "East"
