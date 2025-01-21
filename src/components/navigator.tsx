@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 import {
 	NavigationMenu,
@@ -11,8 +11,8 @@ import {
 	NavigationMenuList,
 	NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import Logo from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useTheme } from "next-themes";
 
 export default function Navigator({ className }: { className?: string }) {
 	const { theme } = useTheme();
@@ -43,16 +43,12 @@ export default function Navigator({ className }: { className?: string }) {
 				{/* Home Link */}
 				<Link href="/">
 					<div className="flex items-center gap-1 px-2">
-						<Image
-							src={
-								theme && theme == "light"
-									? "/logo.svg"
-									: "/logo-white.svg"
-							}
-							alt="Logo"
-							width={32}
-							height={32}
-						/>
+						{theme && (
+							<Logo
+								size={32}
+								color={theme === "light" ? "black" : "white"}
+							/>
+						)}
 						<p className="font-semibold font-sans block text-md tracking-tight">
 							Backboard
 						</p>

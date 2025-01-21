@@ -14,7 +14,7 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
 	return (
-		<html>
+		<html suppressHydrationWarning>
 			<MetaProvider />
 			<body>
 				<ThemeProvider
