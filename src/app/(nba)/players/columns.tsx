@@ -77,7 +77,7 @@ export const columns: ColumnDef<FantasyPlayer>[] = [
 						onClick={() =>
 							column.toggleSorting(column.getIsSorted() === "asc")
 						}
-						className="px-1"
+						className="px-1 text-xs md:text-sm"
 					>
 						<span>FP</span>
 						{column.getIsSorted() === "asc" ? (
@@ -105,7 +105,7 @@ export const columns: ColumnDef<FantasyPlayer>[] = [
 						onClick={() =>
 							column.toggleSorting(column.getIsSorted() === "asc")
 						}
-						className="px-1"
+						className="px-1 text-xs md:text-sm"
 					>
 						<span>δ</span>
 						{column.getIsSorted() === "asc" ? (

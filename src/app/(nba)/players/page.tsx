@@ -90,11 +90,17 @@ export default function PlayersPage() {
 							data={players.filter((player) => player.played)}
 						/>
 						<p className="text-sm text-center text-balance text-muted-foreground max-w-4xl">
-							This chart shows todays performance along the x-axis
-							against how they performed relative to their season
-							average &#x28;y-axis&#x29;. Players above zero on
-							the y, overperformed. Try hovering over the points
-							to see whoʼs who.
+							This chart presents all of todays fantasy
+							performances, relative to the same player&apos;s
+							season average. <br />
+							Look out for players in the{" "}
+							<span className="underline">
+								top-right corner &#x28;overperforming&#x29;
+							</span>{" "}
+							and{" "}
+							<span className="underline">
+								far-left side &#x28;underperforming&#x29;
+							</span>
 						</p>
 					</div>
 

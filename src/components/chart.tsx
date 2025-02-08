@@ -10,6 +10,9 @@ import {
 	Tooltip,
 	ResponsiveContainer,
 	Label,
+	ReferenceLine,
+	Dot,
+	DotProps,
 } from "recharts";
 import { FantasyPlayer } from "@/lib/types";
 import PlayerHeadshot from "@/components/nba/player-headshot";
@@ -18,20 +21,25 @@ export class FantasyScatter extends PureComponent<{
 	data: { fantasyPoints: number; fantasyPointsDelta: number }[];
 }> {
 	render() {
+		function RenderDot({ cx, cy }: DotProps) {
+			return <Dot cx={cx} cy={cy} fill="gray" r={4} />;
+		}
+
 		return (
-			<ResponsiveContainer width="100%" height={500}>
+			<ResponsiveContainer width="100%" height={600} className="">
 				<ScatterChart
 					margin={{
 						top: 5,
 						right: 20,
-						bottom: 5,
-						left: 5,
+						bottom: 60,
+						left: 0,
 					}}
 				>
 					<CartesianGrid fillOpacity={0.5} strokeOpacity={0.1} />
+					<ReferenceLine x={0} stroke="gray" opacity={0.6} />
 					<XAxis
 						type="number"
-						dataKey="fantasyPoints"
+						dataKey="fantasyPointsDelta"
 						name="today"
 						unit="fp"
 						axisLine={false}
@@ -40,44 +48,50 @@ export class FantasyScatter extends PureComponent<{
 						fontSize={12}
 						minTickGap={5}
 						tickCount={9}
+						tickFormatter={(value) =>
+							(value > 0 ? "+" : "") + value
+						}
 					>
 						<Label
-							value="Worse ← Today's FP → Better"
-							position="insideBottom"
-							offset={42}
+							value="Underperforming ← Deviation from Season Average → Overperforming"
+							position="bottom"
+							offset={24}
 							fontSize={12}
 						/>
 					</XAxis>
 
 					<YAxis
+						// yAxisId="left"
+						// orientation="left"
 						type="number"
-						dataKey="fantasyPointsDelta"
+						dataKey="fantasyPoints"
 						name="relative"
 						unit="fp"
 						axisLine={false}
 						tickLine={false}
-						tickMargin={10}
+						tickMargin={5}
 						fontSize={12}
 						tickCount={8}
 					>
 						<Label
-							value="Deviation from Season Average"
-							position="insideLeft"
+							value="FP"
+							position="left"
 							angle={-90}
-							offset={80}
+							offset={-50}
 							fontSize={12}
 							textAnchor="middle"
 						/>
 					</YAxis>
 					<Tooltip
-						cursor={{ strokeDasharray: "3 3" }}
+						cursor={{ strokeDasharray: "4 4", opacity: 0.5 }}
 						content={<PlayerTooltip />}
 					/>
 					<Scatter
 						name="Daily Performers"
 						data={this.props.data}
 						fill="#8884d8"
-						shape="cross"
+						// shape="cross"
+						shape={<RenderDot />}
 					/>
 				</ScatterChart>
 			</ResponsiveContainer>
@@ -116,38 +130,70 @@ function PlayerTooltip({ active, payload }: PlayerTooltipProps) {
 							{label}
 						</span> */}
 					</p>
-					<div className="grid grid-cols-6 text-center text-muted-foreground text-xs">
-						<div className="p-0.5 font-bold">PTS</div>
-						<div className="p-0.5 font-bold">REB</div>
-						<div className="p-0.5 font-bold">AST</div>
-						<div className="p-0.5 font-bold">STL</div>
-						<div className="p-0.5 font-bold">BLK</div>
-						<div className="p-0.5 font-bold">TOV</div>
-						<div className="p-0.5">{player.points}</div>
-						<div className="p-0.5">{player.reboundsTotal}</div>
-						<div className="p-0.5l">{player.assists}</div>
-						<div className="p-0.5l">{player.steals}</div>
-						<div className="p-0.5l">{player.blocks}</div>
-						<div className="p-0.5l">{player.turnovers}</div>
+					<div className="grid grid-cols-6 text-center text-[0.65rem]">
+						<div className="p-0.5 text-xs font-medium">
+							{player.points}
+						</div>
+						<div className="p-0.5 text-xs font-medium">
+							{player.reboundsTotal}
+						</div>
+						<div className="p-0.5 text-xs font-medium">
+							{player.assists}
+						</div>
+						<div className="p-0.5 text-xs font-medium">
+							{player.steals}
+						</div>
+						<div className="p-0.5 text-xs font-medium">
+							{player.blocks}
+						</div>
+						<div className="p-0.5 text-xs font-medium">
+							{player.turnovers}
+						</div>
+
+						<div className="p-0.5 text-[0.6rem] text-muted-foreground">
+							PTS
+						</div>
+						<div className="p-0.5 text-[0.6rem] text-muted-foreground">
+							REB
+						</div>
+						<div className="p-0.5 text-[0.6rem] text-muted-foreground">
+							AST
+						</div>
+						<div className="p-0.5 text-[0.6rem] text-muted-foreground">
+							STL
+						</div>
+						<div className="p-0.5 text-[0.6rem] text-muted-foreground">
+							BLK
+						</div>
+						<div className="p-0.5 text-[0.6rem] text-muted-foreground">
+							TOV
+						</div>
 					</div>
 				</div>
 				<div className="flex flex-col items-center justify-center min-h-full p-2 aspect-square">
-					<p className="text-xs text-muted-foreground">FP</p>
 					<div className="p-0.5 text-xl font-semibold">
 						{player.fantasyPoints}
 					</div>
 					<div
-						className="text-sm px-1 rounded"
+						className="text-xs px-1 rounded border"
 						style={{
 							backgroundColor: valueToRGB(
 								(player.fantasyPointsDelta + 30) / 60
+							)
+								.replace("rgb", "rgba")
+								.replace(")", ", 0.1)"),
+							color: valueToRGB(
+								(player.fantasyPointsDelta + 30) / 60
 							),
-							color: "black",
+							borderColor: valueToRGB(
+								(player.fantasyPointsDelta + 30) / 60
+							),
 						}}
 					>
 						{player.fantasyPointsDelta > 0 ? "+" : ""}
 						{player.fantasyPointsDelta}
 					</div>
+					<p className="text-xs text-muted-foreground pt-0.5">FP</p>
 				</div>
 			</div>
 		);
