@@ -1,30 +1,25 @@
-// IconProps
-export interface IconProps {
-	color?: string;
-	size?: number;
-	className?: string;
-}
+import Image from "next/image";
 
-export default function Logo({
-	color = "black",
-	size = 64,
-	className = "",
-}: IconProps) {
+export function Logo({
+	theme = "light",
+	withText = true,
+	className,
+}: {
+	theme?: "light" | "dark";
+	withText?: boolean;
+	className?: string;
+}) {
+	const logoURL =
+		theme == "dark" ? "/backboard-logo-white.png" : "/backboard-logo.png";
+
 	return (
-		<svg
-			width={size}
-			height={size}
-			viewBox="0 0 256 256"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-			className={className}
-		>
-			<path
-				fill-rule="evenodd"
-				clip-rule="evenodd"
-				d="M197 80H42V170H165C165 187.673 179.327 202 197 202C214.673 202 229 187.673 229 170C229 152.327 214.673 138 197 138V80ZM197 138C179.327 138 165 152.327 165 170H197V138Z"
-				fill={color}
-			/>
-		</svg>
+		<div className={`flex items-center gap-2 ${className}`}>
+			<Image src={logoURL} height={30} width={30} alt="Backboard Logo" />
+			{withText && (
+				<h1 className="text-xl font-semibold tracking-tighter text-foreground">
+					Backboard
+				</h1>
+			)}
+		</div>
 	);
 }

@@ -1,9 +1,29 @@
-import Layout from "@/components/layouts/layout";
+import "@/styles/globals.css";
 
-export default function RootLayout({
-	children,
-}: Readonly<{
+import FontProvider from "@/components/providers/font-provider";
+import ThemeProvider from "@/components/providers/theme-provider";
+import MetaProvider from "@/components/providers/meta-provider";
+import Footer from "@/components/footer";
+
+type LayoutProps = {
 	children: React.ReactNode;
-}>) {
-	return <Layout>{children}</Layout>;
+	metadata?: React.ComponentProps<typeof MetaProvider>;
+};
+
+export default function Layout({ children }: LayoutProps) {
+	return (
+		<html>
+			<MetaProvider />
+			<body>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="dark"
+					enableSystem
+					disableTransitionOnChange
+				>
+					<FontProvider>{children}</FontProvider>
+				</ThemeProvider>
+			</body>
+		</html>
+	);
 }
