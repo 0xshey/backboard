@@ -44,12 +44,12 @@ export function NavigationBar({
 				"View each gameweek’s matchups synced with Yahoo Fantasy.",
 			icon: CalendarDaysIcon,
 		},
-		{
-			href: "/fantasy",
-			label: "Fantasy",
-			description: "Manage and track your fantasy teams in one place.",
-			icon: TrophyIcon,
-		},
+		// {
+		// 	href: "/fantasy",
+		// 	label: "Fantasy",
+		// 	description: "Manage and track your fantasy teams in one place.",
+		// 	icon: TrophyIcon,
+		// },
 		{
 			href: "/rankings",
 			label: "Rankings",
@@ -61,8 +61,8 @@ export function NavigationBar({
 
 	return (
 		<header className="bg-background sticky top-0 z-50 border-b">
-			<div className="mx-auto flex max-w-4xl items-center justify-between gap-8 px-4 py-4 sm:px-6">
-				<div className="w-full text-muted-foreground flex items-center gap-8 font-medium md:justify-between lg:gap-16">
+			<div className="mx-auto flex w-full items-center justify-between gap-8 px-4 py-4 sm:px-6">
+				<div className="w-full text-muted-foreground flex items-center gap-8 font-medium lg:gap-16">
 					<a href="#">
 						<Logo theme={"dark"} />
 					</a>
@@ -76,16 +76,21 @@ export function NavigationBar({
 								{item.label}
 							</a>
 						))}
-						<ThemeToggle />
 					</div>
 				</div>
 
-				<div className="flex items-center gap-6">
+				<div className="flex items-center gap-4">
+					<ThemeToggle />
+
 					{/* Search */}
 					<Dialog>
 						<form>
 							<DialogTrigger asChild>
-								<Button variant="ghost" size="icon">
+								<Button
+									variant="ghost"
+									size="icon"
+									className="text-muted-foreground"
+								>
 									<SearchIcon />
 									<span className="sr-only">Search</span>
 								</Button>
