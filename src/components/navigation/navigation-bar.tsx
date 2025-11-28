@@ -4,7 +4,7 @@ import {
 	SearchIcon,
 	CalendarDaysIcon,
 	TrophyIcon,
-	ListOrder,
+	ListOrderedIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,7 +55,7 @@ export function NavigationBar({
 			label: "Rankings",
 			description:
 				"View daily and season player rankings for fantasy formats.",
-			icon: ListOrder,
+			icon: ListOrderedIcon,
 		},
 	];
 

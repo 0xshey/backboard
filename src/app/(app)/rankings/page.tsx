@@ -13,12 +13,13 @@ export default async function RankingsPage({
 }: {
 	searchParams: { date: string };
 }) {
+	const resolvedSearchParams = await searchParams;
 	const todayNYString = new Date()
 		.toLocaleDateString("en-CA", {
 			timeZone: "America/Los_Angeles",
 		})
 		.replaceAll("/", "-");
-	const dateString = searchParams.date || todayNYString;
+	const dateString = resolvedSearchParams.date || todayNYString;
 	const games = await fetchGamesForDate(dateString);
 	const gameIds = games.map((g) => g.id);
 	const gamePlayers = await fetchGamePlayersForGameIds(gameIds);
