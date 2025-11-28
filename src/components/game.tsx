@@ -38,7 +38,7 @@ function GameCard({ game }: { game: GameSummary }) {
 	return (
 		<div
 			className={cn(
-				"flex flex-col items-start gap-2 py-3 px-1 rounded-xl shadow border w-full",
+				"flex flex-col items-start gap-2 py-3 px-1 rounded-xl shadow-sm border w-full",
 				{
 					"md:flex-row md:justify-between md:p-4 md:w-80": true,
 					"border-red-500": game.statusCode == 2,
@@ -98,7 +98,7 @@ function Team({
 				<div className="relative">
 					<TeamLogo teamId={teamId} size={48} />
 					<span
-						className={`absolute backdrop-blur bottom-0 right-0 z-10 text-foreground text-xs font-mono leading-none w-4 aspect-square rounded-sm flex items-center justify-center ${
+						className={`absolute backdrop-blur-sm bottom-0 right-0 z-10 text-foreground text-xs font-mono leading-none w-4 aspect-square rounded-sm flex items-center justify-center ${
 							conference === "East"
 								? "bg-indigo-600/50 dark:bg-blue-800/50"
 								: "bg-red-600/50 dark:bg-red-800/50"

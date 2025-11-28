@@ -10,33 +10,47 @@ import { themeBalham, colorSchemeDark } from "ag-grid-community";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 export function PlayerRankingsTable({ gamePlayers }: { gamePlayers: any[] }) {
-	const [rowData, setRowData] = useState<any[]>([]);
+	const colWidths = {
+		name: 180,
+		statBasic: 50,
+		statEfficiency: 90,
+		fp: 60,
+	};
+	const totalWidth =
+		colWidths.name +
+		colWidths.statBasic * 6 +
+		colWidths.statEfficiency * 3 +
+		colWidths.fp;
 
+	const [rowData, setRowData] = useState<any[]>([]);
 	const [columnDefs, setColumnDefs] = useState<ColDef[]>([
 		{
 			headerName: "Player",
 			field: "player",
 			pinned: "left",
 			sortable: true,
-			minWidth: 220,
+			width: colWidths.name,
 			flex: 1,
 			valueGetter: (params) => {
 				const p = params.data;
 				return {
-					name: `${p.first_name} ${p.last_name}`,
+					nameLong: `${p.first_name} ${p.last_name}`,
+					nameShort: `${p.first_name[0]}. ${p.last_name}`,
 					team: p.team.tricode,
 					starter: p.starter,
 				};
 			},
 
 			cellRenderer: (props) => {
-				const { name, team, starter } = props.value;
+				const { nameShort, team, starter } = props.value;
 
 				return (
-					<span className="flex items-center justify-between gap-2">
+					<span className="flex items-center justify-between">
 						<div className="flex items-center gap-2">
-							<span>{name}</span>
-							<span className="text-muted-foreground text-xs">
+							<span className="font-stretch-75% text-ellipsis">
+								{nameShort}
+							</span>
+							<span className="font-stretch-75% text-muted-foreground text-xs">
 								{team}
 							</span>
 						</div>
@@ -51,17 +65,42 @@ export function PlayerRankingsTable({ gamePlayers }: { gamePlayers: any[] }) {
 		},
 
 		// Classic box score
-		{ headerName: "PTS", field: "points", sortable: true, width: 60 },
+		{
+			headerName: "PTS",
+			field: "points",
+			sortable: true,
+			width: colWidths.statBasic,
+		},
 		{
 			headerName: "REB",
 			field: "rebounds_total",
 			sortable: true,
-			width: 60,
+			width: colWidths.statBasic,
 		},
-		{ headerName: "AST", field: "assists", sortable: true, width: 60 },
-		{ headerName: "STL", field: "steals", sortable: true, width: 60 },
-		{ headerName: "BLK", field: "blocks", sortable: true, width: 60 },
-		{ headerName: "TOV", field: "turnovers", sortable: true, width: 60 },
+		{
+			headerName: "AST",
+			field: "assists",
+			sortable: true,
+			width: colWidths.statBasic,
+		},
+		{
+			headerName: "STL",
+			field: "steals",
+			sortable: true,
+			width: colWidths.statBasic,
+		},
+		{
+			headerName: "BLK",
+			field: "blocks",
+			sortable: true,
+			width: colWidths.statBasic,
+		},
+		{
+			headerName: "TOV",
+			field: "turnovers",
+			sortable: true,
+			width: colWidths.statBasic,
+		},
 
 		// Shooting percentages
 		{
@@ -80,23 +119,23 @@ export function PlayerRankingsTable({ gamePlayers }: { gamePlayers: any[] }) {
 				const { made, attempted, pct } = props.value;
 
 				return (
-					<span className="flex items-center gap-2">
+					<span>
 						<span>
 							{made}/{attempted}
 						</span>
-						<span className="text-gray-400 text-xs ml-1">
+						<span className="text-gray-400 text-xs ml-1 font-stretch-75%">
 							({pct}%)
 						</span>
 					</span>
 				);
 			},
 
-			width: 120,
+			width: colWidths.statEfficiency,
 		},
 		{
 			headerName: "FT%",
 			sortable: true,
-			width: 120,
+			width: colWidths.statEfficiency,
 
 			valueGetter: (params) => {
 				const p = params.data;
@@ -116,7 +155,7 @@ export function PlayerRankingsTable({ gamePlayers }: { gamePlayers: any[] }) {
 						<span>
 							{made}/{attempted}
 						</span>
-						<span className="text-gray-400 text-xs ml-1">
+						<span className="text-gray-400 text-xs ml-1 font-stretch-75%">
 							({pct}%)
 						</span>
 					</span>
@@ -126,7 +165,7 @@ export function PlayerRankingsTable({ gamePlayers }: { gamePlayers: any[] }) {
 		{
 			headerName: "FG%",
 			sortable: true,
-			width: 120,
+			width: colWidths.statEfficiency,
 
 			valueGetter: (params) => {
 				const p = params.data;
@@ -146,7 +185,7 @@ export function PlayerRankingsTable({ gamePlayers }: { gamePlayers: any[] }) {
 						<span>
 							{made}/{attempted}
 						</span>
-						<span className="text-gray-400 text-xs ml-1">
+						<span className="text-gray-400 text-xs ml-1 font-stretch-75%">
 							({pct}%)
 						</span>
 					</span>
@@ -160,7 +199,7 @@ export function PlayerRankingsTable({ gamePlayers }: { gamePlayers: any[] }) {
 			field: "fp",
 			sortable: true,
 			sort: "desc",
-			width: 60,
+			width: colWidths.fp,
 			cellRenderer: (props) => {
 				return <span className="font-bold">{props.value}</span>;
 			},
@@ -176,7 +215,7 @@ export function PlayerRankingsTable({ gamePlayers }: { gamePlayers: any[] }) {
 	}, [gamePlayers]);
 
 	return (
-		<div style={{ width: "100%", height: "80vh" }}>
+		<div style={{ width: totalWidth + "px", height: "80vh" }}>
 			<AgGridReact
 				gridId="rankings"
 				rowData={rowData}

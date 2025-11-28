@@ -91,16 +91,16 @@ export async function ScheduleGrid({
 
 	function getGradientClass(count: number) {
 		if (count === 0)
-			return "bg-gradient-to-l from-red-500/70 to-transparent via-transparent";
+			return "bg-linear-to-l from-red-500/70 to-transparent via-transparent";
 		if (count === 1)
-			return "bg-gradient-to-l from-red-500/40 to-transparent via-transparent";
+			return "bg-linear-to-l from-red-500/40 to-transparent via-transparent";
 		if (count === 2)
-			return "bg-gradient-to-l from-orange-500/40 to-transparent via-transparent";
+			return "bg-linear-to-l from-orange-500/40 to-transparent via-transparent";
 		if (count === 3)
-			return "bg-gradient-to-l from-yellow-300/10 to-transparent via-transparent";
+			return "bg-linear-to-l from-yellow-300/10 to-transparent via-transparent";
 		if (count === 4)
-			return "bg-gradient-to-l from-green-500/40 to-transparent via-transparent";
-		return "bg-gradient-to-l from-green-500/70 to-transparent via-transparent"; // 5+
+			return "bg-linear-to-l from-green-500/40 to-transparent via-transparent";
+		return "bg-linear-to-l from-green-500/70 to-transparent via-transparent"; // 5+
 	}
 
 	// Subcomponents

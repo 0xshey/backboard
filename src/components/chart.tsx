@@ -99,7 +99,7 @@ function PlayerTooltip({ active, payload }: PlayerTooltipProps) {
 	if (active && payload) {
 		const player = payload[0].payload;
 		return (
-			<div className="custom-tooltip bg-card text-card-foreground shadow rounded border flex items-center justify-between gap-2">
+			<div className="custom-tooltip bg-card text-card-foreground shadow-sm rounded border flex items-center justify-between gap-2">
 				<div className="ml-1 border-b ">
 					<PlayerHeadshot
 						playerId={String(player.playerId)}

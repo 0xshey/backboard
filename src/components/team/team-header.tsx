@@ -40,22 +40,22 @@ export default function TeamHeader({ teamId }: { teamId: string }) {
 		if (division && rank > 3) return "bg-gray-300 text-black";
 
 		if (rank === 1)
-			return "bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-[#C9B037] to-[#AF9500] border-[#AF9500] text-black";
+			return "bg-[radial-gradient(circle_at_top,var(--tw-gradient-stops))] from-[#C9B037] to-[#AF9500] border-[#AF9500] text-black";
 		if (rank === 2)
-			return "bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-[#B4B4B4] to-[#757575] border-[#757575] text-black";
+			return "bg-[radial-gradient(circle_at_top,var(--tw-gradient-stops))] from-[#B4B4B4] to-[#757575] border-[#757575] text-black";
 		if (rank === 3)
-			return "bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-[#AD8A56] to-[#6A3805] border-[#6A3805] text-black";
+			return "bg-[radial-gradient(circle_at_top,var(--tw-gradient-stops))] from-[#AD8A56] to-[#6A3805] border-[#6A3805] text-black";
 		// Playoff spots
 		if (rank >= 4 && rank <= 6)
-			return "bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-green-500 to-foreground border-green-500 text-background";
+			return "bg-[radial-gradient(circle_at_top,var(--tw-gradient-stops))] from-green-500 to-foreground border-green-500 text-background";
 		// Play-in spots
 		if (rank >= 7 && rank <= 10)
-			return "bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] to-amber-500 from-foreground border-amber-500 text-background";
+			return "bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] to-amber-500 from-foreground border-amber-500 text-background";
 		// Lottery spots
 		if (rank >= 11 && rank <= 14)
-			return "bg-[radial-gradient(circle_at_bottom,_var(--tw-gradient-stops))] to-orange-500 from-foreground border-orange-500 text-background";
+			return "bg-[radial-gradient(circle_at_bottom,var(--tw-gradient-stops))] to-orange-500 from-foreground border-orange-500 text-background";
 		if (rank === 15)
-			return "bg-[radial-gradient(circle_at_bottom,_var(--tw-gradient-stops))] to-red-500 from-background border-red-800 text-foreground";
+			return "bg-[radial-gradient(circle_at_bottom,var(--tw-gradient-stops))] to-red-500 from-background border-red-800 text-foreground";
 		return "";
 	};
 
@@ -67,8 +67,8 @@ export default function TeamHeader({ teamId }: { teamId: string }) {
 				className="opacity-40 -z-10 absolute-center"
 			/>
 			<div className="flex flex-col items-center gap-1 text-4xl whitespace-nowrap z-10 absolute-center pb-16">
-				<p className="backdrop-blur font-extralight">{team.city}</p>
-				<p className="backdrop-blur font-mono font-bold text-6xl">
+				<p className="backdrop-blur-sm font-extralight">{team.city}</p>
+				<p className="backdrop-blur-sm font-mono font-bold text-6xl">
 					{team.name}
 				</p>
 			</div>

@@ -18,8 +18,9 @@ export default async function SchedulePage({
 }: {
 	searchParams: { provider?: string; week?: number };
 }) {
-	const provider = searchParams.provider || "yahoo";
-	const week = searchParams.week || 1;
+	const resolvedSearchParams = await searchParams;
+	const provider = resolvedSearchParams.provider || "yahoo";
+	const week = resolvedSearchParams.week || 1;
 
 	// Fetch page data
 	const teams = await getTeams();

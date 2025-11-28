@@ -66,7 +66,7 @@ export default function TeamGames({ teamId }: { teamId: string }) {
 			<div className="max-w-4xl w-full overflow-x-scroll">
 				<ChartContainer
 					config={chartConfig}
-					className={`h-[40vh] w-[2500px] bg-gradient-to-r`}
+					className={`h-[40vh] w-[2500px] bg-linear-to-r`}
 				>
 					<BarChart accessibilityLayer data={games}>
 						<CartesianGrid vertical={false} />

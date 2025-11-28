@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 
-import FontProvider from "@/components/providers/font-provider";
+// import FontProvider from "@/components/providers/font-provider";
 import ThemeProvider from "@/components/providers/theme-provider";
 import MetaProvider from "@/components/providers/meta-provider";
 
@@ -19,7 +19,8 @@ export default function Layout({ children }: LayoutProps) {
 					enableSystem
 					disableTransitionOnChange
 				>
-					<FontProvider>{children}</FontProvider>
+					{/* <FontProvider>{children}</FontProvider> */}
+					{children}
 				</ThemeProvider>
 			</body>
 		</html>

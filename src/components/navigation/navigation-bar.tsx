@@ -63,7 +63,7 @@ export function NavigationBar({
 		<header className="bg-background sticky top-0 z-50 border-b">
 			<div className="mx-auto flex w-full items-center justify-between gap-8 px-4 py-4 sm:px-6">
 				<div className="w-full text-muted-foreground flex items-center gap-8 font-medium lg:gap-16">
-					<a href="#">
+					<a href="/">
 						<Logo theme={"dark"} />
 					</a>
 					<div className="flex items-center gap-8">

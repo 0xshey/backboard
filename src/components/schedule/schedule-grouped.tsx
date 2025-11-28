@@ -29,7 +29,7 @@ export function ScheduleGrouped({
 					key={group.count}
 					className=" w-full flex flex-col items-center"
 				>
-					<div className="w-fit mb-8 px-4 drop-shadow-xl py-2 flex justify-center sticky top-20 z-20 bg-background/70 backdrop-blur-sm border rounded-xl ">
+					<div className="w-fit mb-8 px-4 drop-shadow-xl py-2 flex justify-center sticky top-20 z-20 bg-background/70 backdrop-blur-xs border rounded-xl ">
 						<h2 className="text-3xl font-bold min-w-8xl">
 							{group.count} Game{group.count !== 1 && "s"} This
 							Week
