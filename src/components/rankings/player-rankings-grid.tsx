@@ -133,29 +133,24 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 										</div>
 
 										{/* Efficiency */}
-										<div className="grid grid-cols-3 gap-4 w-54">
+										<div className={cn("max-w-90 w-fit", (showPercentages || showVolume) && "grid grid-cols-3")}>
 											{[
 												{ made: player_game.field_goals_made, attempted: player_game.field_goals_attempted, percentage: player_game.field_goals_percentage, label: 'fg' },
 												{ made: player_game.three_pointers_made, attempted: player_game.three_pointers_attempted, percentage: player_game.three_pointers_percentage, label: '3p' },
 												{ made: player_game.free_throws_made, attempted: player_game.free_throws_attempted, percentage: player_game.free_throws_percentage, label: 'ft' },
 											].map((stat, index) => (
-												<div key={index} className={cn("grid rounded-full h-fit py-1", (showPercentages && showVolume) ? "grid-cols-2 bg-muted/50" : "grid-cols-1")} >
+												<div key={index} className={cn("grid rounded-full h-fit py-1 gap-2", (showPercentages && showVolume) ? "grid-cols-2 bg-muted/50" : "grid-cols-1")} >
 													{showVolume && (
-														<div className="col-span-1 flex justify-end gap-1 items-end relative border border-transparent">
+														<div className="col-span-1 flex justify-end gap-1 items-end relative border border-transparent w-16">
 															<div className="text-sm leading-none font-semibold">
 																{stat.made}/{stat.attempted}
 															</div>
 															<span className="text-xs leading-none text-muted-foreground">{stat.label}</span>
 														</div>
 													)}
-													{(!showVolume && !showPercentages) && (
-														<div className="col-span-1 flex justify-center gap-1 items-end relative">
-															<span className="text-xs leading-none text-muted-foreground">-</span>
-														</div>
-													)}
 
 													{showPercentages && (
-														<div className="col-span-1 flex justify-center gap-1 items-end relative">
+														<div className="col-span-1 flex justify-center gap-1 items-end relative w-18">
 															<div className="text-sm leading-none font-semibold">
 																{stat.attempted > 0 ? (stat.percentage * 100).toFixed(0) : "-"}%
 															</div>
