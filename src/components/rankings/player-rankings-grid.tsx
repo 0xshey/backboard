@@ -6,8 +6,16 @@ import { getPerformanceFlags } from "@/lib/player-performance-flags";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Button } from "@/components/ui/button";
 import { formatSecondsToMMSS, valueToRGB } from "@/lib/utils";
-import { DotIcon } from "lucide-react";
+import { DotIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 
@@ -19,40 +27,106 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 	const [showPercentages, setShowPercentages] = useState<Boolean>(true)
 	const [showVolume, setShowVolume] = useState<boolean>(true)
 
+    // Sorting state
+    const [sortField, setSortField] = useState<string>("fp");
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
 	useEffect(() => {
-		gamePlayers.sort((a, b) => b.fp - a.fp);
-		setRowData(gamePlayers);
-	}, [gamePlayers]);
+        // Create a copy to sort
+        const sorted = [...gamePlayers].sort((a, b) => {
+            let valA = 0;
+            let valB = 0;
+
+            // Helper to safe access nested or calculated fields
+            const getVal = (item: any, field: string) => {
+                switch(field) {
+                    case 'fp': return item.fp;
+                    case 'minutes': return item.seconds;
+                    case 'pts': return item.points;
+                    case 'reb': return item.rebounds_total;
+                    case 'ast': return item.assists;
+                    case 'stl': return item.steals;
+                    case 'blk': return item.blocks;
+                    case 'tov': return item.turnovers;
+                    case 'fp_delta': 
+                        const avg = item.player.season_averages[0]?.nba_fantasy_points || 0;
+                        if (avg === 0) return -999; // Treat no avg as low value?
+                        return item.fp - avg;
+                    default: return 0;
+                }
+            };
+
+            valA = getVal(a, sortField);
+            valB = getVal(b, sortField);
+
+            if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+            if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+		setRowData(sorted);
+	}, [gamePlayers, sortField, sortDirection]);
 
 	return (
 		<div className="w-full max-w-6xl flex flex-col gap-4">
-			<div className="flex items-center gap-6 p-1">
-				<div className="flex items-center space-x-2">
-					<Checkbox 
-						id="show-percentages" 
-						checked={showPercentages as boolean}
-						onCheckedChange={(checked) => setShowPercentages(checked as boolean)}
-					/>
-					<Label htmlFor="show-percentages">Show Percentages</Label>
-				</div>
-				<div className="flex items-center space-x-2">
-					<Checkbox 
-						id="show-volume" 
-						checked={showVolume}
-						onCheckedChange={(checked) => setShowVolume(checked as boolean)}
-					/>
-					<Label htmlFor="show-volume">Show Volume</Label>
-				</div>
+			<div className="flex items-center gap-6 p-1 justify-between">
+                <div className="flex gap-6">
+                    <div className="flex items-center space-x-2">
+                        <Checkbox 
+                            id="show-percentages" 
+                            checked={showPercentages as boolean}
+                            onCheckedChange={(checked) => setShowPercentages(checked as boolean)}
+                        />
+                        <Label htmlFor="show-percentages">Show Percentages</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox 
+                            id="show-volume" 
+                            checked={showVolume}
+                            onCheckedChange={(checked) => setShowVolume(checked as boolean)}
+                        />
+                        <Label htmlFor="show-volume">Show Volume</Label>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <Select value={sortField} onValueChange={setSortField}>
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="fp">Fantasy Points</SelectItem>
+                            <SelectItem value="fp_delta">FP Delta</SelectItem>
+                            <SelectItem value="pts">Points</SelectItem>
+                            <SelectItem value="reb">Rebounds</SelectItem>
+                            <SelectItem value="ast">Assists</SelectItem>
+                            <SelectItem value="stl">Steals</SelectItem>
+                            <SelectItem value="blk">Blocks</SelectItem>
+                            <SelectItem value="tov">Turnovers</SelectItem>
+                            <SelectItem value="minutes">Minutes</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Button 
+                        variant="outline" 
+                        size="icon"
+                        onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
+                    >
+                        {sortDirection === 'asc' ? <ArrowUpIcon className="h-4 w-4" /> : <ArrowDownIcon className="h-4 w-4" />}
+                    </Button>
+                </div>
 			</div>
 			
 			<div className="w-full max-w-6xl flex flex-col gap-2">
 			{
-				gamePlayers.map((player_game) => {
+				rowData.map((player_game) => { // Use rowData instead of gamePlayers directly
 
 					const playerName = `${player_game.player.first_name} ${player_game.player.last_name}`;
 
 					return (
 						<div className="flex flex-col p-0 rounded-xl" key={player_game.player.id}>
+							{/* <pre>
+								{JSON.stringify(player_game.player.season_averages, null, 2)}
+							</pre> */}
 							<div className="w-full flex gap-2">
 								
 								{/* Player Image */}
@@ -130,6 +204,29 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 												<div className="text-sm leading-none font-semibold">{player_game.fp}</div>
 												<span className="text-xs leading-none text-foreground">fp</span>
 											</div>
+										</div>
+
+										{/* FP Delta */}
+										<div className="flex justify-center items-center rounded-full h-full w-14 py-1">
+											{player_game.player.season_averages[0]?.nba_fantasy_points ? (
+												(() => {
+													const avg = player_game.player.season_averages[0].nba_fantasy_points;
+													const delta = player_game.fp - avg; // Absolute delta
+													return (
+														<div className="flex gap-1 items-end">
+															<div 
+                                                                className="text-sm leading-none font-semibold"
+                                                                style={{ color: valueToRGB({ value: delta + 35, min: 10, max: 60, midColor: [240, 240, 240, 1] }) }} 
+                                                            >
+																{delta > 0 ? "+" : ""}{delta.toFixed(1)}
+															</div>
+															<span className="text-xs leading-none text-muted-foreground">δ</span>
+														</div>
+													);
+												})()
+											) : (
+												<span className="text-muted-foreground">-</span>
+											)}
 										</div>
 
 										{/* Efficiency */}

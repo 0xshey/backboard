@@ -78,6 +78,9 @@ export type Database = {
           datetime: string | null
           id: string
           label: string | null
+          live_clock: string | null
+          live_period: number | null
+          national_broadcaster: string | null
           status_code: number | null
           status_text: string | null
           sublabel: string | null
@@ -96,6 +99,9 @@ export type Database = {
           datetime?: string | null
           id: string
           label?: string | null
+          live_clock?: string | null
+          live_period?: number | null
+          national_broadcaster?: string | null
           status_code?: number | null
           status_text?: string | null
           sublabel?: string | null
@@ -114,6 +120,9 @@ export type Database = {
           datetime?: string | null
           id?: string
           label?: string | null
+          live_clock?: string | null
+          live_period?: number | null
+          national_broadcaster?: string | null
           status_code?: number | null
           status_text?: string | null
           sublabel?: string | null
@@ -634,6 +643,216 @@ export type Database = {
           },
         ]
       }
+      player_season_averages: {
+        Row: {
+          age: number | null
+          assists: number | null
+          assists_rank: number | null
+          blocks: number | null
+          blocks_rank: number | null
+          blocks_received: number | null
+          blocks_received_rank: number | null
+          created_at: string
+          double_doubles: number | null
+          double_doubles_rank: number | null
+          field_goals_attempted: number | null
+          field_goals_attempted_rank: number | null
+          field_goals_made: number | null
+          field_goals_made_rank: number | null
+          field_goals_percentage: number | null
+          field_goals_percentage_rank: number | null
+          fouls_drawn: number | null
+          fouls_drawn_rank: number | null
+          fouls_personal: number | null
+          fouls_personal_rank: number | null
+          free_throws_attempted: number | null
+          free_throws_attempted_rank: number | null
+          free_throws_made: number | null
+          free_throws_made_rank: number | null
+          free_throws_percentage: number | null
+          free_throws_percentage_rank: number | null
+          games_played: number | null
+          losses: number | null
+          losses_rank: number | null
+          minutes_average: number | null
+          minutes_average_rank: number | null
+          nba_fantasy_points: number | null
+          nba_fantasy_points_rank: number | null
+          player_id: string
+          plus_minus: number | null
+          plus_minus_rank: number | null
+          points: number | null
+          points_rank: number | null
+          rebounds_defensive: number | null
+          rebounds_defensive_rank: number | null
+          rebounds_offensive: number | null
+          rebounds_offensive_rank: number | null
+          rebounds_total: number | null
+          rebounds_total_rank: number | null
+          season: string
+          steals: number | null
+          steals_rank: number | null
+          team_id: string | null
+          three_pointers_attempted: number | null
+          three_pointers_attempted_rank: number | null
+          three_pointers_made: number | null
+          three_pointers_made_rank: number | null
+          three_pointers_percentage: number | null
+          three_pointers_percentage_rank: number | null
+          triple_doubles: number | null
+          triple_doubles_rank: number | null
+          turnovers: number | null
+          turnovers_rank: number | null
+          win_percentage: number | null
+          win_percentage_rank: number | null
+          wins: number | null
+          wins_rank: number | null
+        }
+        Insert: {
+          age?: number | null
+          assists?: number | null
+          assists_rank?: number | null
+          blocks?: number | null
+          blocks_rank?: number | null
+          blocks_received?: number | null
+          blocks_received_rank?: number | null
+          created_at?: string
+          double_doubles?: number | null
+          double_doubles_rank?: number | null
+          field_goals_attempted?: number | null
+          field_goals_attempted_rank?: number | null
+          field_goals_made?: number | null
+          field_goals_made_rank?: number | null
+          field_goals_percentage?: number | null
+          field_goals_percentage_rank?: number | null
+          fouls_drawn?: number | null
+          fouls_drawn_rank?: number | null
+          fouls_personal?: number | null
+          fouls_personal_rank?: number | null
+          free_throws_attempted?: number | null
+          free_throws_attempted_rank?: number | null
+          free_throws_made?: number | null
+          free_throws_made_rank?: number | null
+          free_throws_percentage?: number | null
+          free_throws_percentage_rank?: number | null
+          games_played?: number | null
+          losses?: number | null
+          losses_rank?: number | null
+          minutes_average?: number | null
+          minutes_average_rank?: number | null
+          nba_fantasy_points?: number | null
+          nba_fantasy_points_rank?: number | null
+          player_id: string
+          plus_minus?: number | null
+          plus_minus_rank?: number | null
+          points?: number | null
+          points_rank?: number | null
+          rebounds_defensive?: number | null
+          rebounds_defensive_rank?: number | null
+          rebounds_offensive?: number | null
+          rebounds_offensive_rank?: number | null
+          rebounds_total?: number | null
+          rebounds_total_rank?: number | null
+          season: string
+          steals?: number | null
+          steals_rank?: number | null
+          team_id?: string | null
+          three_pointers_attempted?: number | null
+          three_pointers_attempted_rank?: number | null
+          three_pointers_made?: number | null
+          three_pointers_made_rank?: number | null
+          three_pointers_percentage?: number | null
+          three_pointers_percentage_rank?: number | null
+          triple_doubles?: number | null
+          triple_doubles_rank?: number | null
+          turnovers?: number | null
+          turnovers_rank?: number | null
+          win_percentage?: number | null
+          win_percentage_rank?: number | null
+          wins?: number | null
+          wins_rank?: number | null
+        }
+        Update: {
+          age?: number | null
+          assists?: number | null
+          assists_rank?: number | null
+          blocks?: number | null
+          blocks_rank?: number | null
+          blocks_received?: number | null
+          blocks_received_rank?: number | null
+          created_at?: string
+          double_doubles?: number | null
+          double_doubles_rank?: number | null
+          field_goals_attempted?: number | null
+          field_goals_attempted_rank?: number | null
+          field_goals_made?: number | null
+          field_goals_made_rank?: number | null
+          field_goals_percentage?: number | null
+          field_goals_percentage_rank?: number | null
+          fouls_drawn?: number | null
+          fouls_drawn_rank?: number | null
+          fouls_personal?: number | null
+          fouls_personal_rank?: number | null
+          free_throws_attempted?: number | null
+          free_throws_attempted_rank?: number | null
+          free_throws_made?: number | null
+          free_throws_made_rank?: number | null
+          free_throws_percentage?: number | null
+          free_throws_percentage_rank?: number | null
+          games_played?: number | null
+          losses?: number | null
+          losses_rank?: number | null
+          minutes_average?: number | null
+          minutes_average_rank?: number | null
+          nba_fantasy_points?: number | null
+          nba_fantasy_points_rank?: number | null
+          player_id?: string
+          plus_minus?: number | null
+          plus_minus_rank?: number | null
+          points?: number | null
+          points_rank?: number | null
+          rebounds_defensive?: number | null
+          rebounds_defensive_rank?: number | null
+          rebounds_offensive?: number | null
+          rebounds_offensive_rank?: number | null
+          rebounds_total?: number | null
+          rebounds_total_rank?: number | null
+          season?: string
+          steals?: number | null
+          steals_rank?: number | null
+          team_id?: string | null
+          three_pointers_attempted?: number | null
+          three_pointers_attempted_rank?: number | null
+          three_pointers_made?: number | null
+          three_pointers_made_rank?: number | null
+          three_pointers_percentage?: number | null
+          three_pointers_percentage_rank?: number | null
+          triple_doubles?: number | null
+          triple_doubles_rank?: number | null
+          turnovers?: number | null
+          turnovers_rank?: number | null
+          win_percentage?: number | null
+          win_percentage_rank?: number | null
+          wins?: number | null
+          wins_rank?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "season_averages_player_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "player"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "season_averages_team_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "team"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       player_season_totals: {
         Row: {
           age: number | null
@@ -799,6 +1018,9 @@ export type Database = {
           datetime: string | null
           id: string
           label: string | null
+          live_clock: string | null
+          live_period: number | null
+          national_broadcaster: string | null
           status_code: number | null
           status_text: string | null
           sublabel: string | null

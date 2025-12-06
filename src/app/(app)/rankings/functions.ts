@@ -55,11 +55,15 @@ export async function fetchGamePlayersForGameIds(gameIds: string[]) {
 			`
 			*,
 			game:game_id (*),
-			player:player_id (*),
+			player:player_id (
+				*,
+				season_averages:player_season_averages(*)
+			),
 			team:team!game_player_team_fkey (*)
 		`
 		)
-		.in("game_id", gameIds);
+		.in("game_id", gameIds)
+		.eq("player.season_averages.season", "2025-26");
 
 	if (error) throw error;
 	return data ?? [];
@@ -76,7 +80,21 @@ export async function fetchGamePlayersForDate(
 	const games = await fetchGamesForDate(gameDateString, timeZone);
 	const gameIds = games.map((g: any) => g.id);
 	const gamePlayers = await fetchGamePlayersForGameIds(gameIds);
-	return { games, gamePlayers };
+	
+	// Transform to ensure we have a single season average object if available
+	// The join returns an array of averages (filtered to 1 by the query ideally, but handling array safety)
+	const enriched = gamePlayers.map((gp: any) => {
+		const seasonAvg = Array.isArray(gp.player?.season_averages) 
+			? gp.player.season_averages.find((sa: any) => sa.season === "2025-26") 
+			: gp.player?.season_averages; // Fallback if single object returned or null
+
+		return {
+			...gp,
+			season_averages: seasonAvg || null
+		};
+	});
+
+	return { games, gamePlayers: enriched };
 }
 
 /*
