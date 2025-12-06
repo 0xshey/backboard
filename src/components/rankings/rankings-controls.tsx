@@ -69,6 +69,13 @@ export function RankingsControls() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [date, scoringType]);
 
+	useEffect(() => {
+		const interval = setInterval(() => {
+			router.refresh();
+		}, 60 * 1000);
+		return () => clearInterval(interval);
+	}, [router]);
+
 	const decrementDate = () => setDate((d) => addDaysISO(d, -1));
 	const incrementDate = () => setDate((d) => addDaysISO(d, 1));
 

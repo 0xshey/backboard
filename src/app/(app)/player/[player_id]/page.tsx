@@ -48,7 +48,7 @@ export default async function PlayerPage({
 }: {
 	params: { player_id: string };
 }) {
-	const { player_id } = params;
+	const { player_id } = await params;
 
 	const player = await getPlayer(player_id);
 	const playerGames = await getPlayerGames(player_id);
@@ -114,7 +114,7 @@ function PlayerGamelog({
 			<div className="flex flex-col gap-4">
 				{fantasyGameWeeks.map((gameWeek) => (
 					<GamelogWeek
-						key={gameWeek.id}
+						key={gameWeek.number}
 						gameWeek={gameWeek}
 						gamePlayerRows={gamePlayerRows}
 						schedule={schedule}
@@ -231,10 +231,8 @@ function GamePlayerStatline({ gamePlayer }: { gamePlayer: any }) {
 
 	return (
 		<>
-			<div className="font-stretch-75%">
-				{gamePlayer.opp_team.tricode}
-			</div>
-			<div className="font-semibold font-stretch-75%">
+			<div>{gamePlayer.opp_team.tricode}</div>
+			<div className="font-semibold">
 				{formatSecondsToMMSS(gamePlayer.seconds)}
 			</div>
 			<div className="font-semibold">{gamePlayer.points}</div>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { ColDef } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { themeBalham, colorSchemeDark } from "ag-grid-community";
+import { backboardThemeMobile, backboardThemeDesktop } from "@/lib/ag-grid-themes/backboard-theme";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -220,7 +221,7 @@ export function PlayerRankingsTable({ gamePlayers }: { gamePlayers: any[] }) {
 				gridId="rankings"
 				rowData={rowData}
 				columnDefs={columnDefs}
-				theme={themeBalham.withPart(colorSchemeDark)}
+				theme={backboardThemeMobile.withPart(colorSchemeDark)}
 			/>
 			{/* <pre>{JSON.stringify(gamePlayers, null, 2)}</pre> */}
 		</div>

@@ -1,6 +1,13 @@
 import { DateTime } from "luxon";
 import { createClient } from "@/lib/supabase/server";
 
+import type { Game, Team } from "@/types";
+
+export type GameWithTeams = Game & {
+	away_team: Team;
+	home_team: Team;
+};
+
 /**
  * Fetch games that fall on a given date in a specific timezone.
  */
@@ -24,15 +31,15 @@ export async function fetchGamesForDate(
 		.select(
 			`
 			*,
-			home_team:team_home_id (*),
-			away_team:team_away_id (*)
-		`
+				home_team:team_home_id (*),
+				away_team:team_away_id (*)
+			`
 		)
 		.gte("datetime", startISO)
 		.lte("datetime", endISO);
 
 	if (error) throw error;
-	return games ?? [];
+	return games ?? []
 }
 
 /**

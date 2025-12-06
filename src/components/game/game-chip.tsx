@@ -1,6 +1,8 @@
-import type { Game } from "@/types";
 import Image from "next/image";
 import { teamLogoURL } from "@/lib/image-urls";
+import { formatISODurationToProgress } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
+import { Duration } from 'luxon'
 
 interface GameChipProps {
 	game: any;
@@ -16,9 +18,9 @@ export function GameChip({ game }: GameChipProps) {
 
 	return (
 		<div
-			className={`w-full border rounded p-2 flex justify-between ${
+			className={`w-full border rounded-xl p-2 flex justify-between ${
 				game.status_code == 2
-					? "border-red-500"
+					? "bg-muted/40 border-red-500/40"
 					: game.status_code == 3
 					? ""
 					: "bg-muted border-muted-foreground"
@@ -70,8 +72,9 @@ export function GameChip({ game }: GameChipProps) {
 			</div>
 
 			{/* Game info on right */}
+
 			<div className="flex flex-col">
-				<p className="font-semibold">{game.status_text}</p>
+				{<p className="text-sm text-muted-foreground">{game.status_text}</p>}
 			</div>
 		</div>
 	);
