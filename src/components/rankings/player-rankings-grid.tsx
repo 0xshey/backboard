@@ -89,7 +89,7 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 max-w-full overflow-x-scroll px-2">
                     <Select value={sortField} onValueChange={setSortField}>
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Sort by" />
@@ -116,161 +116,179 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
                 </div>
 			</div>
 			
-			<div className="w-full max-w-6xl flex flex-col gap-2">
-			{
-				rowData.map((player_game) => { // Use rowData instead of gamePlayers directly
+			<div className="overflow-x-auto w-full pb-4">
+				<div className="min-w-max flex flex-col gap-2">
+				{
+					rowData.map((player_game) => {
 
-					const playerName = `${player_game.player.first_name} ${player_game.player.last_name}`;
+						const playerName = `${player_game.player.first_name} ${player_game.player.last_name}`;
 
-					return (
-						<div className="flex flex-col p-0 rounded-xl" key={player_game.player.id}>
-							{/* <pre>
-								{JSON.stringify(player_game.player.season_averages, null, 2)}
-							</pre> */}
-							<div className="w-full flex gap-2">
-								
-								{/* Player Image */}
-								{ showImage && 
-									<div className="relative rounded-md overflow-hidden min-w-10 h-10">
-										<Image
-											src={playerHeadshotURL(player_game.player.id)}
-											alt={playerName}
-											layout="fill"
-											objectFit="cover"
-										/>
-									</div>
-								}
-
-								<div className={cn("flex gap-4 w-full justify-start")}>
-
-									{/* Player Details */}
-									<div className="flex h-fit items-center gap-2 text-muted-foreground max-w-60 min-w-60 ">
-										<p className="ml-2 whitespace-nowrap truncate text-sm">
-											{shortName ? player_game.player.first_name[0] + ". " + player_game.player.last_name : player_game.player.first_name + " " + player_game.player.last_name}
-										</p>
+						return (
+							<div className="flex flex-col p-0 rounded-xl" key={player_game.player.id}>
+								<div className="w-full flex gap-2">
+									
+									{/* Sticky Player Details Column */}
+									<div className="sticky left-0 z-10 flex items-center">
 										
-										<div className="flex items-center gap-0">
-											<Image
-												src={teamLogoURL(player_game.team.id)}
-												alt={player_game.team.name}
-												width={24}
-												height={24}
-												quality={100}
-											/>
-											{player_game.starter && 
-												<>
-													<DotIcon className="text-muted-foreground/20" />
-													<div className="h-3 w-3 text-xs leading-none">S</div>
-												</>
-											}
-										</div>
-									</div>
-
-									{/* Stats */}
-									<div className="w-fit max-w-full h-fit flex gap-4 items-center bg-muted/50 rounded-full p-1">
-										
-										{/* Minutes */}
-										<div className={cn("flex justify-center items-center rounded-full min-h-full gap-2 px-2 relative")}>
-											<p className="text-xs text-muted-foreground">{formatSecondsToMMSS(player_game.seconds)}</p>
-											{
-												player_game.game.status_code == 2 && 
-												<span className="absolute -translate-x-11 w-1 h-1 rounded-full bg-red-500 animate-pulse"></span>
-											}
-										</div>
-
-										{/* Counting stats */}
-										<div className="h-full items-center grid grid-cols-6 rounded-full w-78">
-											{[
-												{ value: player_game.points, label: 'pts' },
-												{ value: player_game.rebounds_total, label: 'reb' },
-												{ value: player_game.assists, label: 'ast' },
-												{ value: player_game.steals, label: 'stl' },
-												{ value: player_game.blocks, label: 'blk' },
-												{ value: player_game.turnovers, label: 'tov' },
-											].map((stat, index) => (
-												<div key={index} className="col-span-1 flex justify-end gap-1 items-end relative border border-transparent">
-													<div className="text-sm leading-none font-semibold">{stat.value}</div>
-													<span className="text-xs leading-none text-muted-foreground">{stat.label}</span>
+										<div className="w-40 md:w-50 h-full flex items-center  bg-linear-to-r from-background via-background to-background/0">
+											{/* Player Image */}
+											{ showImage && 
+												<div className="relative rounded-md overflow-hidden min-w-10 h-16 flex-shrink-0">
+													<Image
+														src={playerHeadshotURL(player_game.player.id)}
+														alt={playerName}
+														layout="fill"
+														objectFit="cover"
+													/>
 												</div>
-											))}
-										</div>
+											}
 
-										{/* FP */}
-										<div
-											className="flex justify-center items-center rounded-full h-full w-18 py-1"
-											style={{ backgroundColor: valueToRGB({ value: player_game.fp, min: 5, max: 60 }) }}
-										>
-											<div className="flex gap-1 items-end">
-												<div className="text-sm leading-none font-semibold">{player_game.fp}</div>
-												<span className="text-xs leading-none text-foreground">fp</span>
+											{/* Player Name & Team */}
+											<div className="flex h-fit items-center gap-2 text-muted-foreground">
+												{/* <p className="ml-2 whitespace-nowrap truncate text-sm font-medium text-foreground font-stretch-75% md:font-stretch-normal">
+													{shortName ? player_game.player.first_name[0] + ". " + player_game.player.last_name : player_game.player.first_name + " " + player_game.player.last_name}
+												</p> */}
+												<div className="flex flex-col md:flex-row items-start md:items-center md:gap-1">
+													<p className="whitespace-nowrap truncate text-xs md:text-sm font-medium text-muted-foreground md:text-foreground font-stretch-75% md:font-stretch-normal">
+														{player_game.player.first_name}
+													</p>
+													<p className="whitespace-nowrap truncate text-sm font-medium text-foreground font-stretch-75% md:font-stretch-normal">
+														{player_game.player.last_name}
+													</p>
+												</div>
+												
+												<div className="flex items-center gap-1">
+													<Image
+														src={teamLogoURL(player_game.team.id)}
+														alt={player_game.team.name}
+														width={20}
+														height={20}
+														quality={100}
+														className="opacity-80"
+													/>
+													{player_game.starter && 
+														<>
+															<DotIcon className="text-muted-foreground/40 w-3 h-3" />
+															{/* Optional S indicator, icon might be enough */}
+															<div className="h-3 w-3 text-[0.6rem] leading-none pt-0.5">S</div>
+														</>
+													}
+												</div>
 											</div>
 										</div>
+									</div>
 
-										{/* FP Delta */}
-										<div className="flex justify-center items-center rounded-full h-full w-14 py-1">
-											{player_game.player.season_averages[0]?.nba_fantasy_points ? (
-												(() => {
-													const avg = player_game.player.season_averages[0].nba_fantasy_points;
-													const delta = player_game.fp - avg; // Absolute delta
-													return (
-														<div className="flex gap-1 items-end">
-															<div 
-                                                                className="text-sm leading-none font-semibold"
-                                                                style={{ color: valueToRGB({ value: delta + 35, min: 10, max: 60, midColor: [240, 240, 240, 1] }) }} 
-                                                            >
-																{delta > 0 ? "+" : ""}{delta.toFixed(1)}
-															</div>
-															<span className="text-xs leading-none text-muted-foreground">δ</span>
-														</div>
-													);
-												})()
-											) : (
-												<span className="text-muted-foreground">-</span>
-											)}
-										</div>
+									{/* Scrollable Stats Area */}
+									<div className={cn("flex gap-4 w-full justify-start pl-2")}>
 
-										{/* Efficiency */}
-										<div className={cn("max-w-90 w-fit", (showPercentages || showVolume) && "grid grid-cols-3")}>
-											{[
-												{ made: player_game.field_goals_made, attempted: player_game.field_goals_attempted, percentage: player_game.field_goals_percentage, label: 'fg' },
-												{ made: player_game.three_pointers_made, attempted: player_game.three_pointers_attempted, percentage: player_game.three_pointers_percentage, label: '3p' },
-												{ made: player_game.free_throws_made, attempted: player_game.free_throws_attempted, percentage: player_game.free_throws_percentage, label: 'ft' },
-											].map((stat, index) => (
-												<div key={index} className={cn("grid rounded-full h-fit py-1 gap-2", (showPercentages && showVolume) ? "grid-cols-2 bg-muted/50" : "grid-cols-1")} >
-													{showVolume && (
-														<div className="col-span-1 flex justify-end gap-1 items-end relative border border-transparent w-16">
-															<div className="text-sm leading-none font-semibold">
-																{stat.made}/{stat.attempted}
-															</div>
-															<span className="text-xs leading-none text-muted-foreground">{stat.label}</span>
-														</div>
-													)}
+										{/* Stats */}
+										<div className="w-fit max-w-full h-fit flex gap-0 md:gap-4 items-center bg-muted/30 hover:bg-muted/50 transition-colors rounded-full pr-4 md:p-1 border border-transparent hover:border-border/50">
+											
+											{/* Minutes */}
+											<div className={cn("flex justify-center items-center rounded-full min-h-full gap-2 px-2 relative min-w-16")}>
+												<p className="text-xs text-muted-foreground font-mono">{formatSecondsToMMSS(player_game.seconds)}</p>
+												{
+													player_game.game.status_code == 2 && 
+													<span className="absolute right-2 top-1.5 w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+												}
+											</div>
 
-													{showPercentages && (
-														<div className="col-span-1 flex justify-center gap-1 items-end relative w-18">
-															<div className="text-sm leading-none font-semibold">
-																{stat.attempted > 0 ? (stat.percentage * 100).toFixed(0) : "-"}%
-															</div>
-														<span className="text-xs leading-none text-muted-foreground">{stat.label}%</span>
+											{/* Counting stats */}
+											<div className="h-full items-center grid grid-cols-6 rounded-full w-80 md:w-96 gap-2 px-2">
+												{[
+													{ value: player_game.points, label: 'pts' },
+													{ value: player_game.rebounds_total, label: 'reb' },
+													{ value: player_game.assists, label: 'ast' },
+													{ value: player_game.steals, label: 'stl' },
+													{ value: player_game.blocks, label: 'blk' },
+													{ value: player_game.turnovers, label: 'tov' },
+												].map((stat, index) => (
+													<div key={index} className="col-span-1 flex flex-col md:flex-row justify-center items-end relative gap-0.5">
+														<div className="text-sm leading-none font-semibold">{stat.value}</div>
+														<span className="text-[0.6rem] leading-none text-muted-foreground uppercase tracking-wider font-stretch-75%">{stat.label}</span>
 													</div>
-													)}
+												))}
+											</div>
+
+											{/* FP */}
+											<div
+												className="flex justify-center items-center rounded-lg w-10 md:min-w-20 py-0.5"
+												style={{ backgroundColor: valueToRGB({ value: player_game.fp, min: 10, max: 60 }) }}
+											>
+												<div className="flex flex-col md:flex-row items-end">
+													<div className="text-sm leading-none font-semibold text-white drop-shadow-sm">{player_game.fp}</div>
+													<span className="text-[10px] leading-none text-white/90 font-medium uppercase">fp</span>
 												</div>
-											))}
+											</div>
+
+											{/* FP Delta */}
+											<div className="flex justify-center items-center rounded-full h-full min-w-16 py-1">
+												{player_game.player.season_averages[0]?.nba_fantasy_points ? (
+													(() => {
+														const avg = player_game.player.season_averages[0].nba_fantasy_points;
+														const delta = player_game.fp - avg; // Absolute delta
+														return (
+															<div className="flex flex-col md:flex-row justify-center items-end relative gap-0.5">
+																<div 
+																	className="text-sm leading-none font-semibold tabular-nums"
+																	style={{ color: valueToRGB({ value: delta, min: -40, max: 40, midColor: [200, 200, 200, 1] }) }} 
+																>
+																	{delta > 0 ? "+" : ""}{delta.toFixed(1)}
+																</div>
+																<span className="text-[10px] leading-none text-muted-foreground tracking-wider uppercase">δ</span>
+															</div>
+														);
+													})()
+												) : (
+													<span className="text-muted-foreground text-xs">-</span>
+												)}
+											</div>
+
+											{/* Efficiency */}
+											<div className={cn("w-fit flex gap-2", (showPercentages || showVolume) ? "" : "hidden")}>
+												{[
+													{ made: player_game.field_goals_made, attempted: player_game.field_goals_attempted, percentage: player_game.field_goals_percentage, label: 'fg', low: 0.33, mid: 0.47, high: 0.75, attemptThreshold: 15 },
+													{ made: player_game.three_pointers_made, attempted: player_game.three_pointers_attempted, percentage: player_game.three_pointers_percentage, label: '3p', low: 0.25, mid: 0.36, high: 0.60, attemptThreshold: 10},
+													{ made: player_game.free_throws_made, attempted: player_game.free_throws_attempted, percentage: player_game.free_throws_percentage, label: 'ft', low: 0.6, mid: 0.8, high: 1.0, attemptThreshold: 10 },
+												].map((stat, index) => (
+													<div key={index} className={cn("flex flex-col md:flex-row items-end px-1 py-0.5 rounded-lg bg-background/50 border border-border/50")} style={{
+														backgroundColor: `rgba(${valueToRGB({ value: stat.percentage, min: stat.low, max: stat.high }).match(/\d+/g)?.slice(0, 3).join(', ')}, ${Math.min(stat.attempted, stat.attempted) / stat.attemptThreshold})`,
+													}} >
+														
+														<div className="flex flex-col md:flex-row items-end gap-0 md:gap-3">
+															{showVolume && (
+																<div className="flex flex-col items-end min-w-8">
+																	<div className="text-xs font-semibold tabular-nums">
+																		{stat.made}/{stat.attempted}
+																	</div>
+																</div>
+															)}
+
+															
+														</div>
+														<div className="w-full flex items-end justify-between gap-1">
+															{showPercentages && (
+																<div className="flex flex-col items-end min-w-9">
+																	<div className="text-[10px] md:text-xs font-regular tabular-nums text-foreground" style={{
+																		
+																	}}>
+																		{stat.attempted > 0 ? (stat.percentage * 100).toFixed(0) : "-"}%
+																	</div>
+																</div>
+															)}
+															<span className="text-[10px] uppercase text-muted-foreground font-medium">{stat.label}</span>
+														</div>
+													</div>
+												))}
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							{/* <div className="w-full h-full flex flex-wrap items-end gap-1 mt-2">
-								{getPerformanceFlags(player_game).map((flag, index) => (
-									<Badge key={index} variant="outline" className="font-normal text-muted-foreground font-semibold rounded-full whitespace-nowrap">
-										{flag}
-									</Badge>
-								))}
-							</div> */}
-						</div>
-					)
-				})
-			}
+						)
+					})
+				}
+				</div>
 			</div>
 		</div>
 	)
