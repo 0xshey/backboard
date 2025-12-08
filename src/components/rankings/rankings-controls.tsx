@@ -19,13 +19,23 @@ import { DateTime } from "luxon";
  */
 function getTargetDate(isoDateString?: string | null) {
     const zone = "America/Los_Angeles";
+    const now = DateTime.now().setZone(zone);
+
     if (isoDateString) {
-        // Parse strictly as ISO date (YYYY-MM-DD), effectively setting time to midnight in the zone
-        // If we use regular JS Date(string), it might interpret as UTC or local browser time
-        return DateTime.fromISO(isoDateString, { zone }).toJSDate();
+        // Parse strictly as ISO date into the zone
+        const target = DateTime.fromISO(isoDateString, { zone });
+        
+        // If the target date is the same "day" as now, return now (with current time)
+        // This avoids the "12:00 AM" display when looking at today's stats
+        if (target.hasSame(now, 'day')) {
+             return now.toJSDate();
+        }
+        
+        // Otherwise return the target date (midnight)
+        return target.toJSDate();
     }
     // Default to "now" in the target zone
-    return DateTime.now().setZone(zone).toJSDate();
+    return now.toJSDate();
 }
 
 /**
