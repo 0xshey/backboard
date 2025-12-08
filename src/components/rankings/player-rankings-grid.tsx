@@ -119,7 +119,7 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 			<div className="overflow-x-auto w-full pb-4">
 				<div className="min-w-max flex flex-col gap-2">
 				{
-					rowData.map((player_game) => {
+					rowData.map((player_game, index) => {
 
 						const playerName = `${player_game.player.first_name} ${player_game.player.last_name}`;
 
@@ -129,8 +129,10 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 									
 									{/* Sticky Player Details Column */}
 									<div className="sticky left-0 z-10 flex items-center">
-										
+
 										<div className="w-40 md:w-50 h-full flex items-center  bg-linear-to-r from-background via-background to-background/0">
+											<p className="text-sm text-muted-foreground/50 mr-2">{index + 1}</p>
+											
 											{/* Player Image */}
 											{ showImage && 
 												<div className="relative rounded-md overflow-hidden min-w-10 h-16 flex-shrink-0">
@@ -167,11 +169,11 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 														className="opacity-80"
 													/>
 													{player_game.starter && 
-														<>
-															<DotIcon className="text-muted-foreground/40 w-3 h-3" />
+														<div className="flex items-center gap-1 leading-none">
+															<DotIcon className="w-2 h-2" />
 															{/* Optional S indicator, icon might be enough */}
-															<div className="h-3 w-3 text-[0.6rem] leading-none pt-0.5">S</div>
-														</>
+															<div className="text-xs leading-none text-muted-foreground/50">S</div>
+														</div>
 													}
 												</div>
 											</div>
@@ -179,13 +181,13 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 									</div>
 
 									{/* Scrollable Stats Area */}
-									<div className={cn("flex gap-4 w-full justify-start pl-2")}>
+									<div className={cn("flex items-center w-full justify-end pl-2")}>
 
 										{/* Stats */}
-										<div className="w-fit max-w-full h-fit flex gap-0 md:gap-4 items-center bg-muted/30 hover:bg-muted/50 transition-colors rounded-full pr-4 md:p-1 border border-transparent hover:border-border/50">
+										<div className="w-fit max-w-full h-fit flex gap-1 md:gap-2 items-center bg-muted/30 hover:bg-muted/50 transition-colors rounded-full pr-4 md:px-1 border border-transparent hover:border-border/50">
 											
 											{/* Minutes */}
-											<div className={cn("flex justify-center items-center rounded-full min-h-full gap-2 px-2 relative min-w-16")}>
+											<div className={cn("flex justify-center items-center rounded px-1 min-h-full relative w-14")}>
 												<p className="text-xs text-muted-foreground font-mono">{formatSecondsToMMSS(player_game.seconds)}</p>
 												{
 													player_game.game.status_code == 2 && 
@@ -194,7 +196,7 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 											</div>
 
 											{/* Counting stats */}
-											<div className="h-full items-center grid grid-cols-6 rounded-full w-80 md:w-96 gap-2 px-2">
+											<div className="h-full items-center grid grid-cols-6 rounded w-full md:w-96 p-2">
 												{[
 													{ value: player_game.points, label: 'pts' },
 													{ value: player_game.rebounds_total, label: 'reb' },
@@ -203,7 +205,7 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 													{ value: player_game.blocks, label: 'blk' },
 													{ value: player_game.turnovers, label: 'tov' },
 												].map((stat, index) => (
-													<div key={index} className="col-span-1 flex flex-col md:flex-row justify-center items-end relative gap-0.5">
+													<div key={index} className="col-span-1 w-full flex flex-col md:flex-row justify-center items-end relative gap-0.5 min-w-8 border border-transparent hover:border-blue-500 cursor-pointer">
 														<div className="text-sm leading-none font-semibold">{stat.value}</div>
 														<span className="text-[0.6rem] leading-none text-muted-foreground uppercase tracking-wider font-stretch-75%">{stat.label}</span>
 													</div>
@@ -212,7 +214,7 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 
 											{/* FP */}
 											<div
-												className="flex justify-center items-center rounded-lg w-10 md:min-w-20 py-0.5"
+												className="flex justify-center items-center rounded-lg min-w-12 md:min-w-20 p-1"
 												style={{ backgroundColor: valueToRGB({ value: player_game.fp, min: 10, max: 60 }) }}
 											>
 												<div className="flex flex-col md:flex-row items-end">
@@ -251,7 +253,7 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 													{ made: player_game.three_pointers_made, attempted: player_game.three_pointers_attempted, percentage: player_game.three_pointers_percentage, label: '3p', low: 0.25, mid: 0.36, high: 0.60, attemptThreshold: 10},
 													{ made: player_game.free_throws_made, attempted: player_game.free_throws_attempted, percentage: player_game.free_throws_percentage, label: 'ft', low: 0.6, mid: 0.8, high: 1.0, attemptThreshold: 10 },
 												].map((stat, index) => (
-													<div key={index} className={cn("flex flex-col md:flex-row items-end px-1 py-0.5 rounded-lg bg-background/50 border border-border/50")} style={{
+													<div key={index} className={cn("flex flex-col md:flex-row items-end w-24 px-1 py-0.5 rounded-lg bg-background/50 border border-border/50")} style={{
 														backgroundColor: `rgba(${valueToRGB({ value: stat.percentage, min: stat.low, max: stat.high }).match(/\d+/g)?.slice(0, 3).join(', ')}, ${Math.min(stat.attempted, stat.attempted) / stat.attemptThreshold})`,
 													}} >
 														
