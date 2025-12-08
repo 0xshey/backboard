@@ -1,5 +1,4 @@
 import { GameChip } from "@/components/game/game-chip";
-import { PlayerRankingsTable } from "@/components/rankings/player-rankings-table";
 import { PlayerRankingsGrid } from "@/components/rankings/player-rankings-grid";
 import { RankingsControls } from "@/components/rankings/rankings-controls";
 
@@ -39,14 +38,10 @@ export default async function RankingsPage({
 				))}
 			</div>
 			<div className="w-full max-w-6xl flex justify-center gap-4 p-2">
-				{/* <PlayerRankingsTable
-					gamePlayers={gamePlayers.filter((p) => p.played)}
-				/> */}
 				<PlayerRankingsGrid
 					gamePlayers={gamePlayers.filter((p) => p.played)}
 				/>
 			</div>
-			{/* <pre>{JSON.stringify([gamePlayers[0]], null, 2)}</pre> */}
 		</div>
 	);
 }
