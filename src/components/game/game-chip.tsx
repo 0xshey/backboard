@@ -4,11 +4,18 @@ import { formatISODurationToProgress } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Duration } from 'luxon'
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 interface GameChipProps {
-	game: any;
+	game?: any;
+    loading?: boolean;
 }
 
-export function GameChip({ game }: GameChipProps) {
+export function GameChip({ game, loading }: GameChipProps) {
+	if (loading) {
+		return <Skeleton className="w-full h-[76px] rounded-xl" />;
+	}
+
 	const winner =
 		game.team_home_score > game.team_away_score
 			? "home"

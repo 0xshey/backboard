@@ -18,8 +18,29 @@ import { DotIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 
-export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
+import { Skeleton } from "@/components/ui/skeleton";
+
+export function PlayerRankingsGrid({ gamePlayers, loading }: { gamePlayers?: any[], loading?: boolean }) {
 	const [rowData, setRowData] = useState<any[]>([]);
+
+    if (loading) {
+        return (
+            <div className="w-full max-w-6xl flex flex-col gap-4">
+                <div className="flex items-center gap-6 p-1 justify-between">
+                     <Skeleton className="h-16 w-full" />
+                     <Skeleton className="h-16 w-full" />
+                </div>
+                <div className="flex flex-col gap-2">
+                    {Array.from({ length: 10 }).map((_, i) => (
+                        <Skeleton key={i} className="h-8 w-full rounded-xl" />
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+	if (!gamePlayers) return null;
+
 	
 	const [showImage, setShowImage] = useState<Boolean>(false)
 	const [shortName, setShortName] = useState<Boolean>(false)
@@ -66,40 +87,42 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 	}, [gamePlayers, sortField, sortDirection]);
 
 	return (
-		<div className="w-full max-w-6xl flex flex-col gap-4">
-			<div className="flex items-center gap-6 p-1 justify-between">
-                <div className="flex gap-6">
-                </div>
-
-                <div className="flex items-center gap-2 max-w-full overflow-x-scroll px-2">
-                    <Select value={sortField} onValueChange={setSortField}>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Sort by" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="fp">Fantasy Points</SelectItem>
-                            <SelectItem value="fp_delta">FP Delta</SelectItem>
-                            <SelectItem value="pts">Points</SelectItem>
-                            <SelectItem value="reb">Rebounds</SelectItem>
-                            <SelectItem value="ast">Assists</SelectItem>
-                            <SelectItem value="stl">Steals</SelectItem>
-                            <SelectItem value="blk">Blocks</SelectItem>
-                            <SelectItem value="tov">Turnovers</SelectItem>
-                            <SelectItem value="minutes">Minutes</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <Button 
-                        variant="outline" 
-                        size="icon"
-                        onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
-                    >
-                        {sortDirection === 'asc' ? <ArrowUpIcon className="h-4 w-4" /> : <ArrowDownIcon className="h-4 w-4" />}
-                    </Button>
-                </div>
+		<div className="w-full flex flex-col gap-4">
+			<div className="flex items-center gap-2 max-w-full">
+				<Select value={sortField} onValueChange={setSortField}>
+					<SelectTrigger className="w-[180px]">
+						<SelectValue placeholder="Sort by" />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value="fp">Fantasy Points</SelectItem>
+						<SelectItem value="fp_delta">FP Delta</SelectItem>
+						<SelectItem value="pts">Points</SelectItem>
+						<SelectItem value="reb">Rebounds</SelectItem>
+						<SelectItem value="ast">Assists</SelectItem>
+						<SelectItem value="stl">Steals</SelectItem>
+						<SelectItem value="blk">Blocks</SelectItem>
+						<SelectItem value="tov">Turnovers</SelectItem>
+						<SelectItem value="minutes">Minutes</SelectItem>
+					</SelectContent>
+				</Select>
+				<Button 
+					variant="outline" 
+					size="icon"
+					onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
+				>
+					{sortDirection === 'asc' ? <ArrowUpIcon className="h-4 w-4" /> : <ArrowDownIcon className="h-4 w-4" />}
+				</Button>
 			</div>
 			
 			<div className="overflow-x-auto w-full pb-4">
 				<div className="min-w-max flex flex-col gap-2">
+				
+				{/* Column controller */}
+				{/* <div className="w-full h-8 rounded bg-muted">
+					<div className="w-40 md:w-50 h-full px-4 flex justify-start items-center text-center text-sm text-muted-foreground">Player</div>
+					<div className="w-40 md:w-50 h-full px-4 flex justify-center items-center text-center text-sm text-muted-foreground">Stats</div>
+				</div> */}
+
 				{
 					rowData.map((player_game, index) => {
 
@@ -110,62 +133,58 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 								<div className="w-full flex gap-2">
 									
 									{/* Sticky Player Details Column */}
-									<div className="sticky left-0 z-10 flex items-center">
+									<div className="sticky left-0 z-10 w-40 md:w-50 h-full flex items-center  bg-linear-to-r from-background via-background to-background/0">
+										<p className="text-sm text-muted-foreground/50 mr-2">{index + 1}</p>
+										
+										{/* Player Image */}
+										{ showImage && 
+											<div className="relative rounded-md overflow-hidden min-w-10 h-16 flex-shrink-0">
+												<Image
+													src={playerHeadshotURL(player_game.player.id)}
+													alt={playerName}
+													layout="fill"
+													objectFit="cover"
+												/>
+											</div>
+										}
 
-										<div className="w-40 md:w-50 h-full flex items-center  bg-linear-to-r from-background via-background to-background/0">
-											<p className="text-sm text-muted-foreground/50 mr-2">{index + 1}</p>
+										{/* Player Name & Team */}
+										<div className="flex h-fit items-center gap-2 text-muted-foreground">
+											{/* <p className="ml-2 whitespace-nowrap truncate text-sm font-medium text-foreground font-stretch-75% md:font-stretch-normal">
+												{shortName ? player_game.player.first_name[0] + ". " + player_game.player.last_name : player_game.player.first_name + " " + player_game.player.last_name}
+											</p> */}
+											<div className="flex flex-col md:flex-row items-start md:items-center md:gap-1">
+												<p className="whitespace-nowrap truncate text-xs md:text-sm font-medium text-muted-foreground md:text-foreground">
+													{player_game.player.first_name}
+												</p>
+												<p className="whitespace-nowrap truncate text-sm font-medium text-foreground">
+													{player_game.player.last_name}
+												</p>
+											</div>
 											
-											{/* Player Image */}
-											{ showImage && 
-												<div className="relative rounded-md overflow-hidden min-w-10 h-16 flex-shrink-0">
-													<Image
-														src={playerHeadshotURL(player_game.player.id)}
-														alt={playerName}
-														layout="fill"
-														objectFit="cover"
-													/>
-												</div>
-											}
-
-											{/* Player Name & Team */}
-											<div className="flex h-fit items-center gap-2 text-muted-foreground">
-												{/* <p className="ml-2 whitespace-nowrap truncate text-sm font-medium text-foreground font-stretch-75% md:font-stretch-normal">
-													{shortName ? player_game.player.first_name[0] + ". " + player_game.player.last_name : player_game.player.first_name + " " + player_game.player.last_name}
-												</p> */}
-												<div className="flex flex-col md:flex-row items-start md:items-center md:gap-1">
-													<p className="whitespace-nowrap truncate text-xs md:text-sm font-medium text-muted-foreground md:text-foreground">
-														{player_game.player.first_name}
-													</p>
-													<p className="whitespace-nowrap truncate text-sm font-medium text-foreground">
-														{player_game.player.last_name}
-													</p>
-												</div>
-												
-												<div className="flex items-center gap-1">
-													<Image
-														src={teamLogoURL(player_game.team.id)}
-														alt={player_game.team.name}
-														width={20}
-														height={20}
-														quality={100}
-														className="opacity-80"
-													/>
-													{player_game.starter && 
-														<div className="flex items-center gap-1 leading-none">
-															<DotIcon className="w-2 h-2" />
-															{/* Optional S indicator, icon might be enough */}
-															<div className="text-xs leading-none text-muted-foreground/50">S</div>
-														</div>
-													}
-												</div>
+											<div className="flex items-center gap-1">
+												<Image
+													src={teamLogoURL(player_game.team.id)}
+													alt={player_game.team.name}
+													width={20}
+													height={20}
+													quality={100}
+													className="opacity-80"
+												/>
+												{player_game.starter && 
+													<div className="flex items-center gap-1 leading-none">
+														<DotIcon className="w-2 h-2" />
+														<div className="text-xs leading-none text-muted-foreground/50">S</div>
+													</div>
+												}
 											</div>
 										</div>
 									</div>
 
-									{/* Scrollable Stats Area */}
+									{/* Non-sticky row content */}
 									<div className={cn("flex items-center w-full justify-end pl-2")}>
 
-										{/* Stats */}
+										{/* All Stats */}
 										<div className="w-fit max-w-full h-fit flex gap-1 md:gap-2 items-center bg-muted/30 hover:bg-muted/50 transition-colors rounded-full pr-4 md:px-1 border border-transparent hover:border-border/50">
 											
 											{/* Minutes */}

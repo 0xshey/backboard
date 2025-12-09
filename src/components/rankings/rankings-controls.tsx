@@ -2,7 +2,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 import DatePicker from "@/components/date-picker";
 import { DateTime } from "luxon";
@@ -50,6 +51,7 @@ export function RankingsControls() {
 	const searchParams = useSearchParams();
 
 	// Initialize state from URL
+    const [isPending, startTransition] = useTransition();
 	const [date, setDate] = useState<Date>(() => getTargetDate(searchParams.get("date")));
 
 
@@ -84,7 +86,9 @@ export function RankingsControls() {
 	// Auto-refresh logic
 	useEffect(() => {
 		const interval = setInterval(() => {
-			router.refresh();
+			startTransition(() => {
+                router.refresh();
+            });
 		}, 60 * 1000);
 		return () => clearInterval(interval);
 	}, [router]);
@@ -96,6 +100,7 @@ export function RankingsControls() {
                     date={date} 
                     setDate={setDate} 
                 />
+                {isPending && <Spinner />}
 			</div>
 		</div>
 	);
