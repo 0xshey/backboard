@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { playerHeadshotURL, teamLogoURL } from "@/lib/image-urls";
 import { getPerformanceFlags } from "@/lib/player-performance-flags";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+
 import {
   Select,
   SelectContent,
@@ -24,8 +23,7 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 	
 	const [showImage, setShowImage] = useState<Boolean>(false)
 	const [shortName, setShortName] = useState<Boolean>(false)
-	const [showPercentages, setShowPercentages] = useState<Boolean>(true)
-	const [showVolume, setShowVolume] = useState<boolean>(true)
+
 
     // Sorting state
     const [sortField, setSortField] = useState<string>("fp");
@@ -50,7 +48,7 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
                     case 'tov': return item.turnovers;
                     case 'fp_delta': 
                         const avg = item.player.season_averages[0]?.nba_fantasy_points || 0;
-                        if (avg === 0) return -999; // Treat no avg as low value?
+                        if (avg === 0) return 0;
                         return item.fp - avg;
                     default: return 0;
                 }
@@ -71,22 +69,6 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 		<div className="w-full max-w-6xl flex flex-col gap-4">
 			<div className="flex items-center gap-6 p-1 justify-between">
                 <div className="flex gap-6">
-                    <div className="flex items-center space-x-2">
-                        <Checkbox 
-                            id="show-percentages" 
-                            checked={showPercentages as boolean}
-                            onCheckedChange={(checked) => setShowPercentages(checked as boolean)}
-                        />
-                        <Label htmlFor="show-percentages">Show Percentages</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox 
-                            id="show-volume" 
-                            checked={showVolume}
-                            onCheckedChange={(checked) => setShowVolume(checked as boolean)}
-                        />
-                        <Label htmlFor="show-volume">Show Volume</Label>
-                    </div>
                 </div>
 
                 <div className="flex items-center gap-2 max-w-full overflow-x-scroll px-2">
@@ -151,10 +133,10 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 													{shortName ? player_game.player.first_name[0] + ". " + player_game.player.last_name : player_game.player.first_name + " " + player_game.player.last_name}
 												</p> */}
 												<div className="flex flex-col md:flex-row items-start md:items-center md:gap-1">
-													<p className="whitespace-nowrap truncate text-xs md:text-sm font-medium text-muted-foreground md:text-foreground font-stretch-75% md:font-stretch-normal">
+													<p className="whitespace-nowrap truncate text-xs md:text-sm font-medium text-muted-foreground md:text-foreground">
 														{player_game.player.first_name}
 													</p>
-													<p className="whitespace-nowrap truncate text-sm font-medium text-foreground font-stretch-75% md:font-stretch-normal">
+													<p className="whitespace-nowrap truncate text-sm font-medium text-foreground">
 														{player_game.player.last_name}
 													</p>
 												</div>
@@ -247,7 +229,7 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 											</div>
 
 											{/* Efficiency */}
-											<div className={cn("w-fit flex gap-2", (showPercentages || showVolume) ? "" : "hidden")}>
+											<div className={cn("w-fit flex gap-2")}>
 												{[
 													{ made: player_game.field_goals_made, attempted: player_game.field_goals_attempted, percentage: player_game.field_goals_percentage, label: 'fg', low: 0.33, mid: 0.47, high: 0.75, attemptThreshold: 15 },
 													{ made: player_game.three_pointers_made, attempted: player_game.three_pointers_attempted, percentage: player_game.three_pointers_percentage, label: '3p', low: 0.25, mid: 0.36, high: 0.60, attemptThreshold: 10},
@@ -258,18 +240,15 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 													}} >
 														
 														<div className="flex flex-col md:flex-row items-end gap-0 md:gap-3">
-															{showVolume && (
 																<div className="flex flex-col items-end min-w-8">
 																	<div className="text-xs font-semibold tabular-nums">
 																		{stat.made}/{stat.attempted}
 																	</div>
 																</div>
-															)}
 
 															
 														</div>
 														<div className="w-full flex items-end justify-between gap-1">
-															{showPercentages && (
 																<div className="flex flex-col items-end min-w-9">
 																	<div className="text-[10px] md:text-xs font-regular tabular-nums text-foreground" style={{
 																		
@@ -277,7 +256,6 @@ export function PlayerRankingsGrid({ gamePlayers }: { gamePlayers: any[] }) {
 																		{stat.attempted > 0 ? (stat.percentage * 100).toFixed(0) : "-"}%
 																	</div>
 																</div>
-															)}
 															<span className="text-[10px] uppercase text-muted-foreground font-medium">{stat.label}</span>
 														</div>
 													</div>

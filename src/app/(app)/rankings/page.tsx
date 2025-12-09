@@ -38,9 +38,13 @@ export default async function RankingsPage({
 				))}
 			</div>
 			<div className="w-full max-w-6xl flex justify-center gap-4 p-2">
-				<PlayerRankingsGrid
-					gamePlayers={gamePlayers.filter((p) => p.played)}
-				/>
+				{gamePlayers.length > 0 ? (
+					<PlayerRankingsGrid
+						gamePlayers={gamePlayers.filter((p) => p.played)}
+					/>
+				) : (
+					<p className="text-center mt-20 text-muted-foreground text-sm italic">No players have played today</p>
+				)}
 			</div>
 		</div>
 	);

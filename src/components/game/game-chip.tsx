@@ -19,56 +19,51 @@ export function GameChip({ game }: GameChipProps) {
 	return (
 		<div
 			className={`w-full border rounded-xl p-2 flex justify-between ${
-				game.status_code == 2
-					? "bg-muted/40 border-red-500/40"
-					: game.status_code == 3
-					? ""
-					: "bg-muted border-muted-foreground"
+				game.status_code == 1 ? "border-muted"
+				: game.status_code == 2 ? "bg-muted/40 border-red-500/40"
+				: game.status_code == 3 ? ""
+				: "border-red-500"
 			}`}
 		>
 			{/* Teams on the left */}
 			<div className="flex flex-col gap-2">
-				{/* Away team */}
-				<div className="flex items-center gap-2">
-					<Image
-						src={teamLogoURL(game.away_team.id)}
-						alt={game.away_team.name}
-						width={30}
-						height={30}
-					/>
-					<span
-						className={`text-2xl leading-none ${
-							winner === "away"
-								? "font-semibold"
-								: winner === "home"
-								? "text-muted-foreground"
-								: ""
-						}`}
-					>
-						{game.status_code > 1 && game.team_away_score}
-					</span>
-				</div>
-
-				{/* Home team */}
-				<div className="flex items-center gap-2">
-					<Image
-						src={teamLogoURL(game.home_team.id)}
-						alt={game.home_team.name}
-						width={30}
-						height={30}
-					/>
-					<span
-						className={`text-2xl leading-none ${
-							winner === "home"
-								? "font-semibold"
-								: winner === "away"
-								? "text-muted-foreground"
-								: ""
-						}`}
-					>
-						{game.status_code > 1 && game.team_home_score}
-					</span>
-				</div>
+				{[
+					{
+						team: game.away_team,
+						score: game.team_away_score,
+						type: "away",
+					},
+					{
+						team: game.home_team,
+						score: game.team_home_score,
+						type: "home",
+					},
+				].map((teamData) => (
+					<div key={teamData.team.id} className="flex items-center gap-2">
+						<Image
+							src={teamLogoURL(teamData.team.id)}
+							alt={teamData.team.name}
+							width={36}
+							height={36}
+						/>
+						<div className="flex flex-col items-start">
+							<span
+								className={`text-2xl leading-none ${
+									winner === teamData.type
+										? "font-semibold"
+										: winner !== teamData.type && winner !== "tied"
+										? "text-muted-foreground"
+										: ""
+								}`}
+							>
+								{game.status_code > 1 && teamData.score}
+							</span>
+							<span className="text-xs text-muted-foreground">
+								{teamData.team.name}
+							</span>
+						</div>
+					</div>
+				))}
 			</div>
 
 			{/* Game info on right */}

@@ -3,13 +3,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import {
-	Select,
-	SelectTrigger,
-	SelectValue,
-	SelectContent,
-	SelectItem,
-} from "@/components/ui/select";
+
 import DatePicker from "@/components/date-picker";
 import { DateTime } from "luxon";
 
@@ -57,7 +51,7 @@ export function RankingsControls() {
 
 	// Initialize state from URL
 	const [date, setDate] = useState<Date>(() => getTargetDate(searchParams.get("date")));
-	const [scoringType, setScoringType] = useState(searchParams.get("scoringType") ?? "all");
+
 
 	// Sync from URL changes (backward navigation)
 	useEffect(() => {
@@ -69,8 +63,7 @@ export function RankingsControls() {
             setDate(newDate);
         }
         
-		const spScoring = searchParams.get("scoringType") ?? "all";
-		if (spScoring !== scoringType) setScoringType(spScoring);
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [searchParams]);
 
@@ -81,13 +74,12 @@ export function RankingsControls() {
         const dateStr = toISODateString(date);
         if (dateStr) params.set("date", dateStr);
         
-		if (scoringType && scoringType !== "all") params.set("scoringType", scoringType);
-		else params.delete("scoringType");
+
 
 		const query = params.toString();
 		router.replace(query ? `/rankings?${query}` : `/rankings`);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [date, scoringType]);
+	}, [date]);
 
 	// Auto-refresh logic
 	useEffect(() => {
@@ -100,20 +92,7 @@ export function RankingsControls() {
 	return (
 		<div className="w-full max-w-md mb-10 flex flex-col gap-4">
 			<div className="flex gap-8 items-center justify-center">
-				<Select value={scoringType} onValueChange={setScoringType}>
-					<SelectTrigger className="w-[180px]">
-						<SelectValue placeholder="Scoring" />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="all">All</SelectItem>
-						<SelectItem value="points">Points</SelectItem>
-						<SelectItem value="9-categories">
-							9-categories
-						</SelectItem>
-					</SelectContent>
-				</Select>
-
-                <DatePicker 
+				<DatePicker 
                     date={date} 
                     setDate={setDate} 
                 />
