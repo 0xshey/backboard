@@ -13,8 +13,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { formatSecondsToMMSS, valueToRGB } from "@/lib/utils";
-import { DotIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
+import { DotIcon, ArrowUpIcon, ArrowDownIcon, ChevronUp, ChevronDown, ChevronsUp, ChevronsDown, Equal, EqualApproximately } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 
@@ -43,7 +45,9 @@ export function PlayerRankingsGrid({ gamePlayers, loading }: { gamePlayers?: any
 
 	
 	const [showImage, setShowImage] = useState<Boolean>(false)
+
 	const [shortName, setShortName] = useState<Boolean>(false)
+    const [showDeltas, setShowDeltas] = useState<boolean>(false);
 
 
     // Sorting state
@@ -114,6 +118,14 @@ export function PlayerRankingsGrid({ gamePlayers, loading }: { gamePlayers?: any
 				</Button>
 			</div>
 			
+			<div className="flex items-center space-x-2">
+				<Checkbox id="show-deltas" checked={showDeltas} onCheckedChange={(c) => setShowDeltas(!!c)} />
+				<Label htmlFor="show-deltas" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+					Show Deltas
+				</Label>
+			</div>
+
+			
 			<div className="overflow-x-auto w-full pb-4">
 				<div className="min-w-max flex flex-col gap-2">
 				
@@ -130,10 +142,10 @@ export function PlayerRankingsGrid({ gamePlayers, loading }: { gamePlayers?: any
 
 						return (
 							<div className="flex flex-col p-0 rounded-xl" key={player_game.player.id}>
-								<div className="w-full flex gap-2">
+								<div className="w-full flex items-center gap-2">
 									
 									{/* Sticky Player Details Column */}
-									<div className="sticky left-0 z-10 w-40 md:w-50 h-full flex items-center  bg-linear-to-r from-background via-background to-background/0">
+									<div className="sticky left-0 z-10 w-40 md:w-50 h-full flex items-center bg-linear-to-r from-background via-background to-background/0">
 										<p className="text-sm text-muted-foreground/50 mr-2">{index + 1}</p>
 										
 										{/* Player Image */}
@@ -173,8 +185,7 @@ export function PlayerRankingsGrid({ gamePlayers, loading }: { gamePlayers?: any
 												/>
 												{player_game.starter && 
 													<div className="flex items-center gap-1 leading-none">
-														<DotIcon className="w-2 h-2" />
-														<div className="text-xs leading-none text-muted-foreground/50">S</div>
+														<DotIcon className="w-3 h-3" />
 													</div>
 												}
 											</div>
@@ -199,18 +210,62 @@ export function PlayerRankingsGrid({ gamePlayers, loading }: { gamePlayers?: any
 											{/* Counting stats */}
 											<div className="h-full items-center grid grid-cols-6 rounded w-full md:w-96 p-2">
 												{[
-													{ value: player_game.points, label: 'pts' },
-													{ value: player_game.rebounds_total, label: 'reb' },
-													{ value: player_game.assists, label: 'ast' },
-													{ value: player_game.steals, label: 'stl' },
-													{ value: player_game.blocks, label: 'blk' },
-													{ value: player_game.turnovers, label: 'tov' },
-												].map((stat, index) => (
+													{ value: player_game.points, label: 'pts', avg: player_game.player.season_averages?.[0]?.points },
+													{ value: player_game.rebounds_total, label: 'reb', avg: player_game.player.season_averages?.[0]?.rebounds_total },
+													{ value: player_game.assists, label: 'ast', avg: player_game.player.season_averages?.[0]?.assists },
+													{ value: player_game.steals, label: 'stl', avg: player_game.player.season_averages?.[0]?.steals },
+													{ value: player_game.blocks, label: 'blk', avg: player_game.player.season_averages?.[0]?.blocks },
+													{ value: player_game.turnovers, label: 'tov', avg: player_game.player.season_averages?.[0]?.turnovers, invertColor: true },
+												].map((stat, index) => {
+
+                                                    const delta = stat.avg ? stat.value - stat.avg : 0;
+                                                    const isPositive = delta > 0;
+                                                    const colorClass = stat.invertColor 
+                                                        ? (isPositive ? "text-red-500" : "text-green-500")
+                                                        : (isPositive ? "text-green-500" : "text-red-500");
+                                                    
+                                                    const pctDiff = stat.avg ? Math.abs(delta / stat.avg) : 0;
+                                                    const isLargeDiff = pctDiff > 0.75;
+                                                    const isSmallDiff = pctDiff <= 0.20 && stat.avg !== 0;
+
+                                                    let Icon;
+													Icon = isPositive
+														? (isLargeDiff ? ChevronsUp : ChevronUp)
+														: (isLargeDiff ? ChevronsDown : ChevronDown);
+
+                                                    if (showDeltas) {
+                                                         return (
+                                                            <div key={index} className={cn(
+                                                                "col-span-1 w-full flex flex-col justify-between items-start px-1 py-1 rounded-lg bg-background/50 border border-border/50",
+                                                                "h-6 w-14"
+                                                            )}>
+                                                                <div className="w-full flex justify-start">
+																	<div className="text-sm font-semibold leading-none">{stat.value}</div>
+																	<div className={cn("flex items-center")} 
+																		style={{ 
+																			color: valueToRGB({ value: delta, min: -0.75, max: 0.75, midColor: [180, 180, 180, 0.5] }),
+																			// color: `rgba(${valueToRGB({ value: delta, min: -0.75, max: 0.75, midColor: [200, 200, 200, 1] }).match(/\d+/g)?.slice(0, 3).join(', ')}, ${Math.abs(delta) / 0.2})`
+																		}} 
+																	>
+																		<Icon className="w-3 h-3" />
+																		<span className="text-[10px] font-medium leading-none">
+																			{Math.abs(delta).toFixed(1)}
+																		</span>
+																	</div>	 
+																</div>
+																<span className="text-[0.5rem] leading-none text-muted-foreground uppercase tracking-wider">{stat.label}</span>
+                                                            </div>
+                                                         )
+                                                    }
+
+                                                    return (
 													<div key={index} className="col-span-1 w-full flex flex-col md:flex-row justify-center items-end relative gap-0.5 min-w-8 border border-transparent hover:border-blue-500 cursor-pointer">
-														<div className="text-sm leading-none font-semibold">{stat.value}</div>
+														<div className="text-sm leading-none font-semibold flex items-end">
+                                                            {stat.value}
+                                                        </div>
 														<span className="text-[0.6rem] leading-none text-muted-foreground uppercase tracking-wider font-stretch-75%">{stat.label}</span>
 													</div>
-												))}
+												)})}
 											</div>
 
 											{/* FP */}
