@@ -61,6 +61,9 @@ const config: Config = {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			fontSize: {
+				'2xs': ["0.625rem", { lineHeight: "0.875rem" }],
 			}
 		}
 	},
