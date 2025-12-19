@@ -4,14 +4,9 @@ import { ThemeToggle } from "@/components/theme-toggle";
 interface NavigationBarProps {
 	signedIn: boolean;
 	user: any | null;
-	signOutAction?: () => Promise<void>;
 }
 
-export function NavigationBar({
-	signedIn,
-	user,
-	signOutAction,
-}: NavigationBarProps) {
+export function NavigationBar({ signedIn, user }: NavigationBarProps) {
 	return (
 		<header className="bg-background sticky top-0 z-50">
 			<div className="mx-auto flex w-full max-w-xl items-center justify-between gap-8 px-4 py-4 sm:px-6">

@@ -1,6 +1,5 @@
 import { NavigationBar } from "@/components/navigation/navigation-bar";
 import { createClient } from "@/lib/supabase/server";
-import { signOutAction } from "@/app/(auth)/actions";
 
 export async function NavigationBarProvider({
 	children,
@@ -19,11 +18,7 @@ export async function NavigationBarProvider({
 
 	return (
 		<>
-			<NavigationBar
-				signedIn={signedIn}
-				user={user ?? null}
-				signOutAction
-			/>
+			<NavigationBar signedIn={signedIn} user={user ?? null} />
 			{/* <p>{JSON.stringify(user, null, 2)}</p> */}
 			<main className="pt-20">{children}</main>
 		</>
