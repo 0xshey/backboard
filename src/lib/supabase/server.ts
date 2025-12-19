@@ -4,6 +4,10 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { Database } from "@/types/supabase";
+import { loadEnvConfig } from "@next/env";
+
+const projectDir = process.cwd();
+loadEnvConfig(projectDir);
 
 export async function createClient() {
 	const cookieStore = await cookies();

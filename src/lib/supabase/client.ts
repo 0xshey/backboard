@@ -1,5 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/supabase";
+import { loadEnvConfig } from "@next/env";
+
+const projectDir = process.cwd();
+loadEnvConfig(projectDir);
 
 // Client-side (browser) Supabase instance
 export const supabaseClient = createClient<Database>(
