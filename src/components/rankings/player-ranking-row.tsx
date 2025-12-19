@@ -1,14 +1,7 @@
 import Image from "next/image";
 import { formatSecondsToMMSS, valueToRGB, cn } from "@/lib/utils";
 import { teamLogoURL } from "@/lib/image-urls";
-import {
-	ArrowUpIcon,
-	ArrowDownIcon,
-	ChevronUp,
-	ChevronDown,
-	ChevronsUp,
-	ChevronsDown,
-} from "lucide-react";
+import { ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from "lucide-react";
 import {
 	COLUMN_WIDTHS,
 	RANKINGS_GRID_DEBUG as DEBUG,
@@ -32,7 +25,7 @@ export function PlayerRankingRow({
 	return (
 		<div
 			className={cn(
-				"flex items-center gap-1 h-9 md:h-10 border hover:bg-muted/30 transition-colors group/row",
+				"flex items-center gap-1 h-9 md:h-10 border hover:bg-muted/30 transition-colors group/row rounded-xl",
 				showMoreData && "h-11 md:h-12",
 				!DEBUG && "border-transparent"
 			)}
@@ -41,7 +34,7 @@ export function PlayerRankingRow({
 			<div
 				className={cn(
 					"sticky left-0 z-10 ",
-					"overflow-x-hidden h-full flex items-center px-2",
+					"overflow-x-hidden h-full flex items-center px-0 md:px-2",
 					"rounded-lg border cursor-pointer hover:border-border transition-colors backdrop-blur-sm",
 					COLUMN_WIDTHS.player,
 					!DEBUG && "border-transparent"
@@ -52,7 +45,7 @@ export function PlayerRankingRow({
 				</p>
 
 				{/* Player Name & Team */}
-				<div className="flex h-full items-center gap-2 text-muted-foreground py-1 rounded-full">
+				<div className="flex h-full items-center gap-2 text-muted-foreground py-1 w-full">
 					<div className="min-w-4 items-center gap-1">
 						<Image
 							src={teamLogoURL(player_game.team.id)}
@@ -64,16 +57,24 @@ export function PlayerRankingRow({
 						/>
 					</div>
 
-					<div className="w-full flex flex-col md:flex-row items-start md:items-center md:gap-1 truncate">
+					<div className="w-full flex flex-col md:flex-row items-start md:items-center md:gap-1">
 						<p
 							className={cn(
-								"whitespace-nowrap text-xs md:text-sm font-medium text-muted-foreground md:text-foreground",
-								isPlayerSort && "opacity-50"
+								"text-xs md:text-base font-medium max-w-16 truncate text-muted-foreground md:text-foreground",
+								isPlayerSort && "opacity-50",
+								player_game.player.first_name.length >= 9 &&
+									"font-stretch-75% md:font-stretch-100%"
 							)}
 						>
 							{player_game.player.first_name}
 						</p>
-						<p className="whitespace-nowrap truncate text-xs md:text-sm font-medium text-foreground">
+						<p
+							className={cn(
+								"text-xs md:text-base font-medium max-w-16 truncate text-foreground",
+								player_game.player.last_name.length >= 9 &&
+									"font-stretch-75% md:font-stretch-100%"
+							)}
+						>
 							{player_game.player.last_name}
 						</p>
 					</div>

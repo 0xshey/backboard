@@ -24,7 +24,7 @@ export function ColumnHeader({
 		<div
 			className={cn(
 				"w-full h-full flex items-center gap-1 justify-center transition-colors border",
-				"cursor-pointer text-xs md:text-sm font-mono border hover:bg-muted/50 hover:border-border rounded-md text-muted-foreground",
+				"cursor-pointer text-xs md:text-sm font-mono border hover:bg-muted/50 hover:border-border rounded-md text-muted-foreground backdrop-blur-sm",
 				isActive && "text-foreground font-medium bg-muted/30",
 				!DEBUG && "border-transparent",
 				className
