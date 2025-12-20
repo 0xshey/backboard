@@ -1,14 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/supabase";
-import { loadEnvConfig } from "@next/env";
-
-const projectDir = process.cwd();
-loadEnvConfig(projectDir);
 
 // Client-side (browser) Supabase instance
 export const supabaseClient = createClient<Database>(
-	process.env.SUPABASE_URL!,
-	process.env.SUPABASE_ANON_KEY!,
+	process.env.NEXT_PUBLIC_SUPABASE_URL!,
+	process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 	{
 		auth: {
 			persistSession: true,
