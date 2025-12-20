@@ -60,7 +60,7 @@ export function PlayerRankingRow({
 					<div className="w-full flex flex-col md:flex-row items-start md:items-center md:gap-1">
 						<p
 							className={cn(
-								"text-xs md:text-base font-medium max-w-16 truncate text-muted-foreground md:text-foreground",
+								"text-xs md:text-base font-medium max-w-16 md:max-w-40 truncate text-muted-foreground md:text-foreground",
 								isPlayerSort && "opacity-50",
 								player_game.player.first_name.length >= 9 &&
 									"font-stretch-75% md:font-stretch-100%"
@@ -70,7 +70,7 @@ export function PlayerRankingRow({
 						</p>
 						<p
 							className={cn(
-								"text-xs md:text-base font-medium max-w-16 truncate text-foreground",
+								"text-xs md:text-base font-medium max-w-16 md:max-w-40 truncate text-foreground",
 								player_game.player.last_name.length >= 9 &&
 									"font-stretch-75% md:font-stretch-100%"
 							)}

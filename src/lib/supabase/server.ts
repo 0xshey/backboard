@@ -29,20 +29,3 @@ export async function createClient() {
 		}
 	);
 }
-
-/**
- * Helper: fetch user safely and handle invalid refresh tokens
- */
-export async function getUserOrRedirect() {
-	const supabase = await createClient();
-	const { data, error } = await supabase.auth.getUser();
-
-	if (
-		error?.code === "refresh_token_already_used" ||
-		error?.message?.includes("Invalid Refresh Token")
-	) {
-		redirect("/login?message=session_expired");
-	}
-
-	return data.user;
-}

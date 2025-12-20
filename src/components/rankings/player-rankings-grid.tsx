@@ -12,7 +12,7 @@ import { PlayerRankingRow } from "./player-ranking-row";
 
 export const RANKINGS_GRID_DEBUG = false;
 export const COLUMN_WIDTHS = {
-	player: "min-w-32 max-w-32 md:min-w-60 md:max-w-60",
+	player: "min-w-32 max-w-32 md:min-w-80 md:max-w-80",
 	minutes: "min-w-16",
 	stats: "min-w-70 md:min-w-80",
 	fp: "min-w-16 md:min-w-20",
