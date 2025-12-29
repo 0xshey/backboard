@@ -1,6 +1,7 @@
 "use client";
 
-import { valueToRGB } from "@/lib/utils";
+import { useState, useMemo } from "react";
+import { valueToRGB, cn } from "@/lib/utils";
 import type { PlayerConsistency } from "@/types";
 import {
 	Table,
@@ -10,30 +11,138 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { ArrowUpIcon, ArrowDownIcon } from "lucide-react";
+
+type SortField =
+	| "player"
+	| "games_played"
+	| "avg_fantasy_points"
+	| "consistency_std"
+	| "variation_pct";
+type SortDirection = "asc" | "desc" | "none";
+
+interface SortState {
+	field: SortField;
+	direction: SortDirection;
+}
 
 export function ConsistencyGrid({ data }: { data: PlayerConsistency[] }) {
-	const processedData = data
-		.filter(
+	const [sort, setSort] = useState<SortState>({
+		field: "variation_pct",
+		direction: "asc",
+	});
+
+	const handleSort = (field: SortField) => {
+		setSort((prev) => {
+			if (prev.field === field) {
+				if (prev.direction === "asc")
+					return { field, direction: "desc" };
+				if (prev.direction === "desc")
+					return { field: "variation_pct", direction: "asc" };
+			}
+			return { field, direction: "asc" };
+		});
+	};
+
+	const processedData = useMemo(() => {
+		let result = [...data].filter(
 			(player) => (player.games_missed ?? 0) <= (player.games_played ?? 0)
-		)
-		.sort((a, b) => (a.variation_pct ?? 0) - (b.variation_pct ?? 0));
+		);
+
+		if (sort.direction !== "none") {
+			result.sort((a, b) => {
+				let valA: any;
+				let valB: any;
+
+				if (sort.field === "player") {
+					valA = `${a.first_name} ${a.last_name}`.toLowerCase();
+					valB = `${b.first_name} ${b.last_name}`.toLowerCase();
+				} else {
+					valA = a[sort.field as keyof PlayerConsistency] ?? 0;
+					valB = b[sort.field as keyof PlayerConsistency] ?? 0;
+				}
+
+				if (valA < valB) return sort.direction === "asc" ? -1 : 1;
+				if (valA > valB) return sort.direction === "asc" ? 1 : -1;
+				return 0;
+			});
+		}
+
+		return result;
+	}, [data, sort]);
+
+	const HeaderCell = ({
+		label,
+		field,
+		className,
+	}: {
+		label: string;
+		field: SortField;
+		className?: string;
+	}) => {
+		const isActive = sort.field === field;
+		return (
+			<TableHead
+				className={cn(
+					"cursor-pointer select-none hover:bg-muted/50 transition-colors",
+					className
+				)}
+				onClick={() => handleSort(field)}
+			>
+				<div
+					className={cn(
+						"flex items-center gap-1",
+						className?.includes("text-right") && "justify-end"
+					)}
+				>
+					{label}
+					{isActive &&
+						(sort.direction === "asc" ? (
+							<ArrowUpIcon className="w-4 h-4" />
+						) : (
+							<ArrowDownIcon className="w-4 h-4" />
+						))}
+				</div>
+			</TableHead>
+		);
+	};
 
 	return (
 		<Table>
 			<TableHeader>
-				<TableRow className="font-semibold text-muted-foreground hover:bg-transparent">
-					<TableHead className="w-[300px]">Player</TableHead>
-					<TableHead className="text-right">Games (P/M)</TableHead>
-					<TableHead className="text-right">FP/G</TableHead>
-					<TableHead className="text-right">σ</TableHead>
-					<TableHead className="text-right">σ%</TableHead>
+				<TableRow className="font-semibold text-muted-foreground hover:bg-transparent border-b">
+					<HeaderCell
+						label="Player"
+						field="player"
+						className="w-[300px]"
+					/>
+					<HeaderCell
+						label="Games (P/M)"
+						field="games_played"
+						className="text-right"
+					/>
+					<HeaderCell
+						label="FP/G"
+						field="avg_fantasy_points"
+						className="text-right"
+					/>
+					<HeaderCell
+						label="σ"
+						field="consistency_std"
+						className="text-right"
+					/>
+					<HeaderCell
+						label="σ%"
+						field="variation_pct"
+						className="text-right"
+					/>
 				</TableRow>
 			</TableHeader>
 			<TableBody>
 				{processedData?.map((row) => (
 					<TableRow
 						key={row.player_id}
-						className="text-md md:text-xl font-semibold"
+						className="text-md md:text-xl font-semibold border-b last:border-0"
 					>
 						<TableCell>
 							{row.first_name} {row.last_name}
