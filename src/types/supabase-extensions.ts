@@ -9,12 +9,16 @@ export type GamePlayer = Database["public"]["Tables"]["game_player"]["Row"];
 export type GameTeam = Database["public"]["Tables"]["game_team"]["Row"];
 export type GameWeekFantasy =
 	Database["public"]["Tables"]["game_week_fantasy"]["Row"];
+export type PlayerConsistency =
+	Database["public"]["Tables"]["player_consistency"]["Row"];
 
 export type PlayerSeasonTotals =
 	Database["public"]["Tables"]["player_season_totals"]["Row"];
 
+/*
 export type FantasyTeam =
 	Database["public"]["Tables"]["fantasy_team_unlinked"]["Row"];
+*/
 
 export type PlayerWithGames = Player & {
 	games: GamePlayer[];

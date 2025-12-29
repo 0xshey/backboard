@@ -14,60 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      fantasy_player_unlinked: {
-        Row: {
-          fantasy_team: string
-          player: string
-        }
-        Insert: {
-          fantasy_team: string
-          player: string
-        }
-        Update: {
-          fantasy_team?: string
-          player?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fantasy_player_unlinked_fantasy_team_fkey"
-            columns: ["fantasy_team"]
-            isOneToOne: false
-            referencedRelation: "fantasy_team_unlinked"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fantasy_player_unlinked_player_fkey"
-            columns: ["player"]
-            isOneToOne: false
-            referencedRelation: "player"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      fantasy_team_unlinked: {
-        Row: {
-          created_at: string
-          id: string
-          label: string
-          provider: Database["public"]["Enums"]["fantasy_provider"] | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          label: string
-          provider?: Database["public"]["Enums"]["fantasy_provider"] | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          label?: string
-          provider?: Database["public"]["Enums"]["fantasy_provider"] | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       game: {
         Row: {
           arena_city: string | null
@@ -642,6 +588,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      player_consistency: {
+        Row: {
+          as_of_date: string
+          avg_fantasy_points: number | null
+          avg_fantasy_points_l10: number | null
+          consistency_std: number | null
+          consistency_std_l10: number | null
+          first_name: string | null
+          games_missed: number | null
+          games_played: number | null
+          last_name: string | null
+          player_id: string
+          variation_pct: number | null
+          variation_pct_l10: number | null
+        }
+        Insert: {
+          as_of_date?: string
+          avg_fantasy_points?: number | null
+          avg_fantasy_points_l10?: number | null
+          consistency_std?: number | null
+          consistency_std_l10?: number | null
+          first_name?: string | null
+          games_missed?: number | null
+          games_played?: number | null
+          last_name?: string | null
+          player_id: string
+          variation_pct?: number | null
+          variation_pct_l10?: number | null
+        }
+        Update: {
+          as_of_date?: string
+          avg_fantasy_points?: number | null
+          avg_fantasy_points_l10?: number | null
+          consistency_std?: number | null
+          consistency_std_l10?: number | null
+          first_name?: string | null
+          games_missed?: number | null
+          games_played?: number | null
+          last_name?: string | null
+          player_id?: string
+          variation_pct?: number | null
+          variation_pct_l10?: number | null
+        }
+        Relationships: []
       }
       player_season_averages: {
         Row: {
