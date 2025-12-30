@@ -54,19 +54,12 @@ export default async function Page() {
 		<div className="w-full mx-auto pb-24">
 			{/* Header */}
 			<div className="w-full max-w-7xl mx-auto h-80 flex items-center justify-center rounded-xl mt-24">
-				<h1 className="text-[15rem] font-semibold tracking-tighter">
+				<h1 className="text-[6rem] md:text-[8rem] lg:text-[15rem] font-semibold tracking-tighter">
 					Backboard
 				</h1>
 			</div>
 
-			<div className="w-full max-w-7xl mx-auto px-4 mt-24">
-				<TopPerformers
-					gamePlayers={gamePlayers || []}
-					nyDate={nyDate.toISOString()}
-				/>
-			</div>
-
-			<div className="w-full max-w-xl mx-auto mt-24 flex items-center gap-2 p-2">
+			<div className="w-full max-w-xl mx-auto mt-24 flex items-center justify-center gap-2 p-2">
 				<Button asChild variant="default">
 					<Link href={"/rankings"}>
 						Today's Rankings <ListOrdered />
@@ -78,6 +71,13 @@ export default async function Page() {
 					</Link>
 				</Button>
 				<ThemeToggle />
+			</div>
+
+			<div className="w-full max-w-7xl mx-auto px-4 mt-24">
+				<TopPerformers
+					gamePlayers={gamePlayers || []}
+					nyDate={nyDate.toISOString()}
+				/>
 			</div>
 
 			{/* Landing tiles */}

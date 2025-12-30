@@ -40,7 +40,7 @@ export function TopPerformers({ gamePlayers, nyDate }: TopPerformersProps) {
 				</p>
 			</div>
 
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 w-full">
+			<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
 				{gamePlayers?.map((gp: any) => (
 					<div
 						key={gp.player_id}
