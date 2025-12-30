@@ -1028,6 +1028,16 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_top_performers_recent: {
+        Args: never
+        Returns: {
+          fp: number
+          game: Json
+          game_player_id: string
+          player: Json
+          team: Json
+        }[]
+      }
     }
     Enums: {
       conference: "East" | "West"
