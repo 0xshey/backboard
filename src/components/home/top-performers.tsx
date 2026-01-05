@@ -40,11 +40,11 @@ export function TopPerformers({ gamePlayers, nyDate }: TopPerformersProps) {
 				</p>
 			</div>
 
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 w-full">
+			<div className="w-full flex items-start gap-4 overflow-x-auto justify-start xl:justify-center px-4 pb-4">
 				{gamePlayers?.map((gp: any) => (
 					<div
 						key={gp.player_id}
-						className="relative flex flex-col items-center group overflow-hidden rounded-3xl bg-muted/10 backdrop-blur-sm border border-border/50 transition-all duration-300 hover:border-border hover:bg-muted/20"
+						className="relative flex flex-col items-center min-w-60 group overflow-hidden rounded-3xl bg-muted/10 backdrop-blur-sm border border-border/50 transition-all duration-300 hover:border-border hover:bg-muted/20"
 					>
 						{/* Background effects */}
 						<div
@@ -88,7 +88,7 @@ export function TopPerformers({ gamePlayers, nyDate }: TopPerformersProps) {
 						</div>
 
 						{/* Statline */}
-						<div className="grid grid-cols-6 gap-0 w-full border-t border-border/30 pt-4">
+						<div className="grid grid-cols-6 gap-0 w-full border-t border-border/30 pt-4 px-2">
 							{[
 								{ label: "PTS", val: gp.points },
 								{

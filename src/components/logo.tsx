@@ -1,30 +1,29 @@
-import Image from "next/image";
+import { cn } from "@/lib/utils";
+
+interface LogoProps {
+	fill?: string;
+	size?: number;
+	className?: string;
+}
 
 export function Logo({
-	theme = "light",
-	withText = true,
+	fill = "currentColor",
+	size = 32,
 	className,
-}: {
-	theme?: "light" | "dark";
-	withText?: boolean;
-	className?: string;
-}) {
-	const logoURL =
-		theme == "dark" ? "/backboard-logo-white.png" : "/backboard-logo.png";
-
+}: LogoProps) {
 	return (
-		<div className={`flex items-center gap-2 ${className}`}>
-			<Image src={logoURL} height={30} width={30} alt="Backboard Logo" />
-			{withText && (
-				<>
-					<h1 className="text-xl font-semibold tracking-tighter text-foreground">
-						Backboard
-					</h1>
-					<span className="text-xs text-muted-foreground px-2 py-0.5 bg-muted rounded-lg">
-						alpha
-					</span>
-				</>
-			)}
-		</div>
+		<svg
+			width={size}
+			height={size}
+			viewBox="0 0 706 420"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			className={className}
+		>
+			<path
+				d="M46.7771 41.2118C50.1553 17.5647 70.4075 0 94.2947 0H611.034C634.922 0 655.174 17.5646 658.552 41.2118L704.838 365.212C708.969 394.129 686.53 420 657.32 420H48.009C18.7987 420 -3.63953 394.129 0.49144 365.212L46.7771 41.2118Z"
+				fill={fill}
+			/>
+		</svg>
 	);
 }

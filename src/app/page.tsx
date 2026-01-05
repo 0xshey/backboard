@@ -51,34 +51,18 @@ export default async function Page() {
 
 	return (
 		// Layout
-		<div className="w-full mx-auto pb-24">
+		<div className="w-full mx-auto pb-24 flex flex-col items-center">
 			{/* Header */}
-			<div className="w-full max-w-7xl mx-auto h-80 flex items-center justify-center rounded-xl mt-24">
-				<h1 className="text-[15rem] font-semibold tracking-tighter">
+			<div className="w-full max-w-7xl mx-auto h-40 md:h-80 flex items-center justify-center rounded-xl mt-24">
+				<h1 className="text-7xl md:text-[15rem] font-semibold tracking-tighter">
 					Backboard
 				</h1>
 			</div>
 
-			<div className="w-full max-w-7xl mx-auto px-4 mt-24">
-				<TopPerformers
-					gamePlayers={gamePlayers || []}
-					nyDate={nyDate.toISOString()}
-				/>
-			</div>
-
-			<div className="w-full max-w-xl mx-auto mt-24 flex items-center gap-2 p-2">
-				<Button asChild variant="default">
-					<Link href={"/rankings"}>
-						Today's Rankings <ListOrdered />
-					</Link>
-				</Button>
-				<Button asChild variant="secondary">
-					<Link href={"/consistency"}>
-						Season Consistency <ChartScatter />
-					</Link>
-				</Button>
-				<ThemeToggle />
-			</div>
+			<TopPerformers
+				gamePlayers={gamePlayers || []}
+				nyDate={nyDate.toISOString()}
+			/>
 
 			{/* Landing tiles */}
 			{/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mt-8 w-full max-w-6xl mx-auto">
