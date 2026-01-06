@@ -28,6 +28,11 @@ export type PlayerWithSeasonTotals = Player & {
 	season_totals: PlayerSeasonTotals;
 };
 
+export type GameLog = GamePlayer & {
+	game: Game;
+	opp_team: Team;
+};
+
 export type TeamGame = Game & {
 	home_team: Team;
 	away_team: Team;

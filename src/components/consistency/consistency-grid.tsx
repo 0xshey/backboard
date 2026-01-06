@@ -4,8 +4,10 @@ import { useState, useMemo } from "react";
 import { valueToRGB, cn } from "@/lib/utils";
 import type { PlayerConsistency } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpIcon, ArrowDownIcon } from "lucide-react";
+import { ArrowUpIcon, ArrowDownIcon, Eraser } from "lucide-react";
 import { GameBreakdown } from "./game-breakdown";
+import { useGameCache } from "@/components/providers/game-cache-provider";
+import { Button } from "@/components/ui/button";
 
 type SortField =
 	| "player"
@@ -21,6 +23,7 @@ interface SortState {
 }
 
 export function ConsistencyGrid({ data }: { data: PlayerConsistency[] }) {
+	const { clearCache, cacheSize } = useGameCache();
 	const [expandedPlayerId, setExpandedPlayerId] = useState<string | null>(
 		null
 	);
@@ -100,6 +103,18 @@ export function ConsistencyGrid({ data }: { data: PlayerConsistency[] }) {
 
 	return (
 		<div className="w-full flex flex-col">
+			<div className="flex justify-end px-4 py-2">
+				<Button
+					variant="ghost"
+					size="sm"
+					onClick={clearCache}
+					disabled={cacheSize === 0}
+					className="text-xs text-muted-foreground hover:text-destructive"
+				>
+					<Eraser className="w-3 h-3 mr-2" /> Clear Cache ({cacheSize}
+					)
+				</Button>
+			</div>
 			{/* Header */}
 			<div className="grid grid-cols-[1.5fr_0.8fr_0.8fr_0.8fr_0.8fr] gap-2 px-4 py-3 border-b text-sm font-medium text-muted-foreground items-center">
 				<HeaderCell label="Player" field="player" />
