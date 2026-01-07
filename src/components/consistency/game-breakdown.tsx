@@ -55,7 +55,7 @@ export function GameBreakdown({ playerId }: GameBreakdownProps) {
 
 	return (
 		<div className="w-full overflow-hidden py-2">
-			<div className="flex items-end gap-2 overflow-x-auto pb-4 px-1 scrollbar-hide">
+			<div className="flex items-end gap-2 overflow-x-auto pb-4 px-1 pl-4 scrollbar-hide">
 				{gameLogs?.map((log) => {
 					const date = log.game?.datetime
 						? new Date(log.game.datetime)
@@ -65,13 +65,14 @@ export function GameBreakdown({ playerId }: GameBreakdownProps) {
 						value: fpValue,
 						midColor: [200, 200, 200, 1],
 					});
+					const played = log.played;
 
 					return (
 						<div
 							key={log.game_id}
 							className="flex flex-col items-center gap-1 flex-shrink-0"
 						>
-							<span className="text-[10px] text-muted-foreground font-mono">
+							<span className="text-[10px] text-muted-foreground font-sans tracking-wide">
 								{date.toLocaleDateString(undefined, {
 									month: "numeric",
 									day: "numeric",
@@ -81,16 +82,24 @@ export function GameBreakdown({ playerId }: GameBreakdownProps) {
 								<PopoverTrigger asChild>
 									<div
 										className={cn(
-											"min-w-10 h-8 flex items-center justify-center rounded cursor-pointer transition-all hover:scale-110 active:scale-95 border bg-muted/30"
+											"min-w-8 h-8 flex items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 active:scale-95 border bg-muted/30"
 										)}
 										style={{
-											color: color,
-											borderColor: color,
+											color: "white",
+											backgroundColor: played
+												? color
+												: "transparent",
 										}}
 									>
-										<span className="font-bold text-xs">
-											{fpValue.toFixed(0)}
-										</span>
+										{played ? (
+											<span className="font-medium text-xs">
+												{fpValue.toFixed(0)}
+											</span>
+										) : (
+											<span className="font-medium text-xs font-stretch-70% text-muted-foreground">
+												DNP
+											</span>
+										)}
 									</div>
 								</PopoverTrigger>
 								<PopoverContent

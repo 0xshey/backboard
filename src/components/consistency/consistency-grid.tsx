@@ -10,6 +10,7 @@ import { useGameCache } from "@/components/providers/game-cache-provider";
 import { Button } from "@/components/ui/button";
 
 type SortField =
+	| "index"
 	| "player"
 	| "games_played"
 	| "avg_fantasy_points"
@@ -105,18 +106,18 @@ export function ConsistencyGrid({ data }: { data: PlayerConsistency[] }) {
 		<div className="w-full flex flex-col">
 			<div className="flex justify-end px-4 py-2">
 				<Button
-					variant="ghost"
+					variant="outline"
 					size="sm"
 					onClick={clearCache}
 					disabled={cacheSize === 0}
-					className="text-xs text-muted-foreground hover:text-destructive"
+					className="text-xs text-muted-foreground hover:bg-destructive flex items-center"
 				>
-					<Eraser className="w-3 h-3 mr-2" /> Clear Cache ({cacheSize}
-					)
+					<Eraser className="w-3 h-3" /> Clear Cache ({cacheSize})
 				</Button>
 			</div>
 			{/* Header */}
-			<div className="grid grid-cols-[1.5fr_0.8fr_0.8fr_0.8fr_0.8fr] gap-2 px-4 py-3 border-b text-sm font-medium text-muted-foreground items-center">
+			<div className="grid grid-cols-[0.2fr_1.5fr_0.8fr_0.8fr_0.8fr_0.8fr] gap-2 px-2 py-3 border-b text-sm font-medium text-muted-foreground items-center">
+				<HeaderCell label="" field="index" />
 				<HeaderCell label="Player" field="player" />
 				<HeaderCell
 					label="Games (P/M)"
@@ -142,7 +143,7 @@ export function ConsistencyGrid({ data }: { data: PlayerConsistency[] }) {
 
 			{/* Body */}
 			<div className="flex flex-col">
-				{processedData?.map((row) => (
+				{processedData?.map((row, index) => (
 					<div
 						key={row.player_id}
 						className="border-b last:border-0 transition-colors"
@@ -155,8 +156,11 @@ export function ConsistencyGrid({ data }: { data: PlayerConsistency[] }) {
 										: row.player_id
 								)
 							}
-							className="grid grid-cols-[1.5fr_0.8fr_0.8fr_0.8fr_0.8fr] gap-2 px-4 py-3 items-center cursor-pointer hover:bg-muted/30 text-md md:text-xl font-semibold"
+							className="grid grid-cols-[0.2fr_1.5fr_0.8fr_0.8fr_0.8fr_0.8fr] gap-2 px-2 py-3 items-center cursor-pointer hover:bg-muted/30 text-sm md:text-xl font-semibold"
 						>
+							<div className="text-center text-muted-foreground">
+								{index + 1}
+							</div>
 							<div className="truncate">
 								{row.first_name} {row.last_name}
 							</div>
