@@ -91,7 +91,10 @@ export function PlayerRankingRow({
 				>
 					<div className="w-full flex flex-col justify-center items-end gap-0.5 px-1 py-1 relative">
 						<div
-							className={`w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse absolute left-1.5`}
+							className={cn(
+								"w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse absolute left-1.5",
+								player_game.game.status_code != 2 && "hidden"
+							)}
 						/>
 						<p className="text-sm md:text-base font-semibold leading-none">
 							{
