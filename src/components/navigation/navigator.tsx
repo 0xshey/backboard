@@ -71,7 +71,10 @@ export default function Navigator({ links = [], className }: NavigatorProps) {
 					layout="position"
 					className="flex items-center justify-between w-full pl-2"
 				>
-					<Link href="/" className="p-1 flex items-center gap-2">
+					<Link
+						href="/"
+						className="p-1 flex items-center gap-2 hover:text-brand transition-colors duration-200"
+					>
 						<Logo className="text-foreground" />
 						<span className="text-xl font-semibold tracking-tighter">
 							Backboard

@@ -2,6 +2,24 @@
 
 @config '../../tailwind.config.ts';
 
+@theme {
+	/* Brand Spectrum */
+	--color-bright-sun-50: #fefbe8;
+	--color-bright-sun-100: #fff8c2;
+	--color-bright-sun-200: #ffec89;
+	--color-bright-sun-300: #ffd632; /* Brand Main */
+	--color-bright-sun-400: #fdc412;
+	--color-bright-sun-500: #ecab06;
+	--color-bright-sun-600: #cc8302;
+	--color-bright-sun-700: #a35c05;
+	--color-bright-sun-800: #86480d;
+	--color-bright-sun-900: #723b11;
+	--color-bright-sun-950: #431d05;
+
+	/* Brand Alias */
+	--color-brand: var(--color-bright-sun-300);
+}
+
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
