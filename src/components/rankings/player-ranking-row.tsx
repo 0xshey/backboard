@@ -10,13 +10,11 @@ import {
 
 interface PlayerRankingRowProps {
 	player_game: any;
-	showMoreData: boolean;
 	sortField: string;
 }
 
 export function PlayerRankingRow({
 	player_game,
-	showMoreData,
 	sortField,
 }: PlayerRankingRowProps) {
 	const playerName = `${player_game.player.first_name} ${player_game.player.last_name}`;
@@ -27,7 +25,6 @@ export function PlayerRankingRow({
 		<div
 			className={cn(
 				"flex items-center gap-1 h-9 md:h-10 border hover:bg-muted/30 transition-colors group/row rounded-xl",
-				showMoreData && "h-11 md:h-12",
 				!DEBUG && "border-transparent"
 			)}
 		>
@@ -58,10 +55,10 @@ export function PlayerRankingRow({
 						/>
 					</div>
 
-					<div className="w-full flex flex-col md:flex-row items-start md:items-center md:gap-1">
+					<div className="w-full max-w-18 md:max-w-60 flex flex-col md:flex-row items-start md:items-center md:gap-1">
 						<p
 							className={cn(
-								"text-xs md:text-base font-medium max-w-16 md:max-w-40 truncate text-muted-foreground md:text-foreground",
+								"text-xs md:text-base font-base truncate text-muted-foreground md:text-foreground",
 								isPlayerSort && "opacity-50",
 								player_game.player.first_name.length >= 9 &&
 									"font-stretch-75% md:font-stretch-100%"
@@ -71,7 +68,7 @@ export function PlayerRankingRow({
 						</p>
 						<p
 							className={cn(
-								"text-xs md:text-base font-medium max-w-16 md:max-w-40 truncate text-foreground",
+								"text-xs md:text-base font-base truncate text-foreground",
 								player_game.player.last_name.length >= 9 &&
 									"font-stretch-75% md:font-stretch-100%"
 							)}
@@ -89,13 +86,24 @@ export function PlayerRankingRow({
 					className={cn(
 						"flex justify-center items-center rounded-lg min-h-full relative border transition-colors cursor-pointer",
 						COLUMN_WIDTHS.minutes,
-						player_game.game.status_code == 2 && "border-red-500",
 						!DEBUG && "border-transparent"
 					)}
 				>
-					<p className="text-xs md:text-sm text-muted-foreground font-mono">
-						{formatSecondsToMMSS(player_game.seconds)}
-					</p>
+					<div className="w-full flex flex-col justify-center items-end gap-0.5 px-1 py-1 relative">
+						<div
+							className={`w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse absolute left-1.5`}
+						/>
+						<p className="text-sm md:text-base font-semibold leading-none">
+							{
+								formatSecondsToMMSS(player_game.seconds).split(
+									":"
+								)[0]
+							}
+						</p>
+						<span className="text-[0.5rem] md:text-[0.6rem] leading-none text-muted-foreground uppercase tracking-wider">
+							min
+						</span>
+					</div>
 				</div>
 
 				{/* Counting stats */}
@@ -181,7 +189,7 @@ export function PlayerRankingRow({
 								)}
 							>
 								{/* Value Row */}
-								<div className="w-full flex justify-start items-end gap-0.5">
+								<div className="w-full flex flex-col justify-center items-end gap-0.5">
 									<div
 										className={cn(
 											"text-sm md:text-base font-semibold leading-none",
@@ -195,42 +203,6 @@ export function PlayerRankingRow({
 										{stat.label}
 									</span>
 								</div>
-
-								{/* Delta / Info Row */}
-								{showMoreData && (
-									<div
-										className={cn(
-											"w-full flex items-center justify-start"
-										)}
-										style={{
-											color: valueToRGB({
-												value: stat.invertColor
-													? scaledDelta * -1
-													: scaledDelta,
-												min: -0.75,
-												max: 0.75,
-												midColor: [180, 180, 180, 0.5],
-											}),
-										}}
-									>
-										<span
-											className={cn(
-												"text-[10px] md:text-xs font-medium leading-none",
-												isSortedByThisDelta &&
-													"text-sm md:text-base font-bold"
-											)}
-										>
-											{Math.abs(delta).toFixed(1)}
-										</span>
-										<Icon
-											className={cn(
-												"w-3 h-3",
-												isSortedByThisDelta &&
-													"w-4 h-4 stroke-[3px]"
-											)}
-										/>
-									</div>
-								)}
 							</div>
 						);
 					})}
@@ -255,7 +227,7 @@ export function PlayerRankingRow({
 						),
 					}}
 				>
-					<div className="flex items-end gap-0.5">
+					<div className="flex flex-col justify-center items-end gap-0">
 						<div className="text-sm md:text-base leading-none font-semibold drop-shadow-sm">
 							{player_game.fp.toFixed(1)}
 						</div>
@@ -280,7 +252,7 @@ export function PlayerRankingRow({
 									.nba_fantasy_points;
 							const delta = player_game.fp - avg; // Absolute delta
 							return (
-								<div className="flex justify-end items-end relative gap-0.5">
+								<div className="flex flex-col justify-center items-end relative gap-0">
 									<div
 										className="text-sm md:text-base leading-none font-semibold tabular-nums"
 										style={{
@@ -373,31 +345,14 @@ export function PlayerRankingRow({
 									}),
 								}}
 							>
-								<div className="w-full flex justify-end items-end gap-0.5">
+								<div className="w-full flex flex-col justify-center items-end gap-0">
 									<div className="text-sm md:text-base font-semibold leading-none">
 										{stat.made}/{stat.attempted}
-										{/* <span>{significance.toFixed(2)}</span> */}
 									</div>
 									<span className="text-[0.5rem] leading-none text-muted-foreground uppercase tracking-wider">
 										{stat.label}
 									</span>
 								</div>
-								{showMoreData && (
-									<div
-										className={cn(
-											"w-full flex items-center justify-end"
-										)}
-									>
-										<span className="text-[10px] md:text-xs font-medium leading-none">
-											{stat.attempted > 0
-												? (
-														stat.percentage * 100
-												  ).toFixed(0)
-												: "-"}
-											%
-										</span>
-									</div>
-								)}
 							</div>
 						);
 					})}

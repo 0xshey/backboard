@@ -2,8 +2,7 @@
 import { useState, useEffect } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
+
 import { cn } from "@/lib/utils";
 
 import { ColumnHeader } from "./column-header";
@@ -13,11 +12,11 @@ import { PlayerRankingRow } from "./player-ranking-row";
 export const RANKINGS_GRID_DEBUG = false;
 export const COLUMN_WIDTHS = {
 	player: "min-w-32 max-w-32 md:min-w-80 md:max-w-80",
-	minutes: "min-w-16",
-	stats: "min-w-70 md:min-w-80",
-	fp: "min-w-16 md:min-w-20",
+	minutes: "min-w-10 md:min-w-12",
+	stats: "min-w-50 md:min-w-80",
+	fp: "min-w-10 md:min-w-20",
 	fp_delta: "min-w-16 md:min-w-20",
-	efficiency: "min-w-60 md:min-w-72",
+	efficiency: "min-w-45 md:min-w-60",
 };
 
 export function PlayerRankingsGrid({
@@ -28,7 +27,6 @@ export function PlayerRankingsGrid({
 	loading?: boolean;
 }) {
 	const [rowData, setRowData] = useState<any[]>([]);
-	const [showMoreData, setShowMoreData] = useState<boolean>(true);
 
 	// Sorting state
 	const [sortField, setSortField] = useState<string>("fp");
@@ -104,27 +102,6 @@ export function PlayerRankingsGrid({
 	return (
 		<div className="w-full flex flex-col gap-4">
 			{/* Controls */}
-			<div
-				className={cn(
-					"flex items-center gap-8 border",
-					!RANKINGS_GRID_DEBUG && "border-transparent"
-				)}
-			>
-				{/* Removed Sorting Select as it is now in headers - keeping Show More Data */}
-				<div className="flex items-center space-x-2">
-					<Checkbox
-						id="show-more-data"
-						checked={showMoreData}
-						onCheckedChange={(c) => setShowMoreData(!!c)}
-					/>
-					<Label
-						htmlFor="show-more-data"
-						className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-					>
-						Show More Data
-					</Label>
-				</div>
-			</div>
 
 			{/* Table */}
 			<div
@@ -214,7 +191,6 @@ export function PlayerRankingsGrid({
 							key={player_game.player.id}
 							player_game={player_game}
 							sortField={sortField}
-							showMoreData={showMoreData}
 						/>
 					))}
 				</div>
