@@ -64,7 +64,7 @@ export default function Navigator({ links = [], className }: NavigatorProps) {
 						duration: 0.3,
 					},
 				}}
-				className="pointer-events-auto relative flex flex-col items-center gap-1 p-1 rounded-xl bg-muted/40 backdrop-blur border border-border shadow-md h-fit w-full md:w-fit md:min-w-120 mx-auto overflow-hidden"
+				className="pointer-events-auto relative flex flex-col items-center gap-1 p-1 rounded-xl bg-muted/40 backdrop-blur border border-border/50 shadow-md h-fit w-full md:w-fit md:min-w-120 mx-auto overflow-hidden"
 				onMouseLeave={() => setHoveredPath(null)}
 			>
 				<motion.div
