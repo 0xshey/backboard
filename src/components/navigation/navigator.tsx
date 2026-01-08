@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { cn, smoothScrollTo } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { Equal } from "lucide-react";
 import { Logo } from "../logo";
 import { Button } from "../ui/button";

@@ -32,19 +32,12 @@ export function formatISODurationToProgress(
 // Color utils moved to ./value-to-color.ts
 
 export function smoothScrollTo(element: HTMLElement): void {
-	let startTime: number | undefined;
+	const headerOffset = 80;
+	const elementPosition = element.getBoundingClientRect().top;
+	const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
-	function step(timestamp: number): void {
-		if (!startTime) startTime = timestamp;
-		const progress: number = (timestamp - startTime) / duration;
-		const easedProgress: number = easing(progress);
-
-		window.scrollTo(0, start + (end - start) * easedProgress);
-
-		if (progress < 1) {
-			requestAnimationFrame(step);
-		}
-	}
-
-	requestAnimationFrame(step);
+	window.scrollTo({
+		top: offsetPosition,
+		behavior: "smooth",
+	});
 }
