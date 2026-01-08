@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { valueToRGB, cn } from "@/lib/utils";
+import { valueToRGB } from "@/lib/value-to-color";
+import { cn } from "@/lib/utils";
 import type { PlayerConsistency } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpIcon, ArrowDownIcon, Eraser } from "lucide-react";
-import { GameBreakdown } from "./game-breakdown";
+import { FantasyGamelog } from "./fantasy-gamelog";
 import { useGameCache } from "@/components/providers/game-cache-provider";
 import { Button } from "@/components/ui/button";
 
@@ -116,7 +117,7 @@ export function ConsistencyGrid({ data }: { data: PlayerConsistency[] }) {
 				</Button>
 			</div>
 			{/* Header */}
-			<div className="grid grid-cols-[0.2fr_1.5fr_0.8fr_0.8fr_0.8fr_0.8fr] gap-2 px-2 py-3 border-b text-sm font-medium text-muted-foreground items-center">
+			<div className="grid grid-cols-[0.2fr_1.5fr_0.8fr_0.8fr_0.8fr_0.8fr] gap-2 px-2 py-3 border-b text-xs md:text-sm font-medium text-muted-foreground items-center">
 				<HeaderCell label="" field="index" />
 				<HeaderCell label="Player" field="player" />
 				<HeaderCell
@@ -156,7 +157,7 @@ export function ConsistencyGrid({ data }: { data: PlayerConsistency[] }) {
 										: row.player_id
 								)
 							}
-							className="grid grid-cols-[0.2fr_1.5fr_0.8fr_0.8fr_0.8fr_0.8fr] gap-2 px-2 py-3 items-center cursor-pointer hover:bg-muted/30 text-sm md:text-xl font-semibold"
+							className="grid grid-cols-[0.2fr_1.5fr_0.8fr_0.8fr_0.8fr_0.8fr] gap-2 px-2 py-3 items-center cursor-pointer hover:bg-muted/30 text-xs md:text-xl font-semibold"
 						>
 							<div className="text-center text-muted-foreground">
 								{index + 1}
@@ -175,7 +176,7 @@ export function ConsistencyGrid({ data }: { data: PlayerConsistency[] }) {
 								style={{
 									color: valueToRGB({
 										value: row.avg_fantasy_points ?? 0,
-										midColor: [200, 200, 200, 1],
+										schema: "fantasyPoints",
 									}),
 								}}
 							>
@@ -210,7 +211,7 @@ export function ConsistencyGrid({ data }: { data: PlayerConsistency[] }) {
 									transition={{ duration: 0.2 }}
 									className="overflow-hidden"
 								>
-									<GameBreakdown playerId={row.player_id} />
+									<FantasyGamelog playerId={row.player_id} />
 								</motion.div>
 							)}
 						</AnimatePresence>

@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useGameCache } from "@/components/providers/game-cache-provider";
 import { GameLog } from "@/types";
-import { valueToRGB, cn } from "@/lib/utils";
+import { valueToRGB, getContrastingColor } from "@/lib/value-to-color";
+import { cn } from "@/lib/utils";
 import {
 	Popover,
 	PopoverContent,
@@ -11,11 +12,11 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 
-interface GameBreakdownProps {
+interface FantasyGamelogProps {
 	playerId: string;
 }
 
-export function GameBreakdown({ playerId }: GameBreakdownProps) {
+export function FantasyGamelog({ playerId }: FantasyGamelogProps) {
 	const { getGameLogs } = useGameCache();
 	const [gameLogs, setGameLogs] = useState<GameLog[] | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -63,8 +64,9 @@ export function GameBreakdown({ playerId }: GameBreakdownProps) {
 					const fpValue = log.fp ?? 0;
 					const color = valueToRGB({
 						value: fpValue,
-						midColor: [200, 200, 200, 1],
+						schema: "fantasyPoints",
 					});
+					const contrastColor = getContrastingColor(color);
 					const played = log.played;
 
 					return (
@@ -85,10 +87,15 @@ export function GameBreakdown({ playerId }: GameBreakdownProps) {
 											"min-w-8 h-8 flex items-center justify-center rounded-full cursor-pointer transition-all hover:scale-110 active:scale-95 border bg-muted/30"
 										)}
 										style={{
-											color: "white",
 											backgroundColor: played
 												? color
 												: "transparent",
+											color: played
+												? contrastColor
+												: undefined,
+											borderColor: played
+												? color
+												: undefined,
 										}}
 									>
 										{played ? (

@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { formatSecondsToMMSS, valueToRGB, cn } from "@/lib/utils";
+import { formatSecondsToMMSS, cn } from "@/lib/utils";
+import { getContrastingColor, valueToRGB } from "@/lib/value-to-color";
 import { teamLogoURL } from "@/lib/image-urls";
 import { ChevronUp, ChevronDown, ChevronsUp, ChevronsDown } from "lucide-react";
 import {
@@ -244,16 +245,21 @@ export function PlayerRankingRow({
 					style={{
 						backgroundColor: valueToRGB({
 							value: player_game.fp,
-							min: 10,
-							max: 60,
+							schema: "fantasyPoints",
 						}),
+						color: getContrastingColor(
+							valueToRGB({
+								value: player_game.fp,
+								schema: "fantasyPoints",
+							})
+						),
 					}}
 				>
 					<div className="flex items-end gap-0.5">
-						<div className="text-sm md:text-base leading-none font-semibold text-white drop-shadow-sm">
+						<div className="text-sm md:text-base leading-none font-semibold drop-shadow-sm">
 							{player_game.fp.toFixed(1)}
 						</div>
-						<span className="text-[0.5rem] leading-none text-white/80 font-medium uppercase">
+						<span className="text-[0.5rem] leading-none font-medium uppercase">
 							fp
 						</span>
 					</div>
@@ -340,8 +346,8 @@ export function PlayerRankingRow({
 						},
 					].map((stat, index) => {
 						const significance =
-							stat.percentage *
-							(stat.attempted / stat.attemptThreshold);
+							(stat.percentage * stat.attempted * 10) /
+							stat.attemptThreshold;
 						return (
 							<div
 								key={index}
@@ -353,6 +359,9 @@ export function PlayerRankingRow({
 										value: significance,
 										min: 0,
 										max: 1,
+										lowColor: [192, 11, 35, 0.3], // red
+										midColor: [0, 0, 0, 0], // transparent
+										highColor: [43, 168, 74, 0.3], // green
 									}),
 									backgroundColor: valueToRGB({
 										value: stat.percentage,

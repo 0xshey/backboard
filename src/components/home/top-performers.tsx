@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { TZDate } from "@date-fns/tz";
 import { playerSiloURL, teamLogoURL } from "@/lib/image-urls";
-import { valueToRGB } from "@/lib/utils";
+import { valueToRGB } from "@/lib/value-to-color";
+import { cn } from "@/lib/utils";
 
 interface TopPerformersProps {
 	gamePlayers: any[];
