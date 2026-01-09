@@ -43,7 +43,6 @@
     "date-fns-tz": "^3.2.0",
     "embla-carousel-react": "^8.5.1",
     "framer-motion": "^12.24.0",
-    "framer-motion-3d": "^12.4.13",
     "lucide-react": "^0.462.0",
     "luxon": "^3.7.2",
     "moment": "^2.30.1",
