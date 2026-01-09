@@ -43,7 +43,7 @@ export function TopPerformers({ gamePlayers, nyDate }: TopPerformersProps) {
 
 			<div
 				className={cn(
-					"flex items-start gap-4 overflow-x-auto justify-start xl:justify-center px-4 pb-4",
+					"w-full flex items-start gap-4 overflow-x-scroll justify-start xl:justify-center px-4 pb-4",
 					"overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
 				)}
 			>
