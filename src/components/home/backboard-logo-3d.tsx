@@ -71,7 +71,7 @@ export function BackboardLogo3D({
 		// Add scroll tilt on top of current angle (smooth transition)
 		if (hasEntered && scrollProgress > 0) {
 			const scrollTilt = scrollProgress * (Math.PI / 6); // Max 30 degrees
-			currentAngle = endAngle + scrollTilt;
+			currentAngle = endAngle - scrollTilt;
 		}
 
 		meshRef.current.rotation.x = currentAngle;

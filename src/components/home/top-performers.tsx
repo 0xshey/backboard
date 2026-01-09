@@ -91,7 +91,7 @@ export function TopPerformers({ gamePlayers, nyDate }: TopPerformersProps) {
 						</div>
 						<div className="w-full bg-muted rounded-xl">
 							{/* Statline */}
-							<div className="grid grid-cols-6 gap-0 w-full border-t border-border/30 pt-4 px-2">
+							<div className="grid grid-cols-6 gap-0 w-full pt-4 px-2">
 								{[
 									{ label: "PTS", val: gp.points },
 									{
