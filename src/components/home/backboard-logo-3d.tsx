@@ -12,6 +12,7 @@ interface BackboardLogo3DProps {
 	thickness?: number;
 	cornerRadius?: number;
 	scrollProgress?: number; // 0-1, passed from parent
+	scale?: number; // Responsive scale factor
 	// Animation start/end props
 	startAngle?: number; // Starting rotation angle (0 = flat/face-on)
 	endAngle?: number; // Ending rotation angle (looking from below)
@@ -28,6 +29,7 @@ export function BackboardLogo3D({
 	thickness = 0.05,
 	cornerRadius = 0.3,
 	scrollProgress = 0,
+	scale = 1,
 	// Animation defaults: start flat/distant, end tilted/close
 	startAngle = Math.PI / -20, // Flat (viewing direct front)
 	endAngle = Math.PI / -5, // ~30 degrees (viewing from below)
@@ -81,9 +83,9 @@ export function BackboardLogo3D({
 
 	// Rounded rectangle shape
 	const shape = useMemo(() => {
-		const w = width;
-		const h = height;
-		const r = cornerRadius;
+		const w = width * scale;
+		const h = height * scale;
+		const r = cornerRadius * scale;
 
 		const s = new THREE.Shape();
 		s.moveTo(-w / 2 + r, -h / 2);
@@ -97,7 +99,7 @@ export function BackboardLogo3D({
 		s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
 
 		return s;
-	}, [width, height, cornerRadius]);
+	}, [width, height, cornerRadius, scale]);
 
 	const extrudeSettings = useMemo(
 		() => ({

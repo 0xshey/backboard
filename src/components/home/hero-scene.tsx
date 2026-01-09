@@ -6,31 +6,48 @@ import { BackboardLogo3D } from "./backboard-logo-3d";
 
 export function HeroScene() {
 	const [scrollProgress, setScrollProgress] = useState(0);
+	const [scale, setScale] = useState(1);
 
 	useEffect(() => {
 		const handleScroll = () => {
-			// Calculate scroll progress (0-1) based on first viewport height
 			const scrollY = window.scrollY;
 			const viewportHeight = window.innerHeight;
 			const progress = Math.min(scrollY / viewportHeight, 1);
 			setScrollProgress(progress);
 		};
 
+		const handleResize = () => {
+			// Base width the backboard was designed for
+			const baseWidth = 1200;
+			const currentWidth = window.innerWidth;
+			// Scale proportionally, with min/max bounds
+			const newScale = Math.min(
+				Math.max(currentWidth / baseWidth, 0.5),
+				1.2
+			);
+			setScale(newScale);
+		};
+
+		// Initial call
+		handleResize();
+
 		window.addEventListener("scroll", handleScroll, { passive: true });
-		return () => window.removeEventListener("scroll", handleScroll);
+		window.addEventListener("resize", handleResize, { passive: true });
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+			window.removeEventListener("resize", handleResize);
+		};
 	}, []);
 
 	return (
 		<div className="fixed inset-0 z-0 w-full h-full overflow-hidden pointer-events-none">
 			<Canvas
-				camera={{ position: [0, 0, 12], fov: 50 }}
+				camera={{ position: [0, 0, 12], fov: 60 }}
 				shadows
 				className="w-full h-full"
 			>
-				{/* Ambient for base visibility */}
 				<ambientLight intensity={0.4} />
 
-				{/* Main light from front-bottom for glow effect */}
 				<spotLight
 					position={[0, -8, 10]}
 					angle={0.6}
@@ -40,7 +57,6 @@ export function HeroScene() {
 					castShadow
 				/>
 
-				{/* Orange glow from bottom */}
 				<pointLight
 					position={[0, -6, 5]}
 					intensity={2.5}
@@ -48,14 +64,16 @@ export function HeroScene() {
 					distance={20}
 				/>
 
-				{/* Dim light from top for shadow on back of board */}
 				<directionalLight
 					position={[0, 10, -5]}
 					intensity={0.2}
 					color="#404040"
 				/>
 
-				<BackboardLogo3D scrollProgress={scrollProgress} />
+				<BackboardLogo3D
+					scrollProgress={scrollProgress}
+					scale={scale}
+				/>
 			</Canvas>
 		</div>
 	);
