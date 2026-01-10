@@ -36,7 +36,7 @@ export function BackboardLogo3D({
 	startZ = -30, // Distant
 	endZ = -2, // Close
 	startY = 10, // Centered
-	endY = 1.9, // Slightly higher
+	endY = 2.4, // Slightly higher
 	animationDuration = 4,
 }: BackboardLogo3DProps) {
 	const groupRef = useRef<THREE.Group>(null!);
@@ -120,7 +120,7 @@ export function BackboardLogo3D({
 					<mesh ref={meshRef} castShadow receiveShadow>
 						<extrudeGeometry args={[shape, extrudeSettings]} />
 						<meshPhysicalMaterial
-							color="#111111" // Dark base for rim light contrast
+							color="#292929" // Dark base for rim light contrast
 							transmission={0.9}
 							thickness={3.0} // Thicker glass for better light depth
 							roughness={0.15} // Softer reflections to catch color gradients

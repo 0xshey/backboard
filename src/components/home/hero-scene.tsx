@@ -86,7 +86,7 @@ export function HeroScene() {
 
 				<BackboardLogo3D
 					scrollProgress={scrollProgress}
-					scale={scale * 0.75}
+					scale={scale * 0.8}
 				/>
 			</Canvas>
 		</div>

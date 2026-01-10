@@ -67,16 +67,15 @@ export default async function Page() {
 			<div className="relative z-10 w-full flex flex-col items-center pt-32 pb-24">
 				{/* Hero Section */}
 				<div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-24 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-					<h1 className="text-4xl md:text-6xl lg:text-7xl font-medium tracking-tighter mb-6 drop-shadow-2xl">
+					<h1 className="text-5xl md:text-6xl lg:text-7xl font-medium tracking-tighter mb-6 drop-shadow-2xl">
 						Track Today's Fantasy Performers
 					</h1>
-					<p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl drop-shadow-md">
-						Daily rankings, deep analytics, and player consistency
-						tools to help you dominate your fantasy basketball
-						league.
+					<p className="text-lg md:text-xl text-foreground/80 mb-8 max-w-2xl drop-shadow-md">
+						Track daily fantasy performances and consistency <br />{" "}
+						Other metrics are in development — keep a look out
 					</p>
 
-					<div className="flex flex-wrap gap-4 justify-center">
+					<div className="flex flex-col md:flex-row gap-4 justify-center">
 						<Button
 							asChild
 							size="lg"
