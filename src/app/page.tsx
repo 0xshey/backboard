@@ -64,7 +64,7 @@ export default async function Page() {
 			</div>
 
 			{/* Foreground Content */}
-			<div className="relative z-10 w-full flex flex-col items-center pt-32 pb-24 px-4">
+			<div className="relative z-10 w-full flex flex-col items-center pt-32 pb-24">
 				{/* Hero Section */}
 				<div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-24 animate-in fade-in slide-in-from-bottom-8 duration-1000">
 					<h1 className="text-4xl md:text-6xl lg:text-7xl font-medium tracking-tighter mb-6 drop-shadow-2xl">
@@ -102,7 +102,7 @@ export default async function Page() {
 				</div>
 
 				{/* Feature / Top Performers Section */}
-				<div className="w-full max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
+				<div className="w-full max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 mt-16">
 					{gamePlayers.length > 0 ? (
 						<TopPerformers
 							gamePlayers={gamePlayers}

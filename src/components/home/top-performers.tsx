@@ -50,7 +50,7 @@ export function TopPerformers({ gamePlayers, nyDate }: TopPerformersProps) {
 				{gamePlayers?.map((gp: any) => (
 					<div
 						key={gp.player_id}
-						className="w-40 aspect-[440/900] relative flex flex-col items-center justify-end min-w-60 group overflow-hidden rounded-3xl transition-all duration-300"
+						className="w-40 aspect-[440/900] relative flex flex-col items-center justify-end min-w-60 group overflow-hidden rounded-3xl transition-all duration-300 backdrop-blur bg-muted-foreground/20 border border-muted/20"
 					>
 						{/* Background effects */}
 						<div

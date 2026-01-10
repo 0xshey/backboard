@@ -7,6 +7,7 @@ import { BackboardLogo3D } from "./backboard-logo-3d";
 export function HeroScene() {
 	const [scrollProgress, setScrollProgress] = useState(0);
 	const [scale, setScale] = useState(1);
+	const [cameraZ, setCameraZ] = useState(12);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -26,6 +27,14 @@ export function HeroScene() {
 				1.2
 			);
 			setScale(newScale);
+
+			// Compensate for aspect ratio changes
+			// When height is small (tall aspect), move camera closer to maintain visual size
+			const aspectRatio = window.innerWidth / window.innerHeight;
+			const baseAspect = 16 / 9;
+			// When portrait (aspectRatio < 1), move camera closer
+			const zAdjust = Math.min(aspectRatio / baseAspect, 1);
+			setCameraZ(12 * Math.max(zAdjust, 0.5));
 		};
 
 		// Initial call
@@ -42,37 +51,42 @@ export function HeroScene() {
 	return (
 		<div className="fixed inset-0 z-0 w-full h-full overflow-hidden pointer-events-none">
 			<Canvas
-				camera={{ position: [0, 0, 12], fov: 60 }}
+				camera={{ position: [0, 0, cameraZ], fov: 60 }}
 				shadows
 				className="w-full h-full"
 			>
-				<ambientLight intensity={0.4} />
+				<ambientLight intensity={0.1} />
 
-				<spotLight
-					position={[0, -8, 10]}
-					angle={0.6}
-					penumbra={1}
-					intensity={1.5}
-					color="#ffffff"
-					castShadow
-				/>
-
+				{/* Purple Light - Top Right (In front for surface reflection) */}
 				<pointLight
-					position={[0, -6, 5]}
-					intensity={2.5}
-					color="#ea580c"
-					distance={20}
+					position={[8, 4, 9]}
+					intensity={80000}
+					color="#7600fd"
+					distance={25}
+					decay={2}
 				/>
 
-				<directionalLight
-					position={[0, 10, -5]}
-					intensity={0.2}
-					color="#404040"
+				{/* Orange Light - Bottom Left (In front for surface reflection) */}
+				<pointLight
+					position={[-3, -4, 5]}
+					intensity={60000}
+					color="#ffae00"
+					distance={25}
+					decay={2}
+				/>
+
+				{/* Center soft fill light */}
+				<spotLight
+					position={[0, 0, 15]}
+					intensity={200}
+					angle={0.5}
+					penumbra={1}
+					color="#ffffff"
 				/>
 
 				<BackboardLogo3D
 					scrollProgress={scrollProgress}
-					scale={scale}
+					scale={scale * 0.75}
 				/>
 			</Canvas>
 		</div>
