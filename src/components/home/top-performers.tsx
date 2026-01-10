@@ -14,36 +14,26 @@ interface TopPerformersProps {
 export function TopPerformers({ gamePlayers, nyDate }: TopPerformersProps) {
 	const nyDateObj = new TZDate(nyDate as string, "America/New_York");
 
-	const dateLabel = (() => {
-		const now = new TZDate(new Date(), "America/New_York");
-		if (nyDateObj.toDateString() === now.toDateString()) return "Today";
-
-		const yesterday = new TZDate(now, "America/New_York");
-		yesterday.setDate(yesterday.getDate() - 1);
-		if (nyDateObj.toDateString() === yesterday.toDateString())
-			return "Yesterday";
-
-		return nyDateObj.toLocaleDateString("en-US", {
-			month: "long",
-			day: "numeric",
-			year: "numeric",
-		});
-	})();
+	const dateLabel = nyDateObj.toLocaleDateString("en-GB", {
+		weekday: "long",
+		day: "numeric",
+		month: "short",
+	});
 
 	return (
 		<div className="w-full flex flex-col items-center gap-6">
-			<div className="flex flex-col items-center gap-1">
-				<h2 className="text-2xl font-bold tracking-tight">
-					Top Performers
+			<div className="flex flex-col items-center gap-1 px-16 md:px-40 py-4 rounded-xl backdrop-blur-lg bg-background/20">
+				<h2 className="text-4xl font-medium tracking-tight">
+					Top 10 Performers
 				</h2>
 				<p className="text-sm text-muted-foreground font-medium uppercase tracking-widest">
-					{dateLabel}
+					of {dateLabel}
 				</p>
 			</div>
 
 			<div
 				className={cn(
-					"w-full flex items-start gap-4 overflow-x-scroll justify-start xl:justify-center px-4 pb-4",
+					"w-screen flex items-start gap-4 overflow-x-auto justify-start px-4 pb-4 px-20",
 					"overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
 				)}
 			>

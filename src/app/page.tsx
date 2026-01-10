@@ -45,7 +45,7 @@ export default async function Page() {
 				.order("fp", { ascending: false })
 				.gte("game.datetime", startOfDayUtc)
 				.lte("game.datetime", endOfDayUtc)
-				.limit(5);
+				.limit(10);
 
 			if (!gamePlayersError && data) {
 				gamePlayers = data;
@@ -79,7 +79,7 @@ export default async function Page() {
 						<Button
 							asChild
 							size="lg"
-							className="rounded-full text-base h-12 px-8 shadow-orange-500/20 shadow-lg hover:shadow-orange-500/40 transition-all"
+							className="rounded-xl text-base h-12 px-8 shadow-orange-500/20 shadow-lg hover:shadow-orange-500/40 transition-all"
 						>
 							<Link href="/rankings">
 								Today's Rankings{" "}
@@ -90,7 +90,7 @@ export default async function Page() {
 							asChild
 							variant="secondary"
 							size="lg"
-							className="rounded-full text-base h-12 px-8 backdrop-blur-sm bg-background/50 border hover:bg-background/80"
+							className="rounded-xl text-base h-12 px-8 backdrop-blur-sm bg-background/50 border hover:bg-background/80"
 						>
 							<Link href="/consistency">
 								Season Consistency{" "}
@@ -101,7 +101,7 @@ export default async function Page() {
 				</div>
 
 				{/* Feature / Top Performers Section */}
-				<div className="w-full max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 mt-16">
+				<div className="w-full mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 mt-16">
 					{gamePlayers.length > 0 ? (
 						<TopPerformers
 							gamePlayers={gamePlayers}
