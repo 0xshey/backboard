@@ -102,29 +102,18 @@ export default async function Page() {
 				</div>
 
 				{/* Feature / Top Performers Section */}
-				<div className="w-full max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
+				<div className="w-full max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
 					{gamePlayers.length > 0 ? (
 						<TopPerformers
 							gamePlayers={gamePlayers}
 							nyDate={nyDateStr}
 						/>
 					) : (
-						<div className="w-full h-40 flex items-center justify-center text-muted-foreground glass rounded-xl border border-white/5">
+						<div className="w-full h-40 flex items-center justify-center text-muted-foreground backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10">
 							<p>No games found for the latest date.</p>
 						</div>
 					)}
 				</div>
-
-				{/* Theme Toggle in simplified footer area or absolute top right? 
-                    Original had it in the link group. Let's put it top right absolute for now or keep in flow 
-                    Actually, let's just leave it out of the main hero flow if not requested? 
-                    The user didn't mention it, but it's good to keep access.
-                    Navigator has theme toggle, so we don't strictly need it here if Navigator is present. 
-                    `layout.tsx` usually includes `Navigator`. 
-                    Wait, `src/app/layout.tsx` probably wraps `page.tsx`.
-                    If `Navigator` is in layout, we don't need it here.
-                    Let's check `layout.tsx` to be sure.
-                */}
 			</div>
 		</div>
 	);
