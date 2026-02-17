@@ -1,19 +1,28 @@
-import { format } from "date-fns";
-
 export default function Footer() {
-	const today = new Date();
+	const year = new Date().getFullYear();
+
 	return (
-		<footer className="text-center mb-8 mt-20 flex flex-col gap-2 md:flex-row  relative items-center justify-between p-4">
-			<div className="font-mono text-xs italic text-accent-foreground px-4 py-1 border rounded-full backdrop-blur-md bg-white/20">
-				{format(today, "EEEE, do MMMM")}
-			</div>
-			<div className=" px-4 py-1 backdrop-blur-md flex items-center gap-2">
-				<p className="underline underline-offset-4 font-mono text-xs italic text-accent-foreground cursor-pointer">
-					0xshey.com
-				</p>
-			</div>
-			<div className="font-mono text-xs italic text-accent-foreground px-4 py-1 border rounded-full backdrop-blur-md bg-white/20">
-				&copy; {format(today, "yyyy")} Shey Laplanche
+		<footer className="w-full border-t border-border/40 mt-20">
+			<div className="w-full overflow-hidden px-4 py-8 md:py-12">
+				{/* Giant BACKBOARD text */}
+				<div className="select-none" aria-hidden="true">
+					<h2 className="text-[15vw] md:text-[12vw] font-black tracking-tighter leading-none text-foreground/4 text-center whitespace-nowrap">
+						BACKBOARD
+					</h2>
+				</div>
+
+				{/* Bottom row */}
+				<div className="flex flex-col md:flex-row items-center justify-between gap-2 mt-4 text-xs text-muted-foreground">
+					<span>&copy; {year} Shey Laplanche</span>
+					<a
+						href="https://0xshey.com"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="hover:text-foreground transition-colors"
+					>
+						0xshey.com
+					</a>
+				</div>
 			</div>
 		</footer>
 	);
