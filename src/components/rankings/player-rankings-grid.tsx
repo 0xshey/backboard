@@ -2,22 +2,18 @@
 import { useState, useEffect } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
-
+import {
+	Table,
+	TableHeader,
+	TableBody,
+	TableRow,
+	TableHead,
+} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 
-import { ColumnHeader } from "./column-header";
 import { sortPlayers } from "./sorting-utils";
 import { PlayerRankingRow } from "./player-ranking-row";
-
-export const RANKINGS_GRID_DEBUG = false;
-export const COLUMN_WIDTHS = {
-	player: "min-w-32 max-w-32 md:min-w-80 md:max-w-80",
-	minutes: "min-w-10 md:min-w-12",
-	stats: "min-w-50 md:min-w-80",
-	fp: "min-w-10 md:min-w-20",
-	fp_delta: "min-w-16 md:min-w-20",
-	efficiency: "min-w-45 md:min-w-60",
-};
 
 export function PlayerRankingsGrid({
 	gamePlayers,
@@ -50,16 +46,13 @@ export function PlayerRankingsGrid({
 
 	if (!gamePlayers) return null;
 
-	// Calculate fpRanks once on load or when gamePlayers changes
 	const [enrichedData, setEnrichedData] = useState<any[]>([]);
 
 	useEffect(() => {
 		if (!gamePlayers) return;
-		// Sort by FP desc, then Delta desc to establish "True Rank"
 		const withRank = [...gamePlayers]
 			.sort((a, b) => {
 				if (b.fp !== a.fp) return b.fp - a.fp;
-				// Tie breaker: delta
 				const getDelta = (p: any) =>
 					p.fp -
 					(p.player.season_averages[0]?.nba_fantasy_points || 0);
@@ -80,121 +73,106 @@ export function PlayerRankingsGrid({
 
 	const handleSort = (field: string) => {
 		if (sortField === field) {
-			// Toggle direction: desc -> asc -> default (fp desc)
 			if (sortDirection === "desc") {
 				setSortDirection("asc");
 			} else {
-				// Check if we should reset to default or just toggle back to desc
 				setSortField("fp");
 				setSortDirection("desc");
 			}
 		} else {
-			// New field -> Default to desc
 			setSortField(field);
 			setSortDirection("desc");
-			// Exception: Player name default asc
 			if (field === "player") setSortDirection("asc");
 		}
 	};
 
-	// ----------
+	const SortableHead = ({
+		label,
+		field,
+		className,
+	}: {
+		label: string;
+		field: string;
+		className?: string;
+	}) => {
+		const isActive = sortField === field;
+		return (
+			<TableHead
+				className={cn(
+					"cursor-pointer select-none text-[10px] md:text-xs font-medium text-muted-foreground hover:bg-muted/50 transition-colors whitespace-nowrap h-8",
+					isActive && "text-foreground bg-muted/30",
+					className
+				)}
+				onClick={() => handleSort(field)}
+			>
+				<span className="inline-flex items-center gap-0.5">
+					{label}
+					{isActive &&
+						(sortDirection === "asc" ? (
+							<ArrowUpIcon className="w-3 h-3" />
+						) : (
+							<ArrowDownIcon className="w-3 h-3" />
+						))}
+				</span>
+			</TableHead>
+		);
+	};
 
 	return (
-		<div className="w-full flex flex-col gap-4">
-			{/* Controls */}
-
-			{/* Table */}
-			<div
-				className={cn(
-					"overflow-x-auto w-full h-full pb-4 border",
-					!RANKINGS_GRID_DEBUG && "border-transparent"
-				)}
-			>
-				<div className="h-full min-w-max flex flex-col gap-1">
-					{/* Column controller */}
-					<div className="w-full h-8 flex items-center gap-1 rounded-lg">
-						<ColumnHeader
+		<div className="w-full">
+			<Table>
+				<TableHeader>
+					<TableRow className="hover:bg-transparent border-b border-border/50">
+						<SortableHead
 							label="Player"
 							field="player"
-							isActive={sortField === "player"}
-							sortDirection={sortDirection}
-							onSort={handleSort}
-							className={cn(
-								"sticky left-0 z-20 justify-start pl-9",
-								COLUMN_WIDTHS.player
-							)}
+							className="sticky left-0 z-20 bg-background text-left min-w-32 md:min-w-72"
 						/>
-						<ColumnHeader
-							label="Min"
+						<SortableHead
+							label="MIN"
 							field="minutes"
-							isActive={sortField === "minutes"}
-							sortDirection={sortDirection}
-							onSort={handleSort}
-							className={COLUMN_WIDTHS.minutes}
+							className="text-center w-12"
 						/>
-						<div
-							className={cn(
-								"grid grid-cols-6 gap-0 h-full",
-								COLUMN_WIDTHS.stats
-							)}
-						>
-							{["pts", "reb", "ast", "stl", "blk", "tov"].map(
-								(stat) => (
-									<ColumnHeader
-										key={stat}
-										label={stat.toUpperCase()}
-										field={stat}
-										isActive={sortField === stat}
-										sortDirection={sortDirection}
-										onSort={handleSort}
-									/>
-								)
-							)}
-						</div>
-						<ColumnHeader
-							label="FP"
-							field="fp"
-							isActive={sortField === "fp"}
-							sortDirection={sortDirection}
-							onSort={handleSort}
-							className={COLUMN_WIDTHS.fp}
-						/>
-						<ColumnHeader
-							label="FPδ"
-							field="fp_delta"
-							isActive={sortField === "fp_delta"}
-							sortDirection={sortDirection}
-							onSort={handleSort}
-							className={COLUMN_WIDTHS.fp_delta}
-						/>
-						<div
-							className={cn(
-								"h-full grid grid-cols-3 gap-1",
-								COLUMN_WIDTHS.efficiency
-							)}
-						>
-							{["fg", "3p", "ft"].map((stat) => (
-								<ColumnHeader
+						{["pts", "reb", "ast", "stl", "blk", "tov"].map(
+							(stat) => (
+								<SortableHead
 									key={stat}
 									label={stat.toUpperCase()}
 									field={stat}
-									isActive={sortField === stat}
-									sortDirection={sortDirection}
-									onSort={handleSort}
+									className="text-center w-10 md:w-14"
 								/>
-							))}
-						</div>
-					</div>
-
-					{rowData.map((player_game, index) => (
+							)
+						)}
+						<SortableHead
+							label="FP"
+							field="fp"
+							className="text-center w-14 md:w-20"
+						/>
+						<SortableHead
+							label="FPδ"
+							field="fp_delta"
+							className="text-center w-16 md:w-20"
+						/>
+						{["fg", "3p", "ft"].map((stat) => (
+							<SortableHead
+								key={stat}
+								label={stat.toUpperCase()}
+								field={stat}
+								className="text-center w-14 md:w-20"
+							/>
+						))}
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{rowData.map((player_game) => (
 						<PlayerRankingRow
 							key={player_game.player.id}
 							player_game={player_game}
 							sortField={sortField}
 						/>
 					))}
-				</div>
-			</div>
+				</TableBody>
+			</Table>
 		</div>
 	);
 }
