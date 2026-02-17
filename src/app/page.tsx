@@ -40,12 +40,12 @@ export default async function Page() {
 			const { data, error: gamePlayersError } = await supabase
 				.from("game_player")
 				.select(
-					"*, game!inner(*), player!inner(*), team:game_player_team_id_fkey(*), opp_team:game_player_team_opp_id_fkey(*)"
+					"*, game!inner(*), player!inner(*), team:game_player_team_id_fkey(*), opp_team:game_player_team_opp_id_fkey(*)",
 				)
 				.order("fp", { ascending: false })
 				.gte("game.datetime", startOfDayUtc)
 				.lte("game.datetime", endOfDayUtc)
-				.limit(5);
+				.limit(10);
 
 			if (!gamePlayersError && data) {
 				gamePlayers = data;

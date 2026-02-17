@@ -8,6 +8,36 @@ import {
 	RANKINGS_GRID_DEBUG as DEBUG,
 } from "./player-rankings-grid";
 
+/**
+ * Shooting efficiency color config.
+ * Percentage determines color direction (red ↔ green).
+ * Volume (attempts) determines color intensity (alpha).
+ *
+ * Adjust these values to tune the color thresholds:
+ */
+const SHOOTING_CONFIG = {
+	fg: {
+		lowPct: 0.35, // deep red below this
+		midPct: 0.47, // NBA average — neutral point
+		highPct: 0.65, // deep green above this
+		volumeBaseline: 12, // typical FGA for a meaningful sample
+	},
+	"3p": {
+		lowPct: 0.20, // deep red below this
+		midPct: 0.36, // NBA average — neutral point
+		highPct: 0.50, // deep green above this
+		volumeBaseline: 6, // typical 3PA for a meaningful sample
+	},
+	ft: {
+		lowPct: 0.55, // deep red below this
+		midPct: 0.78, // NBA average — neutral point
+		highPct: 0.95, // deep green above this
+		volumeBaseline: 5, // typical FTA for a meaningful sample
+	},
+	maxAlpha: 0.35, // max background opacity when volume is at or above cap
+	volumeCap: 2.0, // volume scales linearly up to this multiple of baseline
+} as const;
+
 interface PlayerRankingRowProps {
 	player_game: any;
 	sortField: string;
@@ -285,63 +315,48 @@ export function PlayerRankingRow({
 						COLUMN_WIDTHS.efficiency
 					)}
 				>
-					{[
+					{([
 						{
 							made: player_game.field_goals_made,
 							attempted: player_game.field_goals_attempted,
 							percentage: player_game.field_goals_percentage,
-							label: "fg",
-							low: 0.33,
-							mid: 0.47,
-							high: 0.75,
-							attemptThreshold: 15,
+							label: "fg" as const,
 						},
 						{
 							made: player_game.three_pointers_made,
 							attempted: player_game.three_pointers_attempted,
 							percentage: player_game.three_pointers_percentage,
-							label: "3p",
-							low: 0.25,
-							mid: 0.36,
-							high: 0.6,
-							attemptThreshold: 8,
+							label: "3p" as const,
 						},
 						{
 							made: player_game.free_throws_made,
 							attempted: player_game.free_throws_attempted,
 							percentage: player_game.free_throws_percentage,
-							label: "ft",
-							low: 0.6,
-							mid: 0.8,
-							high: 1.0,
-							attemptThreshold: 10,
+							label: "ft" as const,
 						},
-					].map((stat, index) => {
-						const significance =
-							(stat.percentage * stat.attempted * 10) /
-							stat.attemptThreshold;
+					] as const).map((stat, index) => {
+						const cfg = SHOOTING_CONFIG[stat.label];
+						const volumeScale = Math.min(
+							stat.attempted / cfg.volumeBaseline,
+							SHOOTING_CONFIG.volumeCap
+						) / SHOOTING_CONFIG.volumeCap;
+						const alpha = SHOOTING_CONFIG.maxAlpha * volumeScale;
+
 						return (
 							<div
 								key={index}
 								className={cn(
-									"col-span-1 w-full h-full flex flex-col gap-0.5 justify-center items-end px-1 py-1 rounded-lg border-2 hover:border-border transition-colors cursor-pointer"
+									"col-span-1 w-full h-full flex flex-col gap-0.5 justify-center items-end px-1 py-1 rounded-lg border hover:border-border transition-colors cursor-pointer",
+									!DEBUG && "border-transparent"
 								)}
 								style={{
-									borderColor: valueToRGB({
-										value: significance,
-										min: 0,
-										max: 1,
-										lowColor: [192, 11, 35, 0.3], // red
-										midColor: [0, 0, 0, 0], // transparent
-										highColor: [43, 168, 74, 0.3], // green
-									}),
 									backgroundColor: valueToRGB({
 										value: stat.percentage,
-										min: stat.low,
-										max: stat.high,
-										lowColor: [192, 11, 35, 0.3], // red
-										midColor: [0, 0, 0, 0], // transparent
-										highColor: [43, 168, 74, 0.3], // green
+										min: cfg.lowPct,
+										max: cfg.highPct,
+										lowColor: [192, 11, 35, alpha],
+										midColor: [0, 0, 0, 0],
+										highColor: [43, 168, 74, alpha],
 									}),
 								}}
 							>
