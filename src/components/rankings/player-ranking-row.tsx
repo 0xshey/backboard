@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { formatSecondsToMMSS, cn } from "@/lib/utils";
 import { getContrastingColor, valueToRGB } from "@/lib/value-to-color";
 import { teamLogoURL } from "@/lib/image-urls";
@@ -96,7 +97,10 @@ export function PlayerRankingRow({
 						quality={100}
 						className="opacity-80 shrink-0 hidden md:block"
 					/>
-					<div className="flex flex-col md:flex-row items-start md:items-center md:gap-1 min-w-0">
+					<Link
+						href={`/player/${player_game.player.id}`}
+						className="flex flex-col md:flex-row items-start md:items-center md:gap-1 min-w-0 hover:opacity-70 transition-opacity"
+					>
 						<span
 							className={cn(
 								"text-xs md:text-sm truncate text-muted-foreground md:text-foreground",
@@ -116,7 +120,7 @@ export function PlayerRankingRow({
 						>
 							{player_game.player.last_name}
 						</span>
-					</div>
+					</Link>
 				</div>
 			</TableCell>
 
