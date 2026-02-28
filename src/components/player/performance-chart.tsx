@@ -479,7 +479,7 @@ export function PerformanceChart({
 		selectedStat === "fp" || selectedStat === "plus_minus";
 
 	return (
-		<div className="rounded-2xl border border-border/40 overflow-hidden">
+		<div className="rounded-2xl border border-border/40 overflow-hidden  shadow-md">
 			<div className="p-5 flex flex-col gap-4">
 				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 					<h2 className="text-base font-semibold">

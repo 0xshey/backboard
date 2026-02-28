@@ -139,7 +139,7 @@ export function PlayerSearch() {
 					onBlur={() => setIsFocused(false)}
 					placeholder="Search players…"
 					autoComplete="off"
-					className="w-full h-12 pl-4 pr-28 rounded-2xl bg-background/60 backdrop-blur-md border border-border/50 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40 focus:border-border transition-all shadow-lg"
+					className="w-full h-12 pl-4 pr-28 rounded-2xl bg-background/60 backdrop-blur-md border border-border/50 text-[16px] placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40 focus:border-border transition-all shadow-lg"
 				/>
 
 				{/* Right side: spinner or kbd hint */}

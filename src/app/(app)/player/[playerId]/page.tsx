@@ -42,7 +42,7 @@ async function fetchPlayerData(playerId: string) {
 		supabase
 			.from("game_player")
 			.select(
-				"*, game!inner(*), team:team!game_player_team_fkey(*), opp_team:game_player_team_opp_id_fkey(*)"
+				"*, game!inner(*), team:team!game_player_team_fkey(*), opp_team:game_player_team_opp_id_fkey(*)",
 			)
 			.eq("player_id", playerId)
 			.limit(100),
@@ -66,7 +66,8 @@ function LoadingSkeleton() {
 }
 
 async function PlayerContent({ playerId }: { playerId: string }) {
-	const { player, seasonAverages, gameLogs } = await fetchPlayerData(playerId);
+	const { player, seasonAverages, gameLogs } =
+		await fetchPlayerData(playerId);
 
 	if (!player) notFound();
 

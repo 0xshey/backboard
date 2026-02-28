@@ -33,7 +33,7 @@ export default function Navigator({ links = [], className }: NavigatorProps) {
 			},
 			{
 				threshold: 0.5,
-			}
+			},
 		);
 
 		links.forEach((link) => {
@@ -49,8 +49,8 @@ export default function Navigator({ links = [], className }: NavigatorProps) {
 	return (
 		<nav
 			className={cn(
-				"w-full pointer-events-none fixed top-0 isolate z-50 flex justify-center py-4 px-1 md:justify-between",
-				className
+				"w-full pointer-events-none fixed top-0 isolate z-50 flex justify-center py-4 px-4 md:justify-between",
+				className,
 			)}
 		>
 			<motion.div
@@ -71,10 +71,7 @@ export default function Navigator({ links = [], className }: NavigatorProps) {
 					layout="position"
 					className="flex items-center justify-between w-full pl-2"
 				>
-					<Link
-						href="/"
-						className="p-1 flex items-center gap-2 hover:text-brand transition-colors duration-200"
-					>
+					<Link href="/" className="p-1 flex items-center gap-2">
 						<Logo className="text-foreground" />
 						<span className="text-xl font-semibold tracking-tighter">
 							Backboard

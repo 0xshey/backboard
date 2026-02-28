@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import ThemeProvider from "@/components/providers/theme-provider";
 import MetaProvider from "@/components/providers/meta-provider";
 import NavigationProvider from "@/components/providers/navigation-provider";
+import ThemeColorProvider from "@/components/providers/theme-color-provider";
 import { GameCacheProvider } from "@/components/providers/game-cache-provider";
 import Footer from "@/components/footer";
 
@@ -22,13 +23,13 @@ export default function Layout({ children }: LayoutProps) {
 					enableSystem
 					disableTransitionOnChange
 				>
+					<ThemeColorProvider />
 					<NavigationProvider>
 						<GameCacheProvider>
 							<div className="h-full">
 								<main className="w-full min-h-dvh flex flex-col items-center">
 									{children}
 								</main>
-								<Footer />
 							</div>
 						</GameCacheProvider>
 					</NavigationProvider>

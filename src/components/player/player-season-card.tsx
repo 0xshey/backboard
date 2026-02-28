@@ -117,7 +117,7 @@ export function PlayerSeasonCard({
 	];
 
 	return (
-		<div className="rounded-2xl overflow-hidden border border-border/40 relative">
+		<div className="rounded-2xl overflow-hidden relative shadow-md">
 			{/* Mesh gradient background */}
 			<MeshGradientBg
 				primaryColor={primaryColor}
