@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { PlayerSeasonCard } from "@/components/player/player-season-card";
 import { PerformanceChart } from "@/components/player/performance-chart";
-import { ShootingSplitsChart } from "@/components/player/shooting-splits-chart";
 import type { Database } from "@/types/supabase";
 
 export const revalidate = 300;
@@ -93,13 +92,7 @@ async function PlayerContent({ playerId }: { playerId: string }) {
 			/>
 
 			{sortedLogs.length > 0 && (
-				<>
-					<PerformanceChart gameLogs={sortedLogs} teamColor={teamColor} />
-					<ShootingSplitsChart
-						gameLogs={sortedLogs.filter((g) => g.played === true)}
-						teamColor={teamColor}
-					/>
-				</>
+				<PerformanceChart gameLogs={sortedLogs} teamColor={teamColor} />
 			)}
 		</div>
 	);

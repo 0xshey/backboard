@@ -1,9 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { playerHeadshotURL, teamLogoURL } from "@/lib/image-urls";
 import { formatSecondsToMMSS } from "@/lib/utils";
+import { valueToRGB, getContrastingColor } from "@/lib/value-to-color";
 import type {
 	PlayerWithTeam,
 	GameLogFull,
@@ -67,6 +69,16 @@ export function PlayerSeasonCard({
 	seasonAverages: sa,
 	gameLogs,
 }: PlayerSeasonCardProps) {
+	const [isDark, setIsDark] = useState(false);
+	useEffect(() => {
+		const el = document.documentElement;
+		const check = () => setIsDark(el.classList.contains("dark"));
+		check();
+		const observer = new MutationObserver(check);
+		observer.observe(el, { attributes: true, attributeFilter: ["class"] });
+		return () => observer.disconnect();
+	}, []);
+
 	const team = player.team;
 	const primaryColor = team?.color_primary_hex ?? "#888888";
 	const secondaryColor = team?.color_secondary_hex ?? "#555555";
@@ -111,7 +123,7 @@ export function PlayerSeasonCard({
 				primaryColor={primaryColor}
 				secondaryColor={secondaryColor}
 			/>
-			<div className="p-5 flex flex-col gap-5 relative z-10">
+			<div className="p-5 flex flex-col gap-8 relative z-10">
 				{/* Header: headshot + info */}
 				<div className="flex items-center gap-4">
 					<div className="relative shrink-0">
@@ -173,7 +185,7 @@ export function PlayerSeasonCard({
 
 					<div className="w-px h-7 bg-muted-foreground/50 shrink-0" />
 
-					<div className="grid grid-cols-6 gap-4 items-center">
+					<div className="grid grid-cols-6 gap-4 md:gap-6 items-center">
 						{statGroups.map(({ label, value }) => (
 							<div
 								key={label}
@@ -190,48 +202,58 @@ export function PlayerSeasonCard({
 					</div>
 				</div>
 
-				<div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+				<div className="w-full grid grid-cols-1 items-center md:grid-cols-2 gap-4 md:gap-8">
 					{/* Shooting + Advanced */}
 					<div className="grid grid-cols-3 gap-2">
 						{shootingStats.map(({ label, value }) => (
 							<div
 								key={label}
-								className="flex items-center gap-1.5 rounded-lg bg-muted/30 px-3 py-1.5"
+								className="flex flex-col items-center rounded-xl bg-muted/60 px-3 py-1.5"
 							>
-								<span className="text-[0.6rem] uppercase tracking-wider text-muted-foreground font-medium">
-									{label}
-								</span>
 								<span className="text-sm font-semibold tabular-nums">
 									{value}
 								</span>
-							</div>
-						))}
-						{advancedStats.map(({ label, value }) => (
-							<div
-								key={label}
-								className="flex items-center gap-1.5 rounded-lg px-3 py-1.5"
-								style={{
-									background:
-										label === "FP"
-											? `linear-gradient(135deg, ${primaryColor}25, ${secondaryColor}18)`
-											: "hsl(var(--muted) / 0.3)",
-								}}
-							>
 								<span className="text-[0.6rem] uppercase tracking-wider text-muted-foreground font-medium">
 									{label}
 								</span>
-								<span
-									className="text-sm font-semibold tabular-nums"
-									style={
-										label === "FP"
-											? { color: primaryColor }
-											: {}
-									}
-								>
-									{value}
-								</span>
 							</div>
 						))}
+						{advancedStats.map(({ label, value }) => {
+							const fpBg =
+								label === "FP" && sa?.nba_fantasy_points != null
+									? valueToRGB({
+											value: sa.nba_fantasy_points,
+											min: 0,
+											max: 50,
+											lowColor: [197, 27, 125, 1],
+											midColor: isDark
+												? [220, 220, 220, 1]
+												: [20, 20, 20, 1],
+											highColor: [20, 184, 166, 1],
+										}).replace(/[\d.]+\)$/, "1)")
+									: null;
+
+							return (
+								<div
+									key={label}
+									className="flex flex-col items-center rounded-xl px-3 py-1.5"
+									style={{
+										background:
+											fpBg ?? "hsl(var(--muted) / 0.6)",
+										color: fpBg
+											? getContrastingColor(fpBg)
+											: "hsl(var(--foreground))",
+									}}
+								>
+									<span className="text-sm font-semibold tabular-nums">
+										{value}
+									</span>
+									<span className="text-[0.6rem] uppercase tracking-wider font-medium">
+										{label}
+									</span>
+								</div>
+							);
+						})}
 					</div>
 
 					{/* Home/Away splits */}
@@ -243,7 +265,7 @@ export function PlayerSeasonCard({
 									return (
 										<div
 											key={side}
-											className="rounded-xl bg-muted/30 px-4 py-3 flex flex-col gap-2"
+											className="rounded-xl bg-muted/60 px-4 py-3 flex flex-col gap-2"
 										>
 											<div className="flex items-center justify-between">
 												<span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
