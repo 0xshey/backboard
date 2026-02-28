@@ -48,10 +48,22 @@ async function fetchPlayerData(playerId: string) {
 			.limit(100),
 	]);
 
+	const playerFP = seasonAvgResult.data?.nba_fantasy_points ?? null;
+	let fpRank: number | null = null;
+	if (playerFP != null) {
+		const { count } = await supabase
+			.from("player_season_averages")
+			.select("*", { count: "exact", head: true })
+			.eq("season", "2025-26")
+			.gt("nba_fantasy_points", playerFP);
+		if (count != null) fpRank = count + 1;
+	}
+
 	return {
 		player: playerResult.data as PlayerWithTeam | null,
 		seasonAverages: seasonAvgResult.data as SeasonAveragesRow | null,
 		gameLogs: (gameLogsResult.data ?? []) as unknown as GameLogFull[],
+		fpRank,
 	};
 }
 
@@ -66,7 +78,7 @@ function LoadingSkeleton() {
 }
 
 async function PlayerContent({ playerId }: { playerId: string }) {
-	const { player, seasonAverages, gameLogs } =
+	const { player, seasonAverages, gameLogs, fpRank } =
 		await fetchPlayerData(playerId);
 
 	if (!player) notFound();
@@ -90,6 +102,7 @@ async function PlayerContent({ playerId }: { playerId: string }) {
 				player={player}
 				seasonAverages={seasonAverages}
 				gameLogs={sortedLogs}
+				fpRank={fpRank}
 			/>
 
 			{sortedLogs.length > 0 && (

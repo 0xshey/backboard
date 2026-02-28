@@ -6,6 +6,7 @@ import Image from "next/image";
 import { playerHeadshotURL, teamLogoURL } from "@/lib/image-urls";
 import { formatSecondsToMMSS } from "@/lib/utils";
 import { valueToRGB, getContrastingColor } from "@/lib/value-to-color";
+import { Badge } from "@/components/ui/badge";
 import type {
 	PlayerWithTeam,
 	GameLogFull,
@@ -24,6 +25,7 @@ interface PlayerSeasonCardProps {
 	player: PlayerWithTeam;
 	seasonAverages: SeasonAveragesRow | null;
 	gameLogs: GameLogFull[];
+	fpRank: number | null;
 }
 
 function pct(value: number | null | undefined): string {
@@ -68,6 +70,7 @@ export function PlayerSeasonCard({
 	player,
 	seasonAverages: sa,
 	gameLogs,
+	fpRank,
 }: PlayerSeasonCardProps) {
 	const [isDark, setIsDark] = useState(false);
 	useEffect(() => {
@@ -219,8 +222,9 @@ export function PlayerSeasonCard({
 							</div>
 						))}
 						{advancedStats.map(({ label, value }) => {
+							const isFP = label === "FP";
 							const fpBg =
-								label === "FP" && sa?.nba_fantasy_points != null
+								isFP && sa?.nba_fantasy_points != null
 									? valueToRGB({
 											value: sa.nba_fantasy_points,
 											min: 0,
@@ -245,11 +249,29 @@ export function PlayerSeasonCard({
 											: "hsl(var(--foreground))",
 									}}
 								>
-									<span className="text-sm font-semibold tabular-nums">
-										{value}
-									</span>
-									<span className="text-[0.6rem] uppercase tracking-wider font-medium">
+									<div className="">
+										<span></span>
+										<span className="text-sm font-semibold tabular-nums">
+											{value}
+										</span>
+									</div>
+									<span className="grid grid-cols-3 items-center text-center text-[0.6rem] uppercase tracking-wider font-medium">
+										<span></span>
 										{label}
+										{isFP && fpRank != null && (
+											<Badge
+												className="px-1 py-0 text-[0.6rem] rounded-full w-fit h-fit bg-muted/20"
+												style={{
+													color: fpBg
+														? getContrastingColor(
+																fpBg,
+															)
+														: "hsl(var(--foreground))",
+												}}
+											>
+												#{fpRank}
+											</Badge>
+										)}
 									</span>
 								</div>
 							);
