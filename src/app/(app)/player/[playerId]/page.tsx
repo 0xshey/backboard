@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { PlayerSeasonCard } from "@/components/player/player-season-card";
 import { PerformanceChart } from "@/components/player/performance-chart";
+import { PlayerWeeklyPerformance } from "@/components/player/player-weekly-performance";
 import type { Database } from "@/types/supabase";
 
 export const revalidate = 300;
@@ -13,8 +14,10 @@ type SeasonAveragesRow =
 	Database["public"]["Tables"]["player_season_averages"]["Row"];
 type GameRow = Database["public"]["Tables"]["game"]["Row"];
 type GamePlayerRow = Database["public"]["Tables"]["game_player"]["Row"];
+type GameWeekRow = Database["public"]["Tables"]["game_week_fantasy"]["Row"];
 
 export type PlayerWithTeam = PlayerRow & { team: TeamRow | null };
+export type { GameWeekRow };
 
 export type GameLogFull = GamePlayerRow & {
 	game: GameRow;
@@ -25,7 +28,7 @@ export type GameLogFull = GamePlayerRow & {
 async function fetchPlayerData(playerId: string) {
 	const supabase = await createClient();
 
-	const [playerResult, seasonAvgResult, gameLogsResult] = await Promise.all([
+	const [playerResult, seasonAvgResult, gameLogsResult, gameWeeksResult] = await Promise.all([
 		supabase
 			.from("player")
 			.select("*, team(*)")
@@ -46,6 +49,11 @@ async function fetchPlayerData(playerId: string) {
 			)
 			.eq("player_id", playerId)
 			.limit(100),
+
+		supabase
+			.from("game_week_fantasy")
+			.select("*")
+			.order("number", { ascending: false }),
 	]);
 
 	const playerFP = seasonAvgResult.data?.nba_fantasy_points ?? null;
@@ -63,6 +71,7 @@ async function fetchPlayerData(playerId: string) {
 		player: playerResult.data as PlayerWithTeam | null,
 		seasonAverages: seasonAvgResult.data as SeasonAveragesRow | null,
 		gameLogs: (gameLogsResult.data ?? []) as unknown as GameLogFull[],
+		gameWeeks: (gameWeeksResult.data ?? []) as GameWeekRow[],
 		fpRank,
 	};
 }
@@ -78,7 +87,7 @@ function LoadingSkeleton() {
 }
 
 async function PlayerContent({ playerId }: { playerId: string }) {
-	const { player, seasonAverages, gameLogs, fpRank } =
+	const { player, seasonAverages, gameLogs, gameWeeks, fpRank } =
 		await fetchPlayerData(playerId);
 
 	if (!player) notFound();
@@ -107,6 +116,14 @@ async function PlayerContent({ playerId }: { playerId: string }) {
 
 			{sortedLogs.length > 0 && (
 				<PerformanceChart gameLogs={sortedLogs} teamColor={teamColor} />
+			)}
+
+			{gameWeeks.length > 0 && (
+				<PlayerWeeklyPerformance
+					gameLogs={sortedLogs}
+					gameWeeks={gameWeeks}
+					teamColor={teamColor}
+				/>
 			)}
 		</div>
 	);
