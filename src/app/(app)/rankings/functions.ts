@@ -97,6 +97,29 @@ export async function fetchGamePlayersForDate(
 	return { games, gamePlayers: enriched };
 }
 
+/**
+ * Find the most recent date (in the given timezone) that has at least one played game_player row.
+ * Returns an ISO date string (YYYY-MM-DD) or null if none found.
+ */
+export async function fetchMostRecentDateWithPlayers(
+	timeZone = "America/Los_Angeles"
+): Promise<string | null> {
+	const supabase = await createClient();
+
+	const { data, error } = await supabase
+		.from("game")
+		.select("datetime, game_player!inner(played)")
+		.eq("game_player.played", true)
+		.order("datetime", { ascending: false })
+		.limit(1);
+
+	if (error || !data || data.length === 0 || !data[0].datetime) return null;
+
+	return DateTime.fromISO(data[0].datetime, { zone: "UTC" })
+		.setZone(timeZone)
+		.toISODate();
+}
+
 /*
 Example usage:
 const { games, gamePlayers } = await fetchGamePlayersForDate("2025-10-21");

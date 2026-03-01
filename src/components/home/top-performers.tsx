@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import { TZDate } from "@date-fns/tz";
-import { playerSiloURL, teamLogoURL } from "@/lib/image-urls";
+import { playerHeadshotURL } from "@/lib/image-urls";
 import { valueToRGB } from "@/lib/value-to-color";
-import { cn } from "@/lib/utils";
 
 interface TopPerformersProps {
 	gamePlayers: any[];
@@ -14,142 +13,197 @@ interface TopPerformersProps {
 export function TopPerformers({ gamePlayers, nyDate }: TopPerformersProps) {
 	const nyDateObj = new TZDate(nyDate as string, "America/New_York");
 
-	const dateLabel = nyDateObj.toLocaleDateString("en-GB", {
-		weekday: "long",
-		day: "numeric",
-		month: "short",
-	});
+	const dateLabel = (() => {
+		const now = new TZDate(new Date(), "America/New_York");
+		if (nyDateObj.toDateString() === now.toDateString()) return "Today";
+
+		const yesterday = new TZDate(now, "America/New_York");
+		yesterday.setDate(yesterday.getDate() - 1);
+		if (nyDateObj.toDateString() === yesterday.toDateString())
+			return "Yesterday";
+
+		return nyDateObj.toLocaleDateString("en-US", {
+			month: "long",
+			day: "numeric",
+			year: "numeric",
+		});
+	})();
 
 	return (
-		<div className="w-full flex flex-col items-center gap-6">
-			<div className="flex flex-col items-center gap-1 px-16 md:px-40 py-4 rounded-xl backdrop-blur-lg bg-background/20">
-				<h2 className="text-4xl font-medium tracking-tight">
-					Top 10 Performers
+		<div className="w-full max-w-5xl mx-auto px-4 flex flex-col items-center gap-6">
+			{/* Header */}
+			<div className="flex flex-col items-center gap-1">
+				<h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+					Top Performers
 				</h2>
 				<p className="text-sm text-muted-foreground font-medium uppercase tracking-widest">
-					of {dateLabel}
+					{dateLabel}
 				</p>
 			</div>
 
-			<div
-				className={cn(
-					"w-screen flex items-start gap-4 overflow-x-auto justify-start px-4 pb-4 px-20",
-					"overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-				)}
-			>
-				{gamePlayers?.map((gp: any) => (
-					<div
-						key={gp.player_id}
-						className="w-40 aspect-[440/900] relative flex flex-col items-center justify-end min-w-60 group overflow-hidden rounded-3xl transition-all duration-300 backdrop-blur bg-muted-foreground/20 border border-muted/20"
-					>
-						{/* Background effects */}
+			{/* Glassy container */}
+			<div className="w-full rounded-2xl border border-white/10 backdrop-blur-xl bg-white/5 dark:bg-white/3 overflow-hidden shadow-2xl shadow-black/20">
+				{/* Desktop table header */}
+				<div className="hidden md:grid grid-cols-[3rem_1fr_4rem_4rem_4rem_4rem_4rem_4rem_5.5rem] items-center gap-0 px-5 py-3 border-b border-white/10 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+					<div className="text-center">#</div>
+					<div>Player</div>
+					<div className="text-center">PTS</div>
+					<div className="text-center">REB</div>
+					<div className="text-center">AST</div>
+					<div className="text-center">STL</div>
+					<div className="text-center">BLK</div>
+					<div className="text-center">TOV</div>
+					<div className="text-right">FP</div>
+				</div>
+
+				{/* Rows */}
+				{gamePlayers?.map((gp: any, index: number) => {
+					const fpColor = valueToRGB({
+						value: gp.fp || 0,
+						min: 20,
+						max: 70,
+						midColor: [180, 180, 180, 1],
+					});
+
+					const stats = [
+						{ label: "PTS", val: gp.points },
+						{ label: "REB", val: gp.rebounds_total },
+						{ label: "AST", val: gp.assists },
+						{ label: "STL", val: gp.steals },
+						{ label: "BLK", val: gp.blocks },
+						{ label: "TOV", val: gp.turnovers },
+					];
+
+					return (
 						<div
-							className="absolute inset-0 opacity-40 pointer-events-none max-w-40% -translate-y-30 transition-all duration-300 group-hover:opacity-80"
-							style={{
-								background: `radial-gradient(circle at center, ${
-									(gp.team as any)?.color_primary_hex ||
-									"#000"
-								} 0%, transparent 40%)`,
-							}}
-						/>
-						<div className="absolute inset-0 opacity-30 mix-blend-luminosity pointer-events-none group-hover:grayscale-0 transition-all duration-500 -translate-y-30">
-							<Image
-								src={teamLogoURL(gp.team_id)}
-								alt={gp.team?.tricode || ""}
-								fill
-								className="object-contain p-4"
-							/>
-						</div>
-						<div className="w-full h-full z-10 absolute inset-0 pointer-events-none -translate-y-15 aspect-[440/700]">
-							<Image
-								src={playerSiloURL(gp.player_id)}
-								alt={gp.first_name + " " + gp.last_name}
-								fill
-								className="object-contain"
-							/>
-						</div>
-						{/* Player Info Overlay */}
-						<div className="w-full flex flex-col z-20 mb-4 px-4">
-							<span className="text-xs font-mono uppercase text-foreground/70 tracking-widest">
-								{gp.team?.tricode} #{gp.player.jersey_number}
-							</span>
-							<h2 className="text-xl font-bold leading-tight text-foreground whitespace-nowrap w-50 truncate">
-								{gp.first_name}
-								<br />
-								{gp.last_name}
-							</h2>
-						</div>
-						<div className="w-full bg-muted rounded-xl">
-							{/* Statline */}
-							<div className="grid grid-cols-6 gap-0 w-full pt-4 px-2">
-								{[
-									{ label: "PTS", val: gp.points },
-									{
-										label: "REB",
-										val: gp.rebounds_total,
-									},
-									{ label: "AST", val: gp.assists },
-									{ label: "STL", val: gp.steals },
-									{ label: "BLK", val: gp.blocks },
-									{ label: "TOV", val: gp.turnovers },
-								].map((s) => (
+							key={gp.player_id}
+							className="group border-b border-white/5 last:border-b-0 hover:bg-white/4 transition-colors duration-200"
+						>
+							{/* Desktop Row */}
+							<div className="hidden md:grid grid-cols-[3rem_1fr_4rem_4rem_4rem_4rem_4rem_4rem_5.5rem] items-center gap-0 px-5 py-3">
+								{/* Rank */}
+								<div className="text-center text-lg font-bold text-muted-foreground/50 tabular-nums">
+									{index + 1}
+								</div>
+
+								{/* Player info */}
+								<div className="flex items-center gap-3 min-w-0">
+									<div className="relative w-10 h-10 rounded-full overflow-hidden bg-muted/30 shrink-0">
+										<Image
+											src={playerHeadshotURL(gp.player_id)}
+											alt={gp.first_name + " " + gp.last_name}
+											fill
+											className="object-cover scale-[1.4] translate-y-[2px]"
+										/>
+									</div>
+									<div className="min-w-0">
+										<div className="font-bold text-base leading-tight truncate">
+											{gp.first_name} {gp.last_name}
+										</div>
+										<div className="flex items-center gap-2 text-xs text-muted-foreground">
+											<span>{gp.team?.tricode}</span>
+											<span className="text-muted-foreground/30">|</span>
+											<span>
+												vs {gp.opp_team?.tricode}
+											</span>
+											<span className="text-[10px] px-1 py-0.5 rounded bg-muted/50 font-medium">
+												{gp.game?.team_home_id === gp.opp_team_id ? "A" : "H"}
+											</span>
+										</div>
+									</div>
+								</div>
+
+								{/* Stats */}
+								{stats.map((s) => (
 									<div
 										key={s.label}
-										className="flex flex-col items-center"
+										className="text-center text-lg font-bold tabular-nums"
 									>
-										<span className="text-lg font-semibold leading-none mb-1">
-											{s.val}
-										</span>
-										<span className="text-[10px] tracking-wide text-muted-foreground/60 tracking-tighter uppercase">
-											{s.label}
-										</span>
+										{s.val}
 									</div>
 								))}
+
+								{/* FP */}
+								<div className="text-right">
+									<span
+										className="text-2xl font-extrabold tabular-nums tracking-tight"
+										style={{ color: fpColor }}
+									>
+										{(gp.fp || 0).toFixed(1)}
+									</span>
+								</div>
 							</div>
-							{/* Info Box */}
-							<div className="w-full relative z-20 bg-background/60 backdrop-blur-md px-4 py-2 border-t border-border/50">
-								{/* Opp & FP */}
-								<div className="flex items-end justify-between">
-									<div className="flex flex-col items-start justify-end my-2 gap-2">
-										<div className="text-2xl font-semibold tracking-tighter leading-none text-muted-foreground/40">
-											{gp.opp_team.tricode}
-										</div>
-										<div>
-											<div className="flex items-center justify-center bg-muted text-[10px] font-semibold text-muted-foreground leading-none px-1 aspect-square rounded">
-												{gp.game.team_home_id ==
-												gp.opp_team_id ? (
-													<p>A</p>
-												) : (
-													<p>H</p>
-												)}
+
+							{/* Mobile Card */}
+							<div className="md:hidden px-4 py-4">
+								<div className="flex items-start gap-3">
+									{/* Rank */}
+									<div className="text-2xl font-bold text-muted-foreground/30 tabular-nums w-7 shrink-0 pt-1">
+										{index + 1}
+									</div>
+
+									{/* Player avatar */}
+									<div className="relative w-12 h-12 rounded-full overflow-hidden bg-muted/30 shrink-0">
+										<Image
+											src={playerHeadshotURL(gp.player_id)}
+											alt={gp.first_name + " " + gp.last_name}
+											fill
+											className="object-cover scale-[1.4] translate-y-[2px]"
+										/>
+									</div>
+
+									{/* Info + Stats */}
+									<div className="flex-1 min-w-0">
+										<div className="flex items-start justify-between gap-2">
+											<div className="min-w-0">
+												<div className="font-bold text-base leading-tight truncate">
+													{gp.first_name} {gp.last_name}
+												</div>
+												<div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
+													<span>{gp.team?.tricode}</span>
+													<span className="text-muted-foreground/30">|</span>
+													<span>vs {gp.opp_team?.tricode}</span>
+													<span className="text-[10px] px-1 py-0.5 rounded bg-muted/50 font-medium">
+														{gp.game?.team_home_id === gp.opp_team_id ? "A" : "H"}
+													</span>
+												</div>
+											</div>
+											{/* FP prominent on mobile */}
+											<div className="shrink-0 text-right">
+												<span
+													className="text-3xl font-extrabold tabular-nums tracking-tight leading-none"
+													style={{ color: fpColor }}
+												>
+													{(gp.fp || 0).toFixed(1)}
+												</span>
+												<div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mt-0.5">
+													FP
+												</div>
 											</div>
 										</div>
-									</div>
-									<div className="flex flex-col items-end justify-end my-2">
-										<div
-											className="text-4xl font-semibold tracking-tighter leading-none"
-											style={{
-												color: valueToRGB({
-													value: gp.fp || 0,
-													min: 20,
-													max: 70,
-													midColor: [
-														180, 180, 180, 1,
-													],
-												}),
-											}}
-										>
-											{(gp.fp || 0).toFixed(1)}
+
+										{/* Stat grid */}
+										<div className="grid grid-cols-6 gap-1 mt-3">
+											{stats.map((s) => (
+												<div
+													key={s.label}
+													className="flex flex-col items-center"
+												>
+													<span className="text-base font-bold tabular-nums leading-none">
+														{s.val}
+													</span>
+													<span className="text-[9px] text-muted-foreground/50 uppercase tracking-wide mt-0.5">
+														{s.label}
+													</span>
+												</div>
+											))}
 										</div>
-										<span className="text-xs font-semibold text-muted-foreground tracking-widest uppercase mt-1">
-											FP
-										</span>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				))}
+					);
+				})}
 			</div>
 		</div>
 	);
