@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { PlayerSeasonCard } from "@/components/player/player-season-card";
 import { PerformanceChart } from "@/components/player/performance-chart";
 import { PlayerWeeklyPerformance } from "@/components/player/player-weekly-performance";
+import { PlayerSearch } from "@/components/home/player-search";
 import type { Database } from "@/types/supabase";
 
 export const revalidate = 300;
@@ -28,33 +29,34 @@ export type GameLogFull = GamePlayerRow & {
 async function fetchPlayerData(playerId: string) {
 	const supabase = await createClient();
 
-	const [playerResult, seasonAvgResult, gameLogsResult, gameWeeksResult] = await Promise.all([
-		supabase
-			.from("player")
-			.select("*, team(*)")
-			.eq("id", playerId)
-			.single(),
+	const [playerResult, seasonAvgResult, gameLogsResult, gameWeeksResult] =
+		await Promise.all([
+			supabase
+				.from("player")
+				.select("*, team(*)")
+				.eq("id", playerId)
+				.single(),
 
-		supabase
-			.from("player_season_averages")
-			.select("*")
-			.eq("player_id", playerId)
-			.eq("season", "2025-26")
-			.maybeSingle(),
+			supabase
+				.from("player_season_averages")
+				.select("*")
+				.eq("player_id", playerId)
+				.eq("season", "2025-26")
+				.maybeSingle(),
 
-		supabase
-			.from("game_player")
-			.select(
-				"*, game!inner(*), team:team!game_player_team_fkey(*), opp_team:game_player_team_opp_id_fkey(*)",
-			)
-			.eq("player_id", playerId)
-			.limit(100),
+			supabase
+				.from("game_player")
+				.select(
+					"*, game!inner(*), team:team!game_player_team_fkey(*), opp_team:game_player_team_opp_id_fkey(*)",
+				)
+				.eq("player_id", playerId)
+				.limit(100),
 
-		supabase
-			.from("game_week_fantasy")
-			.select("*")
-			.order("number", { ascending: false }),
-	]);
+			supabase
+				.from("game_week_fantasy")
+				.select("*")
+				.order("number", { ascending: false }),
+		]);
 
 	const playerFP = seasonAvgResult.data?.nba_fantasy_points ?? null;
 	let fpRank: number | null = null;
@@ -106,7 +108,11 @@ async function PlayerContent({ playerId }: { playerId: string }) {
 	const teamColor = player.team?.color_primary_hex ?? null;
 
 	return (
-		<div className="w-full max-w-4xl mx-auto px-4 py-6 flex flex-col gap-6">
+		<div className="w-full max-w-4xl mx-auto px-4 py-6 flex flex-col gap-6 pt-16">
+			{/* Search bar — no z-index on wrapper so the dropdown's z-50 lives in
+			    the root stacking context and paints above card content (z-10). */}
+			<PlayerSearch />
+
 			<PlayerSeasonCard
 				player={player}
 				seasonAverages={seasonAverages}
