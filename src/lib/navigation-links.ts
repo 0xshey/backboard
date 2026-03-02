@@ -13,4 +13,8 @@ export const TOOL_LINKS: NavLink[] = [
 		label: "Consistency",
 		href: "/consistency",
 	},
+	{
+		label: "Schedule",
+		href: "/schedule",
+	},
 ];
