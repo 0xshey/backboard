@@ -12,6 +12,7 @@ interface BackboardLogo3DProps {
 	thickness?: number;
 	cornerRadius?: number;
 	scrollProgress?: number; // 0-1, passed from parent
+	scale?: number; // Responsive scale factor
 	// Animation start/end props
 	startAngle?: number; // Starting rotation angle (0 = flat/face-on)
 	endAngle?: number; // Ending rotation angle (looking from below)
@@ -28,13 +29,14 @@ export function BackboardLogo3D({
 	thickness = 0.05,
 	cornerRadius = 0.3,
 	scrollProgress = 0,
+	scale = 1,
 	// Animation defaults: start flat/distant, end tilted/close
 	startAngle = Math.PI / -20, // Flat (viewing direct front)
-	endAngle = Math.PI / -5, // ~30 degrees (viewing from below)
+	endAngle = Math.PI / -7, // ~30 degrees (viewing from below)
 	startZ = -30, // Distant
 	endZ = -2, // Close
 	startY = 10, // Centered
-	endY = 2.2, // Slightly higher
+	endY = 2.4, // Slightly higher
 	animationDuration = 4,
 }: BackboardLogo3DProps) {
 	const groupRef = useRef<THREE.Group>(null!);
@@ -71,7 +73,7 @@ export function BackboardLogo3D({
 		// Add scroll tilt on top of current angle (smooth transition)
 		if (hasEntered && scrollProgress > 0) {
 			const scrollTilt = scrollProgress * (Math.PI / 6); // Max 30 degrees
-			currentAngle = endAngle + scrollTilt;
+			currentAngle = endAngle - scrollTilt;
 		}
 
 		meshRef.current.rotation.x = currentAngle;
@@ -81,9 +83,9 @@ export function BackboardLogo3D({
 
 	// Rounded rectangle shape
 	const shape = useMemo(() => {
-		const w = width;
-		const h = height;
-		const r = cornerRadius;
+		const w = width * scale;
+		const h = height * scale;
+		const r = cornerRadius * scale;
 
 		const s = new THREE.Shape();
 		s.moveTo(-w / 2 + r, -h / 2);
@@ -97,13 +99,13 @@ export function BackboardLogo3D({
 		s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
 
 		return s;
-	}, [width, height, cornerRadius]);
+	}, [width, height, cornerRadius, scale]);
 
 	const extrudeSettings = useMemo(
 		() => ({
 			depth: thickness,
 			bevelEnabled: true,
-			bevelThickness: 0.02,
+			bevelThickness: 0.005,
 			bevelSize: 0.02,
 			bevelSegments: 4,
 		}),
@@ -112,29 +114,23 @@ export function BackboardLogo3D({
 
 	return (
 		<>
-			{/* Orange glow light - stationary */}
-			<pointLight
-				position={[0, -2.4, 2]}
-				intensity={800}
-				color="#653614"
-				distance={1000}
-			/>
-
 			{/* Animated group containing only the mesh */}
 			<group ref={groupRef}>
 				<Center>
 					<mesh ref={meshRef} castShadow receiveShadow>
 						<extrudeGeometry args={[shape, extrudeSettings]} />
 						<meshPhysicalMaterial
-							color="#7c7c7c"
-							transmission={0.1}
-							opacity={0.95}
-							metalness={0.05}
-							roughness={0.15}
-							ior={1.4}
-							thickness={0.3}
-							clearcoat={0.8}
-							envMapIntensity={0.5}
+							color="#292929" // Dark base for rim light contrast
+							transmission={0.9}
+							thickness={3.0} // Thicker glass for better light depth
+							roughness={0.15} // Softer reflections to catch color gradients
+							metalness={0.0}
+							ior={1.5}
+							clearcoat={1.0}
+							clearcoatRoughness={0.1}
+							attenuationColor="#ffffff"
+							attenuationDistance={1}
+							transparent
 						/>
 					</mesh>
 				</Center>
