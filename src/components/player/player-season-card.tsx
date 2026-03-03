@@ -5,8 +5,13 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { playerHeadshotURL, teamLogoURL } from "@/lib/image-urls";
 import { formatSecondsToMMSS } from "@/lib/utils";
-import { valueToRGB, getContrastingColor } from "@/lib/value-to-color";
-import { Badge } from "@/components/ui/badge";
+import { valueToRGB } from "@/lib/value-to-color";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type {
 	PlayerWithTeam,
 	GameLogFull,
@@ -38,39 +43,28 @@ function avg(value: number | null | undefined, decimals = 1): string {
 	return value.toFixed(decimals);
 }
 
-function calcHomAwaySplits(gameLogs: GameLogFull[]) {
-	const played = gameLogs.filter((g) => g.played === true);
-
-	const home = played.filter((g) => g.game?.team_home_id === g.team_id);
-	const away = played.filter((g) => g.game?.team_away_id === g.team_id);
-
-	const mean = (games: GameLogFull[], field: keyof GameLogFull) => {
-		const vals = games
-			.map((g) => g[field] as number | null)
-			.filter((v): v is number => v != null);
-		if (!vals.length) return null;
-		return vals.reduce((a, b) => a + b, 0) / vals.length;
-	};
-
-	return {
-		home: {
-			games: home.length,
-			pts: mean(home, "points"),
-			fp: mean(home, "fp"),
-		},
-		away: {
-			games: away.length,
-			pts: mean(away, "points"),
-			fp: mean(away, "fp"),
-		},
-	};
-}
+// function calcHomAwaySplits(gameLogs: GameLogFull[]) {
+// 	const played = gameLogs.filter((g) => g.played === true);
+// 	const home = played.filter((g) => g.game?.team_home_id === g.team_id);
+// 	const away = played.filter((g) => g.game?.team_away_id === g.team_id);
+// 	const mean = (games: GameLogFull[], field: keyof GameLogFull) => {
+// 		const vals = games
+// 			.map((g) => g[field] as number | null)
+// 			.filter((v): v is number => v != null);
+// 		if (!vals.length) return null;
+// 		return vals.reduce((a, b) => a + b, 0) / vals.length;
+// 	};
+// 	return {
+// 		home: { games: home.length, pts: mean(home, "points"), fp: mean(home, "fp") },
+// 		away: { games: away.length, pts: mean(away, "points"), fp: mean(away, "fp") },
+// 	};
+// }
 
 export function PlayerSeasonCard({
 	player,
 	seasonAverages: sa,
 	gameLogs,
-	fpRank,
+	fpRank: _fpRank,
 }: PlayerSeasonCardProps) {
 	const [isDark, setIsDark] = useState(false);
 	useEffect(() => {
@@ -85,7 +79,8 @@ export function PlayerSeasonCard({
 	const team = player.team;
 	const primaryColor = team?.color_primary_hex ?? "#888888";
 	const secondaryColor = team?.color_secondary_hex ?? "#555555";
-	const splits = calcHomAwaySplits(gameLogs);
+
+	// const splits = calcHomAwaySplits(gameLogs);
 
 	const minValue =
 		sa?.minutes_average != null
@@ -107,17 +102,54 @@ export function PlayerSeasonCard({
 		{ label: "FT%", value: pct(sa?.free_throws_percentage) },
 	];
 
-	const advancedStats = [
-		{
-			label: "+/-",
-			value:
-				sa?.plus_minus != null
-					? (sa.plus_minus >= 0 ? "+" : "") + avg(sa.plus_minus)
-					: "—",
-		},
-		{ label: "GP", value: sa?.games_played?.toString() ?? "—" },
-		{ label: "FP", value: avg(sa?.nba_fantasy_points) },
-	];
+	// const advancedStats = [
+	// 	{ label: "+/-", value: sa?.plus_minus != null ? (sa.plus_minus >= 0 ? "+" : "") + avg(sa.plus_minus) : "—" },
+	// 	{ label: "GP", value: sa?.games_played?.toString() ?? "—" },
+	// 	{ label: "FP", value: avg(sa?.nba_fantasy_points) },
+	// ];
+
+	// FP Analytics
+	const fpPerMin =
+		sa?.nba_fantasy_points != null &&
+		sa?.minutes_average != null &&
+		sa.minutes_average > 0
+			? sa.nba_fantasy_points / sa.minutes_average
+			: null;
+
+	const playedFPs = gameLogs
+		.filter((g) => g.played && g.fp != null)
+		.map((g) => g.fp as number);
+
+	const { stdDev, cv } = (() => {
+		if (playedFPs.length < 2) return { stdDev: null, cv: null };
+		const mean = playedFPs.reduce((a, b) => a + b, 0) / playedFPs.length;
+		const variance =
+			playedFPs.reduce((sum, v) => sum + (v - mean) ** 2, 0) /
+			playedFPs.length;
+		const s = Math.sqrt(variance);
+		const c = mean > 0 ? (s / mean) * 100 : null;
+		return { stdDev: s, cv: c };
+	})();
+
+	const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+	const recentLogs = gameLogs.filter(
+		(g) =>
+			g.played &&
+			g.fp != null &&
+			g.game?.datetime &&
+			new Date(g.game.datetime) >= cutoff,
+	);
+	const recentAvg =
+		recentLogs.length > 0
+			? recentLogs.reduce((sum, g) => sum + (g.fp ?? 0), 0) /
+				recentLogs.length
+			: null;
+	const trendPct =
+		recentAvg != null &&
+		sa?.nba_fantasy_points != null &&
+		sa.nba_fantasy_points > 0
+			? ((recentAvg - sa.nba_fantasy_points) / sa.nba_fantasy_points) * 100
+			: null;
 
 	return (
 		<div className="rounded-2xl overflow-hidden relative shadow-md">
@@ -126,7 +158,7 @@ export function PlayerSeasonCard({
 				primaryColor={primaryColor}
 				secondaryColor={secondaryColor}
 			/>
-			<div className="p-5 flex flex-col gap-8 relative z-10">
+			<div className="p-4 flex flex-col gap-8 relative z-10">
 				{/* Header: headshot + info */}
 				<div className="flex items-center gap-4">
 					<div className="relative shrink-0">
@@ -188,7 +220,7 @@ export function PlayerSeasonCard({
 
 					<div className="w-px h-7 bg-muted-foreground/50 shrink-0" />
 
-					<div className="grid grid-cols-6 gap-4 md:gap-6 items-center">
+					<div className="grid grid-cols-3 sm:grid-cols-6 gap-4 md:gap-6 items-center">
 						{statGroups.map(({ label, value }) => (
 							<div
 								key={label}
@@ -203,10 +235,40 @@ export function PlayerSeasonCard({
 							</div>
 						))}
 					</div>
+
+					<div className="w-px h-7 bg-muted-foreground/50 shrink-0" />
+
+					{/* Fantasy Points — separated visually */}
+					<div className="flex flex-col items-center justify-center">
+						<span
+							className="text-lg sm:text-2xl font-semibold leading-none tabular-nums"
+							style={{
+								color:
+									sa?.nba_fantasy_points != null
+										? valueToRGB({
+												value: sa.nba_fantasy_points,
+												min: 20,
+												max: 50,
+												lowColor: [239, 68, 68, 1],
+												midColor: isDark
+													? [220, 220, 220, 1]
+													: [20, 20, 20, 1],
+												highColor: [34, 197, 94, 1],
+											})
+										: undefined,
+							}}
+						>
+							{avg(sa?.nba_fantasy_points)}
+						</span>
+						<span className="text-[0.6rem] uppercase tracking-wider text-muted-foreground font-medium">
+							FP
+						</span>
+					</div>
 				</div>
 
+				{/* Bottom section: shooting stats + FP analytics */}
 				<div className="w-full grid grid-cols-1 items-center md:grid-cols-2 gap-4 md:gap-8">
-					{/* Shooting + Advanced */}
+					{/* Shooting stats */}
 					<div className="grid grid-cols-3 gap-2">
 						{shootingStats.map(({ label, value }) => (
 							<div
@@ -221,65 +283,112 @@ export function PlayerSeasonCard({
 								</span>
 							</div>
 						))}
-						{advancedStats.map(({ label, value }) => {
-							const isFP = label === "FP";
-							const fpBg =
-								isFP && sa?.nba_fantasy_points != null
-									? valueToRGB({
-											value: sa.nba_fantasy_points,
-											min: 0,
-											max: 50,
-											lowColor: [197, 27, 125, 1],
-											midColor: isDark
-												? [220, 220, 220, 1]
-												: [20, 20, 20, 1],
-											highColor: [20, 184, 166, 1],
-										}).replace(/[\d.]+\)$/, "1)")
-									: null;
-
-							return (
-								<div
-									key={label}
-									className="flex flex-col items-center rounded-xl px-3 py-1.5"
-									style={{
-										background:
-											fpBg ?? "hsl(var(--muted) / 0.6)",
-										color: fpBg
-											? getContrastingColor(fpBg)
-											: "hsl(var(--foreground))",
-									}}
-								>
-									<div className="">
-										<span></span>
-										<span className="text-sm font-semibold tabular-nums">
-											{value}
-										</span>
-									</div>
-									<span className="grid grid-cols-3 items-center text-center text-[0.6rem] uppercase tracking-wider font-medium">
-										<span></span>
-										{label}
-										{isFP && fpRank != null && (
-											<Badge
-												className="px-1 py-0 text-[0.6rem] rounded-full w-fit h-fit bg-muted/20"
-												style={{
-													color: fpBg
-														? getContrastingColor(
-																fpBg,
-															)
-														: "hsl(var(--foreground))",
-												}}
-											>
-												#{fpRank}
-											</Badge>
-										)}
-									</span>
-								</div>
-							);
-						})}
 					</div>
 
-					{/* Home/Away splits */}
-					{(splits.home.games > 0 || splits.away.games > 0) && (
+					{/* FP Analytics */}
+					<TooltipProvider delayDuration={200}>
+						<div className="grid grid-cols-3 gap-2">
+							{/* FP/min */}
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<div className="flex flex-col items-center rounded-xl bg-muted/60 px-3 py-1.5 cursor-default">
+										<span className="text-sm font-semibold tabular-nums">
+											{fpPerMin != null ? fpPerMin.toFixed(2) : "—"}
+										</span>
+										<span className="text-[0.6rem] uppercase tracking-wider text-muted-foreground font-medium">
+											FP/MIN
+										</span>
+									</div>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p className="font-medium">Fantasy Points per Minute</p>
+									<p className="text-muted-foreground mt-0.5">Season avg FP ÷ minutes per game. Measures scoring efficiency relative to time on court.</p>
+								</TooltipContent>
+							</Tooltip>
+
+							{/* Consistency: σ + CV% */}
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<div className="flex flex-col items-center rounded-xl bg-muted/60 px-3 py-1.5 cursor-default">
+										<span className="text-sm font-semibold tabular-nums">
+											{stdDev != null ? stdDev.toFixed(1) : "—"}
+										</span>
+										<span className="text-[0.6rem] uppercase tracking-wider text-muted-foreground font-medium">
+											σ{" "}
+											{cv != null ? (
+												<span
+													style={{
+														color: valueToRGB({
+															value: cv,
+															min: 15,
+															max: 60,
+															lowColor: [34, 197, 94, 1],
+															midColor: isDark
+																? [220, 220, 220, 1]
+																: [20, 20, 20, 1],
+															highColor: [239, 68, 68, 1],
+														}),
+													}}
+												>
+													{cv.toFixed(1)}%
+												</span>
+											) : null}
+										</span>
+									</div>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p className="font-medium">Consistency (σ / CV%)</p>
+									<p className="text-muted-foreground mt-0.5">Standard deviation of FP across played games. CV% (coefficient of variation) shows variability relative to the average — lower is more consistent.</p>
+								</TooltipContent>
+							</Tooltip>
+
+							{/* 30D Trend */}
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<div className="flex flex-col items-center rounded-xl bg-muted/60 px-3 py-1.5 cursor-default">
+										<span
+											className="text-sm font-semibold tabular-nums"
+											style={
+												trendPct != null
+													? {
+															color: valueToRGB({
+																value: trendPct,
+																min: -30,
+																max: 30,
+																lowColor: [239, 68, 68, 1],
+																midColor: isDark
+																	? [220, 220, 220, 1]
+																	: [20, 20, 20, 1],
+																highColor: [34, 197, 94, 1],
+															}),
+														}
+													: undefined
+											}
+										>
+											{trendPct != null
+												? (trendPct >= 0 ? "+" : "") +
+													trendPct.toFixed(1) +
+													"%"
+												: "—"}
+										</span>
+										<span className="text-[0.6rem] uppercase tracking-wider text-muted-foreground font-medium">
+											30D{" "}
+											{recentLogs.length > 0 && (
+												<span>L{recentLogs.length}G</span>
+											)}
+										</span>
+									</div>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p className="font-medium">30-Day FP Trend</p>
+									<p className="text-muted-foreground mt-0.5">Average FP over the last 30 days vs. the full season average. Green means running hot, red means running cold.</p>
+								</TooltipContent>
+							</Tooltip>
+						</div>
+					</TooltipProvider>
+
+					{/* Home/Away splits — commented out */}
+					{/* {(splits.home.games > 0 || splits.away.games > 0) && (
 						<div className="">
 							<div className="w-full grid grid-cols-2 gap-3">
 								{(["home", "away"] as const).map((side) => {
@@ -320,7 +429,7 @@ export function PlayerSeasonCard({
 								})}
 							</div>
 						</div>
-					)}
+					)} */}
 				</div>
 			</div>
 		</div>
