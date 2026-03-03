@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PlayerSearch } from "@/components/home/player-search";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ChartScatter } from "lucide-react";
+import { ArrowRight, CalendarDays } from "lucide-react";
 
 export default async function Page() {
 	return (
@@ -36,9 +36,9 @@ export default async function Page() {
 							size="lg"
 							className="rounded-full text-base h-12 px-8 backdrop-blur-sm bg-background/50 border hover:bg-background/80"
 						>
-							<Link href="/consistency">
-								Season Consistency{" "}
-								<ChartScatter className="ml-2 w-5 h-5" />
+							<Link href="/schedule">
+								Weekly Schedule{" "}
+								<CalendarDays className="ml-2 w-5 h-5" />
 							</Link>
 						</Button>
 					</div>

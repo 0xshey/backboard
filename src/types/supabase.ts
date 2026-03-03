@@ -498,6 +498,7 @@ export type Database = {
         Row: {
           end_date: string | null
           label: string | null
+          notes: string | null
           number: number
           provider: Database["public"]["Enums"]["fantasy_provider"]
           start_date: string | null
@@ -505,6 +506,7 @@ export type Database = {
         Insert: {
           end_date?: string | null
           label?: string | null
+          notes?: string | null
           number: number
           provider?: Database["public"]["Enums"]["fantasy_provider"]
           start_date?: string | null
@@ -512,6 +514,7 @@ export type Database = {
         Update: {
           end_date?: string | null
           label?: string | null
+          notes?: string | null
           number?: number
           provider?: Database["public"]["Enums"]["fantasy_provider"]
           start_date?: string | null
@@ -947,6 +950,101 @@ export type Database = {
             columns: ["player"]
             isOneToOne: false
             referencedRelation: "player"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      standings: {
+        Row: {
+          away_record: string | null
+          away_streak: number | null
+          clinched_conference: boolean | null
+          clinched_division: boolean | null
+          clinched_play_in: boolean | null
+          clinched_playoff: boolean | null
+          conference: string | null
+          conference_rank: number | null
+          conference_record: string | null
+          division: string | null
+          division_rank: number | null
+          division_record: string | null
+          eliminated_conference: boolean | null
+          eliminated_division: boolean | null
+          games_played: number | null
+          home_record: string | null
+          home_streak: number | null
+          l10_record: string | null
+          losses: number | null
+          points_against: number | null
+          points_for: number | null
+          season_id: string
+          team_city: string | null
+          team_id: string
+          win_pct: number | null
+          wins: number | null
+        }
+        Insert: {
+          away_record?: string | null
+          away_streak?: number | null
+          clinched_conference?: boolean | null
+          clinched_division?: boolean | null
+          clinched_play_in?: boolean | null
+          clinched_playoff?: boolean | null
+          conference?: string | null
+          conference_rank?: number | null
+          conference_record?: string | null
+          division?: string | null
+          division_rank?: number | null
+          division_record?: string | null
+          eliminated_conference?: boolean | null
+          eliminated_division?: boolean | null
+          games_played?: number | null
+          home_record?: string | null
+          home_streak?: number | null
+          l10_record?: string | null
+          losses?: number | null
+          points_against?: number | null
+          points_for?: number | null
+          season_id: string
+          team_city?: string | null
+          team_id: string
+          win_pct?: number | null
+          wins?: number | null
+        }
+        Update: {
+          away_record?: string | null
+          away_streak?: number | null
+          clinched_conference?: boolean | null
+          clinched_division?: boolean | null
+          clinched_play_in?: boolean | null
+          clinched_playoff?: boolean | null
+          conference?: string | null
+          conference_rank?: number | null
+          conference_record?: string | null
+          division?: string | null
+          division_rank?: number | null
+          division_record?: string | null
+          eliminated_conference?: boolean | null
+          eliminated_division?: boolean | null
+          games_played?: number | null
+          home_record?: string | null
+          home_streak?: number | null
+          l10_record?: string | null
+          losses?: number | null
+          points_against?: number | null
+          points_for?: number | null
+          season_id?: string
+          team_city?: string | null
+          team_id?: string
+          win_pct?: number | null
+          wins?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "standings_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "team"
             referencedColumns: ["id"]
           },
         ]

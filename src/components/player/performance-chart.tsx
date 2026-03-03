@@ -16,6 +16,9 @@ import { DateTime } from "luxon";
 import { formatSecondsToMMSS } from "@/lib/utils";
 import { valueToRGB } from "@/lib/value-to-color";
 import type { GameLogFull } from "@/app/(app)/player/[playerId]/page";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type StatKey = "fp" | "plus_minus" | "seconds";
 
@@ -487,57 +490,39 @@ export function PerformanceChart({
 					</h2>
 
 					{/* Stat selector */}
-					<div className="flex flex-wrap gap-1">
+					<RadioGroup
+						value={selectedStat}
+						onValueChange={(v) => setSelectedStat(v as StatKey)}
+						className="flex gap-3"
+					>
 						{STAT_OPTIONS.map((opt) => (
-							<button
-								key={opt.key}
-								onClick={() => setSelectedStat(opt.key)}
-								className="px-2.5 py-1 rounded-lg text-xs font-medium transition-colors"
-								style={
-									selectedStat === opt.key
-										? {
-												backgroundColor: accent,
-												color: "#fff",
-											}
-										: {
-												backgroundColor:
-													"hsl(var(--muted))",
-												color: "hsl(var(--muted-foreground))",
-											}
-								}
-							>
-								{opt.shortLabel}
-							</button>
+							<div key={opt.key} className="flex items-center gap-1.5">
+								<RadioGroupItem value={opt.key} id={`stat-${opt.key}`} />
+								<Label htmlFor={`stat-${opt.key}`} className="text-xs font-medium cursor-pointer">
+									{opt.shortLabel}
+								</Label>
+							</div>
 						))}
-					</div>
+					</RadioGroup>
 				</div>
 
 				{/* Rolling average controls */}
-				<div className="flex items-center gap-3 text-sm">
-					<button
-						onClick={() => setShowRolling((v) => !v)}
-						className="flex items-center gap-2 text-xs font-medium transition-opacity"
-					>
-						<span
-							className="inline-flex w-4 h-4 rounded items-center justify-center border-2 transition-colors"
-							style={{
-								borderColor: accent,
-								backgroundColor: showRolling
-									? accent
-									: "transparent",
-							}}
+				<div className="flex items-center gap-3">
+					<div className="flex items-center gap-2">
+						<Checkbox
+							id="rolling-avg"
+							checked={showRolling}
+							onCheckedChange={(v) => setShowRolling(!!v)}
 						/>
-						<span className="text-muted-foreground">
+						<Label htmlFor="rolling-avg" className="text-xs font-medium cursor-pointer">
 							Rolling avg
-						</span>
-					</button>
+						</Label>
+					</div>
 
 					{showRolling && (
 						<div className="flex items-center gap-2 text-xs text-muted-foreground">
 							<button
-								onClick={() =>
-									setRollingWindow((w) => Math.max(3, w - 1))
-								}
+								onClick={() => setRollingWindow((w) => Math.max(3, w - 1))}
 								className="w-5 h-5 rounded bg-muted hover:bg-muted/70 font-bold leading-none flex items-center justify-center"
 							>
 								−
@@ -546,9 +531,7 @@ export function PerformanceChart({
 								{rollingWindow}G
 							</span>
 							<button
-								onClick={() =>
-									setRollingWindow((w) => Math.min(10, w + 1))
-								}
+								onClick={() => setRollingWindow((w) => Math.min(10, w + 1))}
 								className="w-5 h-5 rounded bg-muted hover:bg-muted/70 font-bold leading-none flex items-center justify-center"
 							>
 								+

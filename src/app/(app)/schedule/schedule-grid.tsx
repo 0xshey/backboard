@@ -347,7 +347,7 @@ export function ScheduleGrid() {
 							<th className="sticky left-0 z-10 bg-muted border-r border-border">
 								<button
 									onClick={handleTeamSort}
-									className={`w-full flex items-center gap-1 px-3 py-2.5 text-left text-xs uppercase tracking-wider font-medium cursor-pointer select-none transition-colors hover:text-foreground ${
+									className={`w-full flex items-center gap-2 px-3 py-2.5 text-left text-xs uppercase tracking-wider font-medium cursor-pointer select-none transition-colors hover:text-foreground ${
 										teamSortActive
 											? "text-foreground"
 											: "text-muted-foreground"
@@ -355,7 +355,7 @@ export function ScheduleGrid() {
 								>
 									Team
 									<TeamSortIcon
-										size={11}
+										size={12}
 										className={
 											teamSortActive
 												? "opacity-100"

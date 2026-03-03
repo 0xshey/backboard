@@ -1,5 +1,7 @@
 "use client";
 import { format } from "date-fns";
+import { useState, useEffect } from "react";
+import { DateTime } from "luxon";
 
 import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft } from "lucide-react";
@@ -14,6 +16,18 @@ export default function DatePicker({
 	className?: string;
 }) {
 	const isNow = date.toDateString() === new Date().toDateString();
+
+	const [nowET, setNowET] = useState(() =>
+		DateTime.now().setZone("America/New_York"),
+	);
+
+	useEffect(() => {
+		if (!isNow) return;
+		const interval = setInterval(() => {
+			setNowET(DateTime.now().setZone("America/New_York"));
+		}, 60_000);
+		return () => clearInterval(interval);
+	}, [isNow]);
 
 	return (
 		<div className={`flex items-center gap-8 p-2 ${className}`}>
@@ -36,18 +50,28 @@ export default function DatePicker({
 				)}
 
 				<div className="flex flex-col items-center gap-1">
-					<h2 className="text-lg text-center font-medium">
-						{format(
-							date.toLocaleString(),
-							isNow ? "h:mm a" : "MMM. do"
-						)}
-					</h2>
-					<h2 className="text-xs font-medium text-center">
-						{format(
-							date.toLocaleString(),
-							isNow ? "EE — MMM d" : "EEEE"
-						)}
-					</h2>
+					{isNow ? (
+						<>
+							<h2 className="text-lg text-center font-medium">
+								{nowET.toFormat("h:mm a")}{" "}
+								<span className="text-xs text-muted-foreground font-normal">
+									ET
+								</span>
+							</h2>
+							<h2 className="text-xs font-medium text-center">
+								{nowET.toFormat("EEE — MMM d")}
+							</h2>
+						</>
+					) : (
+						<>
+							<h2 className="text-lg text-center font-medium">
+								{format(date.toLocaleString(), "MMM. do")}
+							</h2>
+							<h2 className="text-xs font-medium text-center">
+								{format(date.toLocaleString(), "EEEE")}
+							</h2>
+						</>
+					)}
 				</div>
 			</div>
 

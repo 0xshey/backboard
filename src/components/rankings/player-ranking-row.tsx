@@ -20,9 +20,9 @@ const SHOOTING_CONFIG = {
 		volumeBaseline: 12, // typical FGA for a meaningful sample
 	},
 	"3p": {
-		lowPct: 0.20, // deep red below this
+		lowPct: 0.2, // deep red below this
 		midPct: 0.36, // NBA average — neutral point
-		highPct: 0.50, // deep green above this
+		highPct: 0.5, // deep green above this
 		volumeBaseline: 6, // typical 3PA for a meaningful sample
 	},
 	ft: {
@@ -106,7 +106,7 @@ export function PlayerRankingRow({
 								"text-xs md:text-sm truncate text-muted-foreground md:text-foreground",
 								isPlayerSort && "opacity-50",
 								player_game.player.first_name.length >= 9 &&
-									"font-stretch-75% md:font-stretch-100%"
+									"font-stretch-75% md:font-stretch-100%",
 							)}
 						>
 							{player_game.player.first_name}
@@ -115,7 +115,7 @@ export function PlayerRankingRow({
 							className={cn(
 								"text-xs md:text-sm truncate text-foreground",
 								player_game.player.last_name.length >= 9 &&
-									"font-stretch-75% md:font-stretch-100%"
+									"font-stretch-75% md:font-stretch-100%",
 							)}
 						>
 							{player_game.player.last_name}
@@ -127,7 +127,10 @@ export function PlayerRankingRow({
 			{/* Minutes */}
 			<TableCell className="text-center p-1">
 				<div className="flex flex-col items-end justify-center gap-0.5 relative">
-					<div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse absolute -left-0.5 top-0.5" />
+					{/* Live indicator */}
+					{player_game.game?.status_code === 2 && (
+						<div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse absolute -left-0.5 top-0.5" />
+					)}
 					<span className="text-sm md:text-base font-semibold leading-none tabular-nums">
 						{formatSecondsToMMSS(player_game.seconds).split(":")[0]}
 					</span>
@@ -147,7 +150,7 @@ export function PlayerRankingRow({
 								className={cn(
 									"text-sm md:text-base font-semibold leading-none tabular-nums",
 									isSortedByDelta &&
-										"text-xs text-muted-foreground opacity-70 font-normal"
+										"text-xs text-muted-foreground opacity-70 font-normal",
 								)}
 							>
 								{stat.value}
@@ -173,7 +176,7 @@ export function PlayerRankingRow({
 							valueToRGB({
 								value: player_game.fp,
 								schema: "fantasyPoints",
-							})
+							}),
 						),
 					}}
 				>
@@ -219,7 +222,7 @@ export function PlayerRankingRow({
 				const volumeScale =
 					Math.min(
 						stat.attempted / cfg.volumeBaseline,
-						SHOOTING_CONFIG.volumeCap
+						SHOOTING_CONFIG.volumeCap,
 					) / SHOOTING_CONFIG.volumeCap;
 				const alpha = SHOOTING_CONFIG.maxAlpha * volumeScale;
 
