@@ -5,12 +5,25 @@ import {
 	fetchGamePlayersForGameIds,
 	fetchGamesForDate,
 	fetchMostRecentDateWithPlayers,
+	fetchStandingsForTeams,
 } from "./functions";
 
 export async function RankingsContent({ date }: { date: string }) {
 	const games = await fetchGamesForDate(date);
 	const gameIds = games.map((g) => g.id);
-	const gamePlayers = await fetchGamePlayersForGameIds(gameIds);
+
+	const teamIds = [
+		...new Set(
+			games
+				.flatMap((g: any) => [g.away_team?.id, g.home_team?.id])
+				.filter(Boolean),
+		),
+	] as string[];
+
+	const [gamePlayers, standings] = await Promise.all([
+		fetchGamePlayersForGameIds(gameIds),
+		fetchStandingsForTeams(teamIds),
+	]);
 
 	const isEmpty = gamePlayers.length === 0;
 	const mostRecentDate = isEmpty
@@ -28,7 +41,7 @@ export async function RankingsContent({ date }: { date: string }) {
 					)
 					.sort((a, b) => (a.status_code ?? 0) - (b.status_code ?? 0))
 					.map((game) => (
-						<GameChip key={game.id} game={game} />
+						<GameChip key={game.id} game={game} standings={standings} />
 					))}
 			</div>
 			<div className="w-fit max-w-full flex justify-center gap-4 p-2">

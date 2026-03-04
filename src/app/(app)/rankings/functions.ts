@@ -120,6 +120,43 @@ export async function fetchMostRecentDateWithPlayers(
 		.toISODate();
 }
 
+export type TeamStanding = {
+	record: string;       // "32-18"
+	confRank: string | null; // "W3" | "E14" | null
+};
+
+/**
+ * Fetch standings for a list of team IDs, returning a map of team_id → TeamStanding.
+ * Orders by season_id descending so the most recent season wins for each team.
+ */
+export async function fetchStandingsForTeams(
+	teamIds: string[]
+): Promise<Record<string, TeamStanding>> {
+	if (!teamIds.length) return {};
+	const supabase = await createClient();
+
+	const { data, error } = await supabase
+		.from("standings")
+		.select("team_id, wins, losses, season_id, conference, conference_rank")
+		.in("team_id", teamIds)
+		.order("season_id", { ascending: false });
+
+	if (error || !data) return {};
+
+	// Deduplicate: keep the first (most recent) record per team
+	const result: Record<string, TeamStanding> = {};
+	for (const s of data) {
+		if (!(s.team_id in result)) {
+			const conf = s.conference === "East" ? "E" : s.conference === "West" ? "W" : null;
+			result[s.team_id] = {
+				record: `${s.wins ?? 0}-${s.losses ?? 0}`,
+				confRank: conf && s.conference_rank != null ? `${conf}${s.conference_rank}` : null,
+			};
+		}
+	}
+	return result;
+}
+
 /*
 Example usage:
 const { games, gamePlayers } = await fetchGamePlayersForDate("2025-10-21");
