@@ -39,9 +39,9 @@ function parseRank(
 }
 
 function rankColor(num: number): string {
-	if (num >= 1 && num <= 6) return "text-green-500/40";
-	if (num >= 7 && num <= 10) return "text-orange-500/40";
-	return "text-muted-foreground/50";
+	if (num >= 1 && num <= 6) return "text-green-500/60";
+	if (num >= 7 && num <= 10) return "text-yellow-500/60";
+	return "text-muted-foreground/60";
 }
 
 export function GameChip({ game, loading, standings = {} }: GameChipProps) {
@@ -89,12 +89,12 @@ export function GameChip({ game, loading, standings = {} }: GameChipProps) {
 
 	return (
 		<div
-			className={`w-full border rounded-xl px-2 py-2.5 grid grid-cols-3 items-center gap-2 ${
+			className={`w-full border rounded-xl px-2 py-2 flex flex-col sm:flex-row gap-2 ${
 				isLive ? "bg-muted/40 border-red-500/40" : "border-border"
 			}`}
 		>
-			{/* Left col (spans 2): team rows */}
-			<div className="col-span-2 flex flex-col gap-2 pr-2">
+			{/* Teams */}
+			<div className="flex flex-col gap-2 sm:flex-1">
 				{teams.map(({ team, score, side }) => {
 					const isDim =
 						hasScores && winner !== "tied" && winner !== side;
@@ -112,25 +112,25 @@ export function GameChip({ game, loading, standings = {} }: GameChipProps) {
 								width={32}
 								height={32}
 								unoptimized
-								className={`shrink-0 ${isDim ? "opacity-35" : ""}`}
+								className="shrink-0"
 							/>
 							<div className="flex flex-col min-w-0 leading-none">
 								{/* Score (live/finished) or record + rank (upcoming) */}
 								{isUpcoming ? (
 									<div className="flex items-center gap-2">
-										<span className="text-lg font-semibold">
+										<span className="text-lg font-light">
 											{standing?.record ?? "—"}
 										</span>
 										{rank && (
 											<div className="flex flex-col">
 												<span
-													className={`text-[0.55rem] leading-tight ${rankColor(rank.num)}`}
+													className={`text-xs leading-tight ${rankColor(rank.num)}`}
 												>
 													{rank.ordinalRank}
 												</span>
-												<span className="text-[0.55rem] text-muted-foreground/50 leading-tight">
+												{/* <span className="text-[0.55rem] text-muted-foreground/50 leading-tight">
 													{rank.conf}
-												</span>
+												</span> */}
 											</div>
 										)}
 									</div>
@@ -159,22 +159,20 @@ export function GameChip({ game, loading, standings = {} }: GameChipProps) {
 				})}
 			</div>
 
-			{/* Right col (spans 1): game info */}
-			<div className="h-full p-1 flex flex-col items-end justify-start gap-1 text-center">
+			{/* Game info */}
+			<div className="w-fit mx-auto sm:mx-0 flex sm:flex-col sm:self-center items-center justify-center gap-1.5 px-2 py-1 rounded-lg bg-muted sm:bg-muted/0">
 				{isUpcoming && (
 					<>
 						<span className="text-xs font-medium text-muted-foreground leading-none">
 							{game.status_text}
 						</span>
 						{countdown && (
-							<div
-								className={`flex items-center gap-1 ${countdownUrgent ? "text-red-500" : "text-muted-foreground/50"}`}
+							<span
+								className={`flex items-center gap-1 text-xs ${countdownUrgent ? "text-red-500" : "text-muted-foreground/50"}`}
 							>
-								<Clock size={12} />
-								<span className="text-[0.65rem] mt-0.5">
-									{countdown}
-								</span>
-							</div>
+								<Clock size={11} className="shrink-0" />
+								{countdown}
+							</span>
 						)}
 					</>
 				)}

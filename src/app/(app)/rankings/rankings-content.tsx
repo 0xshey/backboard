@@ -41,7 +41,11 @@ export async function RankingsContent({ date }: { date: string }) {
 					)
 					.sort((a, b) => (a.status_code ?? 0) - (b.status_code ?? 0))
 					.map((game) => (
-						<GameChip key={game.id} game={game} standings={standings} />
+						<GameChip
+							key={game.id}
+							game={game}
+							standings={standings}
+						/>
 					))}
 			</div>
 			<div className="w-fit max-w-full flex justify-center gap-4 p-2">
