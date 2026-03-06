@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GameChip } from "@/components/game/game-chip";
+import { RankingsGamesSection } from "@/components/rankings/rankings-games-section";
 import { PlayerRankingsGrid } from "@/components/rankings/player-rankings-grid";
 import {
 	fetchGamePlayersForGameIds,
@@ -32,22 +32,7 @@ export async function RankingsContent({ date }: { date: string }) {
 
 	return (
 		<>
-			<div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-3 items-center gap-3 px-4">
-				{games
-					.sort(
-						(a, b) =>
-							new Date(a.datetime ?? 0).getTime() -
-							new Date(b.datetime ?? 0).getTime(),
-					)
-					.sort((a, b) => (a.status_code ?? 0) - (b.status_code ?? 0))
-					.map((game) => (
-						<GameChip
-							key={game.id}
-							game={game}
-							standings={standings}
-						/>
-					))}
-			</div>
+			<RankingsGamesSection games={games} standings={standings} />
 			<div className="w-fit max-w-full flex justify-center gap-4 p-2">
 				{!isEmpty ? (
 					<PlayerRankingsGrid

@@ -89,7 +89,7 @@ export function PlayerRankingRow({
 		// ↓ Change text-sm to adjust the size of all stat values in the row
 		<TableRow className="text-base py-1 hover:bg-muted/30 transition-colors h-9 md:h-10 border-b border-border/50">
 			{/* Player (sticky) */}
-			<TableCell className="sticky left-0 z-10 bg-background p-0 min-w-32 md:min-w-72">
+			<TableCell className="sticky left-0 z-10 bg-background p-0 min-w-24 md:min-w-72">
 				<div className="flex items-center gap-2 px-1 md:px-2 h-full">
 					<span className="text-xs text-muted-foreground/50 min-w-4 text-right tabular-nums">
 						{player_game.fpRank}
