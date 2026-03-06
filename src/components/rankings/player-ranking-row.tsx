@@ -244,9 +244,9 @@ export function PlayerRankingRow({
 				const alpha = SHOOTING_CONFIG.maxAlpha * volumeScale;
 
 				return (
-					<TableCell key={stat.label} className="p-0.5">
+					<TableCell key={stat.label} className="p-0.5 pl-3">
 						<div
-							className="flex flex-col items-end justify-center gap-0 px-1.5 py-1 rounded-md h-full"
+							className="flex flex-col items-end justify-center gap-0 p-1 rounded-md h-full"
 							style={{
 								backgroundColor: valueToRGB({
 									value: stat.percentage,
