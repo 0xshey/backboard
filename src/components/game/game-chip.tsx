@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Clock } from "lucide-react";
 import { teamLogoURL } from "@/lib/image-urls";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import type { TeamStanding } from "@/app/(app)/rankings/functions";
 
 interface GameChipProps {
@@ -89,8 +90,13 @@ export function GameChip({ game, loading, standings = {} }: GameChipProps) {
 
 	return (
 		<div
-			className={`w-full border rounded-xl px-2 py-2 flex flex-col sm:flex-row gap-2 ${
-				isLive ? "bg-muted/40 border-red-500/40" : "border-border"
+			className={`w-full border rounded-2xl px-2 py-2 flex flex-col sm:flex-row gap-2 shadow-xs bg-muted ${
+				isLive
+					? "bg-muted/40 border-red-500/40"
+					: isUpcoming
+						? "border-border bg-muted/60"
+						: // is Finished
+							"border-muted-foreground/40 bg-muted/60"
 			}`}
 		>
 			{/* Teams */}
@@ -109,8 +115,8 @@ export function GameChip({ game, loading, standings = {} }: GameChipProps) {
 							<Image
 								src={teamLogoURL(team.id)}
 								alt={team.name}
-								width={32}
-								height={32}
+								width={40}
+								height={40}
 								unoptimized
 								className="shrink-0"
 							/>
@@ -145,7 +151,7 @@ export function GameChip({ game, loading, standings = {} }: GameChipProps) {
 								)}
 								{/* Team name */}
 								<span
-									className={`text-[0.7rem] truncate mt-0.5 ${
+									className={`text-[0.7rem] font-medium truncate mt-0.5 ${
 										isDim
 											? "text-muted-foreground/50"
 											: "text-muted-foreground"
@@ -160,29 +166,36 @@ export function GameChip({ game, loading, standings = {} }: GameChipProps) {
 			</div>
 
 			{/* Game info */}
-			<div className="w-fit mx-auto sm:mx-0 flex sm:flex-col sm:self-center items-center justify-center gap-1.5 px-2 py-1 rounded-lg bg-muted sm:bg-muted/0">
+			<div
+				className={cn(
+					// base
+					"w-fit mx-auto mt-1 flex items-center justify-center gap-1.5 px-2 py-1 rounded-lg",
+					// sm+ (column to the right)
+					"sm:mx-0 sm:mt-0 sm:bg-muted/0 sm:flex-col sm:self-center sm:items-end",
+				)}
+			>
 				{isUpcoming && (
 					<>
-						<span className="text-xs font-medium text-muted-foreground leading-none">
+						<span className="text-xs font-medium text-muted-foreground/80 leading-none">
 							{game.status_text}
 						</span>
 						{countdown && (
 							<span
 								className={`flex items-center gap-1 text-xs ${countdownUrgent ? "text-red-500" : "text-muted-foreground/50"}`}
 							>
-								<Clock size={11} className="shrink-0" />
+								<Clock size={10} className="shrink-0" />
 								{countdown}
 							</span>
 						)}
 					</>
 				)}
 				{isLive && (
-					<>
+					<div className="flex items-center gap-1">
 						<span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
 						<span className="text-xs font-semibold text-red-500 leading-none">
 							{game.status_text}
 						</span>
-					</>
+					</div>
 				)}
 				{!isUpcoming && !isLive && (
 					<span className="text-xs text-muted-foreground font-medium">
