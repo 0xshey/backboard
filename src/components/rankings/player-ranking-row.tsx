@@ -81,12 +81,17 @@ export function PlayerRankingRow({
 		player_game.player.season_averages?.[0]?.nba_fantasy_points;
 	const fpDelta = seasonAvgFp ? player_game.fp - seasonAvgFp : null;
 
+	// FP per minute
+	const minutes = player_game.seconds / 60;
+	const fpPerMin = minutes > 0 ? player_game.fp / minutes : null;
+
 	return (
-		<TableRow className="hover:bg-muted/30 transition-colors h-9 md:h-10 border-b border-border/30">
+		// ↓ Change text-sm to adjust the size of all stat values in the row
+		<TableRow className="text-base py-1 hover:bg-muted/30 transition-colors h-9 md:h-10 border-b border-border/50">
 			{/* Player (sticky) */}
-			<TableCell className="sticky left-0 z-10 bg-background backdrop-blur-sm p-0 min-w-32 md:min-w-72">
+			<TableCell className="sticky left-0 z-10 bg-background p-0 min-w-24 md:min-w-72">
 				<div className="flex items-center gap-2 px-1 md:px-2 h-full">
-					<span className="text-xs md:text-sm text-muted-foreground/50 min-w-4 text-right tabular-nums">
+					<span className="text-xs text-muted-foreground/50 min-w-4 text-right tabular-nums">
 						{player_game.fpRank}
 					</span>
 					<Image
@@ -97,13 +102,14 @@ export function PlayerRankingRow({
 						quality={100}
 						className="opacity-80 shrink-0 hidden md:block"
 					/>
+					{/* ↓ Change text-xs to adjust the player name size */}
 					<Link
 						href={`/player/${player_game.player.id}`}
-						className="flex flex-col md:flex-row items-start md:items-center md:gap-1 min-w-0 hover:opacity-70 transition-opacity"
+						className="text-xs md:text-base flex flex-col md:flex-row items-start md:items-center md:gap-1 min-w-0 hover:opacity-70 transition-opacity"
 					>
 						<span
 							className={cn(
-								"text-xs md:text-sm truncate text-muted-foreground md:text-foreground",
+								"truncate text-muted-foreground",
 								isPlayerSort && "opacity-50",
 								player_game.player.first_name.length >= 9 &&
 									"font-stretch-75% md:font-stretch-100%",
@@ -113,7 +119,7 @@ export function PlayerRankingRow({
 						</span>
 						<span
 							className={cn(
-								"text-xs md:text-sm truncate text-foreground",
+								"truncate text-foreground",
 								player_game.player.last_name.length >= 9 &&
 									"font-stretch-75% md:font-stretch-100%",
 							)}
@@ -131,11 +137,8 @@ export function PlayerRankingRow({
 					{player_game.game?.status_code === 2 && (
 						<div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse absolute -left-0.5 top-0.5" />
 					)}
-					<span className="text-sm md:text-base font-semibold leading-none tabular-nums">
+					<span className="font-semibold leading-none tabular-nums text-muted-foreground">
 						{formatSecondsToMMSS(player_game.seconds).split(":")[0]}
-					</span>
-					<span className="text-[0.5rem] md:text-[0.6rem] leading-none text-muted-foreground uppercase tracking-wider">
-						min
 					</span>
 				</div>
 			</TableCell>
@@ -144,19 +147,16 @@ export function PlayerRankingRow({
 			{countingStats.map((stat) => {
 				const isSortedByDelta = sortField === `${stat.label}_delta`;
 				return (
-					<TableCell key={stat.label} className="text-center p-1">
+					<TableCell key={stat.label} className="">
 						<div className="flex flex-col items-end justify-center gap-0.5">
 							<span
 								className={cn(
-									"text-sm md:text-base font-semibold leading-none tabular-nums",
+									"font-semibold leading-none",
 									isSortedByDelta &&
-										"text-xs text-muted-foreground opacity-70 font-normal",
+										"text-muted-foreground opacity-70 font-normal",
 								)}
 							>
 								{stat.value}
-							</span>
-							<span className="text-[0.5rem] md:text-[0.6rem] leading-none text-muted-foreground uppercase tracking-wider">
-								{stat.label}
 							</span>
 						</div>
 					</TableCell>
@@ -164,9 +164,9 @@ export function PlayerRankingRow({
 			})}
 
 			{/* FP */}
-			<TableCell className="p-0.5">
+			<TableCell className="p-0.5 pl-3">
 				<div
-					className="flex flex-col items-end justify-center gap-0 px-1.5 py-1 rounded-md h-full"
+					className="flex flex-col items-end justify-center gap-0 pl-3 p-1 rounded-md h-full"
 					style={{
 						backgroundColor: valueToRGB({
 							value: player_game.fp,
@@ -180,11 +180,8 @@ export function PlayerRankingRow({
 						),
 					}}
 				>
-					<span className="text-sm md:text-base leading-none font-semibold tabular-nums drop-shadow-sm">
+					<span className="leading-none font-semibold tabular-nums drop-shadow-sm">
 						{player_game.fp.toFixed(1)}
-					</span>
-					<span className="text-[0.5rem] leading-none font-medium uppercase">
-						fp
 					</span>
 				</div>
 			</TableCell>
@@ -194,7 +191,7 @@ export function PlayerRankingRow({
 				{fpDelta !== null ? (
 					<div className="flex flex-col items-end justify-center gap-0">
 						<span
-							className="text-sm md:text-base leading-none font-semibold tabular-nums"
+							className="leading-none font-semibold tabular-nums"
 							style={{
 								color: valueToRGB({
 									value: fpDelta,
@@ -207,8 +204,28 @@ export function PlayerRankingRow({
 							{fpDelta > 0 ? "+" : ""}
 							{fpDelta.toFixed(1)}
 						</span>
-						<span className="text-[10px] leading-none text-muted-foreground tracking-wider uppercase">
-							δ
+					</div>
+				) : (
+					<span className="text-muted-foreground text-xs">-</span>
+				)}
+			</TableCell>
+
+			{/* FP / MIN */}
+			<TableCell className="text-center p-1">
+				{fpPerMin !== null ? (
+					<div className="flex flex-col items-end justify-center gap-0">
+						<span
+							className="leading-none font-semibold tabular-nums"
+							style={{
+								color: valueToRGB({
+									value: fpPerMin,
+									min: 0.5,
+									max: 2.5,
+									midColor: [200, 200, 200, 1],
+								}),
+							}}
+						>
+							{fpPerMin.toFixed(2)}
 						</span>
 					</div>
 				) : (
@@ -241,11 +258,8 @@ export function PlayerRankingRow({
 								}),
 							}}
 						>
-							<span className="text-sm md:text-base font-semibold leading-none tabular-nums">
+							<span className="font-semibold leading-none tabular-nums">
 								{stat.made}/{stat.attempted}
-							</span>
-							<span className="text-[0.5rem] leading-none text-muted-foreground uppercase tracking-wider">
-								{stat.label}
 							</span>
 						</div>
 					</TableCell>

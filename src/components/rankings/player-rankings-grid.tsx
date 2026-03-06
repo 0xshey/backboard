@@ -153,6 +153,11 @@ export function PlayerRankingsGrid({
 							field="fp_delta"
 							className="text-center w-16 md:w-20"
 						/>
+						<SortableHead
+							label="FP/M"
+							field="fp_per_min"
+							className="text-center w-16 md:w-20"
+						/>
 						{["fg", "3p", "ft"].map((stat) => (
 							<SortableHead
 								key={stat}

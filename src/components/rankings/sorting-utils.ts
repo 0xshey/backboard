@@ -43,6 +43,9 @@ export function sortPlayers(data: any[], sortField: string, sortDirection: 'asc'
         } else if (sortField === 'minutes') {
             valA = a.seconds;
             valB = b.seconds;
+        } else if (sortField === 'fp_per_min') {
+            valA = a.seconds > 0 ? a.fp / (a.seconds / 60) : 0;
+            valB = b.seconds > 0 ? b.fp / (b.seconds / 60) : 0;
         } else if (sortField.endsWith('_delta')) {
             valA = getDeltaValue(a, sortField);
             valB = getDeltaValue(b, sortField);
