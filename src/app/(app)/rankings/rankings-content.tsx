@@ -32,7 +32,7 @@ export async function RankingsContent({ date }: { date: string }) {
 
 	return (
 		<>
-			<div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-3 items-center gap-2 px-2">
+			<div className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-3 items-center gap-3 px-4">
 				{games
 					.sort(
 						(a, b) =>
