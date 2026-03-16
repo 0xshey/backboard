@@ -2,6 +2,14 @@ function clamp(x: number, min: number, max: number): number {
 	return Math.min(max, Math.max(min, x));
 }
 
+export interface InjuredTeammate {
+	name: string;
+	status: string;
+	seasonAvgFP: number;
+	/** Expected fraction of their usage that is displaced (0–1) */
+	pOut: number;
+}
+
 export interface FormulaComponents {
 	baseAvg: number;
 	avgSeason: number;
@@ -15,6 +23,12 @@ export interface FormulaComponents {
 	awayGamesCount: number;
 	oppQualityFactor: number;
 	isHome: boolean;
+	/** Injury boost multiplier (1.0 = no injury context) */
+	injuryBoostFactor: number;
+	/** Teammates contributing to the boost */
+	injuredTeammates: InjuredTeammate[];
+	/** displaced_fp / active_team_fp — the raw "usage vacuum" ratio before clamping */
+	displacedFPRatio: number;
 }
 
 export interface ProjectionResult {
@@ -24,6 +38,8 @@ export interface ProjectionResult {
 	teamId: string;
 	gameId: string;
 	projectedFP: number;
+	/** projectedFP before applying INJURY_BOOST — equals projectedFP when no injury data */
+	projectedFPBase: number;
 	confidence: number;
 	confidenceLabel: "Low" | "Medium" | "High";
 	components: FormulaComponents;
@@ -56,6 +72,16 @@ export interface ProjectionInputs {
 	leagueAvgPointsFor: number;
 	actualFP: number | null;
 	played: boolean;
+	/**
+	 * Injury context for the player's team.
+	 * displacedFP = Σ(p_out × seasonAvgFP) for injured teammates
+	 * activeTeamFP = total team FP pool MINUS displacedFP
+	 * absorptionRate = 0–1 tunable parameter
+	 */
+	displacedFP?: number;
+	activeTeamFP?: number;
+	injuredTeammates?: InjuredTeammate[];
+	absorptionRate?: number;
 }
 
 /**
@@ -137,9 +163,21 @@ export function computeProjectedFP(inputs: ProjectionInputs): ProjectionResult {
 		1.08,
 	);
 
+	// ── Factor 5: Injury boost ─────────────────────────────────────────────────
+	const displacedFP = inputs.displacedFP ?? 0;
+	const activeTeamFP = inputs.activeTeamFP ?? seasonAvgFP;
+	const absorptionRate = inputs.absorptionRate ?? 0;
+	const injuredTeammates = inputs.injuredTeammates ?? [];
+
+	const displacedFPRatio =
+		activeTeamFP > 0 ? displacedFP / activeTeamFP : 0;
+	const injuryBoostFactor =
+		1 + clamp(displacedFPRatio, 0, 0.5) * absorptionRate;
+
 	// ── Final projection ───────────────────────────────────────────────────────
-	const projectedFP =
+	const projectedFPBase =
 		baseAvg * oppDefFactor * homeAwayFactor * oppQualityFactor;
+	const projectedFP = projectedFPBase * injuryBoostFactor;
 
 	// ── Confidence score ───────────────────────────────────────────────────────
 	const confGames = clamp(gamesPlayed / 20, 0, 1);
@@ -159,6 +197,7 @@ export function computeProjectedFP(inputs: ProjectionInputs): ProjectionResult {
 		teamId,
 		gameId,
 		projectedFP,
+		projectedFPBase,
 		confidence,
 		confidenceLabel,
 		components: {
@@ -174,6 +213,9 @@ export function computeProjectedFP(inputs: ProjectionInputs): ProjectionResult {
 			awayGamesCount: awayGameFPs.length,
 			oppQualityFactor,
 			isHome,
+			injuryBoostFactor,
+			injuredTeammates,
+			displacedFPRatio,
 		},
 		actualFP,
 		played,
