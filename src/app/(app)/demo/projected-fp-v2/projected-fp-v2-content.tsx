@@ -529,8 +529,6 @@ export async function ProjectedFPV2Content({
 		);
 	}
 
-	const hasCompletedGames = games.some((g) => (g as any).status_code === 3);
-
 	const completedProjections = gameSections
 		.flatMap((s) => s.projections)
 		.filter((p) => p.error !== null);
@@ -550,7 +548,6 @@ export async function ProjectedFPV2Content({
 	return (
 		<ProjectedFPV2Table
 			gameSections={gameSections}
-			hasCompletedGames={hasCompletedGames}
 			mae={mae}
 			completedCount={completedProjections.length}
 			absorptionRate={absorptionRate}
