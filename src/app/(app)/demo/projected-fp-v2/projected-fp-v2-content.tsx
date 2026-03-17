@@ -266,6 +266,17 @@ export async function ProjectedFPV2Content({
 		consistencyRows.map((c) => [c.player_id, c]),
 	);
 
+	// Build actualFP lookup from fullDump (played=true rows already fetched).
+	// Key: `${player_id}_${game_id}` → fp value.
+	// More reliable than relying on targetPlayersResult.fp which can be null
+	// when the deep season_averages join filter interferes.
+	const actualFPMap = new Map<string, number>();
+	for (const row of fullDump) {
+		if (typeof row.fp === "number" && row.player_id && row.game_id) {
+			actualFPMap.set(`${row.player_id}_${row.game_id}`, row.fp);
+		}
+	}
+
 	const standingsMap = new Map(standingsAll.map((s) => [s.team_id, s]));
 	const allPointsFor = standingsAll
 		.map((s) => s.points_for)
@@ -472,8 +483,8 @@ export async function ProjectedFPV2Content({
 					oppStandings?.points_for ?? leagueAvgPointsFor,
 				leagueAvgPointsFor,
 				actualFP:
-					gp.played && gp.fp != null ? (gp.fp as number) : null,
-				played: gp.played ?? false,
+					actualFPMap.get(`${gp.player_id}_${gp.game_id}`) ?? null,
+				played: actualFPMap.has(`${gp.player_id}_${gp.game_id}`),
 				// Injury boost inputs
 				displacedFP: injuryCtx?.displacedFP ?? 0,
 				activeTeamFP: injuryCtx?.activeTeamFP ?? seasonAvgFP,
