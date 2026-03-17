@@ -143,7 +143,7 @@ export async function ProjectedFPV2Content({
 		),
 	] as string[];
 
-	const [targetPlayersResult, teamStandings] = await Promise.all([
+	const [targetPlayersResult, teamStandings, actualFPResult] = await Promise.all([
 		supabase
 			.from("game_player")
 			.select(
@@ -155,6 +155,12 @@ export async function ProjectedFPV2Content({
 			.in("game_id", gameIds)
 			.eq("player.season_averages.season", "2025-26"),
 		fetchStandingsForTeams(teamIds),
+		// Targeted actual FP query — scoped to today's games only, no row-limit risk
+		supabase
+			.from("game_player")
+			.select("player_id, game_id, fp")
+			.in("game_id", gameIds)
+			.eq("played", true),
 	]);
 
 	const fullDump = fullDumpResult.data ?? [];
@@ -266,12 +272,11 @@ export async function ProjectedFPV2Content({
 		consistencyRows.map((c) => [c.player_id, c]),
 	);
 
-	// Build actualFP lookup from fullDump (played=true rows already fetched).
+	// Build actualFP lookup from the targeted query (scoped to today's gameIds).
+	// fullDumpResult is capped at Supabase's 1k row default and misses recent games.
 	// Key: `${player_id}_${game_id}` → fp value.
-	// More reliable than relying on targetPlayersResult.fp which can be null
-	// when the deep season_averages join filter interferes.
 	const actualFPMap = new Map<string, number>();
-	for (const row of fullDump) {
+	for (const row of actualFPResult.data ?? []) {
 		if (typeof row.fp === "number" && row.player_id && row.game_id) {
 			actualFPMap.set(`${row.player_id}_${row.game_id}`, row.fp);
 		}
