@@ -3,6 +3,7 @@ import { RankingsControls } from "@/components/rankings/rankings-controls";
 import { RankingsContent } from "./rankings-content";
 import { GameChip } from "@/components/game/game-chip";
 import { PlayerRankingsGrid } from "@/components/rankings/player-rankings-grid";
+import { DataIssueBanner } from "@/components/data-issue-banner";
 
 export const revalidate = 60;
 
@@ -36,6 +37,7 @@ export default async function RankingsPage({
 
 	return (
 		<div className="w-full flex flex-col items-center gap-4">
+			<DataIssueBanner />
 			<RankingsControls />
             <Suspense key={dateString} fallback={<RankingsContentSkeleton />}>
                 <RankingsContent date={dateString} />

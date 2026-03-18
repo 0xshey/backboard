@@ -2,10 +2,12 @@ import Link from "next/link";
 import { PlayerSearch } from "@/components/home/player-search";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CalendarDays } from "lucide-react";
+import { DataIssueBanner } from "@/components/data-issue-banner";
 
 export default async function Page() {
 	return (
 		<div className="relative w-full min-h-screen flex flex-col items-center overflow-x-hidden">
+			<DataIssueBanner />
 			{/* Foreground Content */}
 			<div className="relative z-10 w-full flex flex-col items-center pt-32 pb-24 px-4">
 				{/* Hero Section */}
