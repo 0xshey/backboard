@@ -11,3 +11,7 @@ This is a personal project I continue to build upon. Stay tuned.
 # Site
 [Backboard](https://backboard-sepia.vercel.app/)
 
+
+# Data & self-hosting
+- The site serves static JSON datasets refreshed by a Python pipeline: [pipeline/README.md](pipeline/README.md)
+- Running it on a NAS with Docker: [docs/self-hosting.md](docs/self-hosting.md)

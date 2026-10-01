@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,11 @@ export type NavigatorProps = {
 
 export default function Navigator({ links = [], className }: NavigatorProps) {
 	const [isOpen, setIsOpen] = useState(false);
+	const pathname = usePathname();
+
+	const isActive = (link: NavLink) =>
+		pathname === link.href ||
+		!!link.children?.some((child) => pathname === child.href);
 
 	return (
 		<nav
@@ -81,14 +87,35 @@ export default function Navigator({ links = [], className }: NavigatorProps) {
 						>
 							<div className="flex flex-col w-full mt-4 px-2 gap-3">
 								{links.map((link) => (
-									<Link
-										key={link.href}
-										href={link.href}
-										className="w-full text-xl font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
-										onClick={() => setIsOpen(false)}
-									>
-										{link.label}
-									</Link>
+									<div key={link.href} className="flex flex-col gap-2">
+										<Link
+											href={link.href}
+											className={cn(
+												"w-full text-xl font-medium text-muted-foreground hover:text-foreground transition-colors duration-200",
+												isActive(link) && "text-foreground",
+											)}
+											onClick={() => setIsOpen(false)}
+										>
+											{link.label}
+										</Link>
+										{link.children && (
+											<div className="flex flex-col gap-2 border-l border-border/60 ml-1 pl-3">
+												{link.children.map((child) => (
+													<Link
+														key={child.href}
+														href={child.href}
+														className={cn(
+															"w-full text-base font-medium text-muted-foreground hover:text-foreground transition-colors duration-200",
+															pathname === child.href && "text-foreground",
+														)}
+														onClick={() => setIsOpen(false)}
+													>
+														{child.label}
+													</Link>
+												))}
+											</div>
+										)}
+									</div>
 								))}
 							</div>
 

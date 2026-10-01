@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { DateTime } from "luxon";
-import { createClient } from "@/lib/supabase/client";
 import { TeamLogo } from "@/components/ui/team-logo";
+import type { FantasyWeek, ScheduledGame, Team } from "@/lib/data/schedule";
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -21,21 +21,12 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 
-type GameWeek = {
-	number: number;
-	label: string | null;
-	start_date: string | null;
-	end_date: string | null;
-};
+type GameWeek = FantasyWeek;
 
-type Team = {
-	id: string;
-	tricode: string | null;
-	name: string | null;
-	city: string | null;
-	color_primary_hex: string | null;
-};
+type TeamRef = Pick<Team, "id" | "tricode" | "color_primary_hex">;
 
+// Scores/status stay in the shape for when live results return; static
+// schedule data has none yet.
 type Game = {
 	id: string;
 	datetime: string | null;
@@ -44,16 +35,8 @@ type Game = {
 	status_code: number | null;
 	team_home_score: number | null;
 	team_away_score: number | null;
-	home_team: {
-		id: string;
-		tricode: string | null;
-		color_primary_hex: string | null;
-	} | null;
-	away_team: {
-		id: string;
-		tricode: string | null;
-		color_primary_hex: string | null;
-	} | null;
+	home_team: TeamRef | null;
+	away_team: TeamRef | null;
 };
 
 // 4-state cycle for the team column sort icon
@@ -74,12 +57,22 @@ function weekLabel(week: GameWeek) {
 	return `Wk ${week.number}: ${start} – ${end}`;
 }
 
-export function ScheduleGrid() {
-	const [weeks, setWeeks] = useState<GameWeek[]>([]);
-	const [activeWeekIdx, setActiveWeekIdx] = useState(0);
-	const [teams, setTeams] = useState<Team[]>([]);
-	const [games, setGames] = useState<Game[]>([]);
-	const [loading, setLoading] = useState(true);
+type ScheduleGridProps = {
+	weeks: GameWeek[];
+	teams: Team[];
+	/** Full season; filtered to the active week here. */
+	games: ScheduledGame[];
+	/** Chosen on the server so prerendered HTML and hydration agree. */
+	initialWeekIdx: number;
+};
+
+export function ScheduleGrid({
+	weeks,
+	teams,
+	games: allGames,
+	initialWeekIdx,
+}: ScheduleGridProps) {
+	const [activeWeekIdx, setActiveWeekIdx] = useState(initialWeekIdx);
 
 	// Team column: 4-state cycle
 	const [teamSortIdx, setTeamSortIdx] = useState(0);
@@ -101,83 +94,41 @@ export function ScheduleGrid() {
 		}
 	}
 
-	// Fetch weeks + teams on mount
-	useEffect(() => {
-		const supabase = createClient();
-		async function load() {
-			const [weeksRes, teamsRes] = await Promise.all([
-				supabase
-					.from("game_week_fantasy")
-					.select("*")
-					.eq("provider", "yahoo")
-					.order("number"),
-				supabase
-					.from("team")
-					.select("id, tricode, name, city, color_primary_hex")
-					.eq("nba", true)
-					.order("tricode"),
-			]);
-
-			const fetchedWeeks = weeksRes.data ?? [];
-			setWeeks(fetchedWeeks);
-			setTeams(teamsRes.data ?? []);
-
-			const todayET = DateTime.now()
-				.setZone("America/New_York")
-				.toISODate();
-			const currentIdx = fetchedWeeks.findIndex(
-				(w) =>
-					w.start_date &&
-					w.end_date &&
-					todayET &&
-					w.start_date <= todayET &&
-					todayET <= w.end_date,
-			);
-			setActiveWeekIdx(currentIdx >= 0 ? currentIdx : 0);
-		}
-		load();
-	}, []);
-
-	// Fetch games when active week changes
-	useEffect(() => {
-		if (!weeks.length) return;
-		const week = weeks[activeWeekIdx];
-		if (!week?.start_date || !week?.end_date) return;
-
-		const supabase = createClient();
-		setLoading(true);
-
-		const startUTC = DateTime.fromISO(week.start_date, {
-			zone: "America/New_York",
-		})
-			.startOf("day")
-			.toUTC()
-			.toISO();
-		const endUTC = DateTime.fromISO(week.end_date, {
-			zone: "America/New_York",
-		})
-			.endOf("day")
-			.toUTC()
-			.toISO();
-
-		if (!startUTC || !endUTC) return;
-
-		supabase
-			.from("game")
-			.select(
-				`id, datetime, team_home_id, team_away_id, status_code, team_home_score, team_away_score,
-				home_team:team!game_team_home_id_fkey(id, tricode, color_primary_hex),
-				away_team:team!game_team_away_id_fkey(id, tricode, color_primary_hex)`,
-			)
-			.gte("datetime", startUTC)
-			.lte("datetime", endUTC)
-			.then(({ data }) => {
-				setGames((data as Game[]) ?? []);
-				setLoading(false);
-			});
-	}, [weeks, activeWeekIdx]);
+	const teamsById = useMemo(
+		() => new Map(teams.map((t) => [t.id, t])),
+		[teams],
+	);
 
 	const week = weeks[activeWeekIdx];
+
+	// Games in the active week (ET day boundaries), in the grid's Game shape
+	const games = useMemo<Game[]>(() => {
+		if (!week) return [];
+		const startUTC = DateTime.fromISO(week.start_date, { zone: "America/New_York" })
+			.startOf("day")
+			.toUTC()
+			.toISO()!;
+		const endUTC = DateTime.fromISO(week.end_date, { zone: "America/New_York" })
+			.endOf("day")
+			.toUTC()
+			.toISO()!;
+		return allGames
+			.filter((g) => {
+				const t = DateTime.fromISO(g.datetime, { zone: "utc" }).toISO()!;
+				return t >= startUTC && t <= endUTC;
+			})
+			.map((g) => ({
+				id: g.id,
+				datetime: g.datetime,
+				team_home_id: g.homeTeamId,
+				team_away_id: g.awayTeamId,
+				status_code: null,
+				team_home_score: null,
+				team_away_score: null,
+				home_team: teamsById.get(g.homeTeamId) ?? null,
+				away_team: teamsById.get(g.awayTeamId) ?? null,
+			}));
+	}, [allGames, week, teamsById]);
 
 	// Days array for this week
 	const days = useMemo<string[]>(() => {
@@ -308,7 +259,7 @@ export function ScheduleGrid() {
 					value={String(activeWeekIdx)}
 					onValueChange={(val) => setActiveWeekIdx(Number(val))}
 				>
-					<SelectTrigger className="w-48 h-8 text-sm font-medium">
+					<SelectTrigger className="w-56 h-8 text-sm font-medium">
 						<SelectValue>
 							{week ? weekLabel(week) : "Loading…"}
 						</SelectValue>
@@ -396,7 +347,7 @@ export function ScheduleGrid() {
 											<span className="text-[10px] font-normal normal-case tracking-normal opacity-60">
 												{dt.toFormat("M/d")}
 											</span>
-											{!loading && count > 0 && (
+											{count > 0 && (
 												<span className="mt-0.5 text-[10px] font-semibold normal-case tracking-normal opacity-50">
 													{count}G
 												</span>
@@ -414,98 +365,75 @@ export function ScheduleGrid() {
 						</tr>
 					</thead>
 					<tbody>
-						{loading
-							? Array.from({ length: 15 }).map((_, i) => (
-									<tr
-										key={i}
-										className="border-b border-border animate-pulse"
-									>
-										<td className="sticky left-0 z-10 bg-background px-3 py-2.5 border-r border-border">
-											<div className="h-4 w-20 rounded bg-muted" />
-										</td>
-										{Array.from({
-											length: days.length || 7,
-										}).map((_, j) => (
+						{sortedTeams.map((team) => {
+							const teamCells = cells[team.id] ?? {};
+							const gamesCount =
+								teamGameCounts[team.id] ?? 0;
+							const hasGame = gamesCount > 0;
+
+							return (
+								<tr
+									key={team.id}
+									className={`border-b border-border last:border-b-0 hover:bg-muted/20 transition-colors ${
+										!hasGame ? "opacity-40" : ""
+									}`}
+								>
+									{/* Team + G — single sticky column */}
+									<td className="sticky left-0 z-10 bg-background px-3 py-2 border-r border-border">
+										<div className="flex items-center justify-between gap-3 w-20">
+											<div className="flex items-center gap-1.5">
+												<TeamLogo
+													teamId={team.id}
+													size={18}
+												/>
+												<span className="font-bold text-xs text-foreground tracking-wide">
+													{team.tricode}
+												</span>
+											</div>
+											{hasGame && (
+												<span
+													className={`text-xs font-semibold tabular-nums shrink-0 ${
+														gamesCount >= 4
+															? "text-foreground"
+															: gamesCount >=
+																  3
+																? "text-foreground/70"
+																: "text-muted-foreground"
+													}`}
+												>
+													{gamesCount}
+												</span>
+											)}
+										</div>
+									</td>
+
+									{/* Game cells */}
+									{days.map((day) => {
+										const game = teamCells[day];
+										const isToday = day === todayET;
+
+										return (
 											<td
-												key={j}
-												className="px-2 py-2.5 border-r border-border last:border-r-0"
+												key={day}
+												className={`px-1 py-2 text-center border-r border-border last:border-r-0 ${
+													isToday &&
+													isCurrentWeek
+														? "bg-primary/5"
+														: ""
+												}`}
 											>
-												{i % 3 !== j % 3 && (
-													<div className="h-4 w-12 rounded bg-muted mx-auto" />
-												)}
+												{game ? (
+													<GameCell
+														game={game}
+														teamId={team.id}
+													/>
+												) : null}
 											</td>
-										))}
-									</tr>
-								))
-							: sortedTeams.map((team) => {
-									const teamCells = cells[team.id] ?? {};
-									const gamesCount =
-										teamGameCounts[team.id] ?? 0;
-									const hasGame = gamesCount > 0;
-
-									return (
-										<tr
-											key={team.id}
-											className={`border-b border-border last:border-b-0 hover:bg-muted/20 transition-colors ${
-												!hasGame ? "opacity-40" : ""
-											}`}
-										>
-											{/* Team + G — single sticky column */}
-											<td className="sticky left-0 z-10 bg-background px-3 py-2 border-r border-border">
-												<div className="flex items-center justify-between gap-3 w-20">
-													<div className="flex items-center gap-1.5">
-														<TeamLogo
-															teamId={team.id}
-															size={18}
-														/>
-														<span className="font-bold text-xs text-foreground tracking-wide">
-															{team.tricode}
-														</span>
-													</div>
-													{hasGame && (
-														<span
-															className={`text-xs font-semibold tabular-nums shrink-0 ${
-																gamesCount >= 4
-																	? "text-foreground"
-																	: gamesCount >=
-																		  3
-																		? "text-foreground/70"
-																		: "text-muted-foreground"
-															}`}
-														>
-															{gamesCount}
-														</span>
-													)}
-												</div>
-											</td>
-
-											{/* Game cells */}
-											{days.map((day) => {
-												const game = teamCells[day];
-												const isToday = day === todayET;
-
-												return (
-													<td
-														key={day}
-														className={`px-1 py-2 text-center border-r border-border last:border-r-0 ${
-															isToday &&
-															isCurrentWeek
-																? "bg-primary/5"
-																: ""
-														}`}
-													>
-														{game ? (
-															<GameCell
-																game={game}
-																teamId={team.id}
-															/>
-														) : null}
-													</td>
-												);
-											})}
-										</tr>
-									);
-								})}
+										);
+									})}
+								</tr>
+							);
+						})}
 					</tbody>
 				</table>
 			</div>

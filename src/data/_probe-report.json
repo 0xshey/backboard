@@ -1,0 +1,126 @@
+{
+	"espn": {
+		"source": "espn",
+		"ok": true,
+		"checkedAt": "2026-09-30T22:00:22.455Z",
+		"results": [
+			{
+				"name": "teams",
+				"url": "https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/teams",
+				"ok": true,
+				"status": 200,
+				"ms": 38,
+				"bytes": 134851,
+				"error": null,
+				"issues": []
+			},
+			{
+				"name": "schedule",
+				"url": "https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/teams/7/schedule?season=2027&seasontype=2",
+				"ok": true,
+				"status": 200,
+				"ms": 39,
+				"bytes": 790055,
+				"error": null,
+				"issues": []
+			},
+			{
+				"name": "roster",
+				"url": "https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/teams/1/roster",
+				"ok": true,
+				"status": 200,
+				"ms": 41,
+				"bytes": 96866,
+				"error": null,
+				"issues": []
+			},
+			{
+				"name": "season-stats",
+				"url": "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/statistics/byathlete?season=2026&seasontype=2&limit=5&page=1",
+				"ok": true,
+				"status": 200,
+				"ms": 41,
+				"bytes": 42869,
+				"error": null,
+				"issues": []
+			},
+			{
+				"name": "injuries",
+				"url": "https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/injuries",
+				"ok": true,
+				"status": 200,
+				"ms": 56,
+				"bytes": 755734,
+				"error": null,
+				"issues": []
+			},
+			{
+				"name": "boxscore",
+				"url": "https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401704627",
+				"ok": true,
+				"status": 200,
+				"ms": 50,
+				"bytes": 342758,
+				"error": null,
+				"issues": []
+			}
+		],
+		"passes": 2
+	},
+	"espn-core": {
+		"source": "espn-core",
+		"ok": true,
+		"checkedAt": "2026-09-30T22:00:24.442Z",
+		"results": [
+			{
+				"name": "athlete",
+				"url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/athletes/3112335",
+				"ok": true,
+				"status": 200,
+				"ms": 37,
+				"bytes": 5523,
+				"error": null,
+				"issues": []
+			}
+		],
+		"passes": 2
+	},
+	"nba-cdn": {
+		"source": "nba-cdn",
+		"ok": true,
+		"checkedAt": "2026-09-30T22:43:20.539Z",
+		"results": [
+			{
+				"name": "schedule",
+				"url": "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json",
+				"ok": true,
+				"status": 200,
+				"ms": 70,
+				"bytes": 4788855,
+				"error": null,
+				"issues": []
+			},
+			{
+				"name": "scoreboard",
+				"url": "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json",
+				"ok": true,
+				"status": 200,
+				"ms": 54,
+				"bytes": 376,
+				"error": null,
+				"issues": []
+			},
+			{
+				"name": "boxscore",
+				"url": "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_0022400061.json",
+				"ok": true,
+				"status": 200,
+				"ms": 33,
+				"bytes": 37370,
+				"error": null,
+				"issues": []
+			}
+		],
+		"passes": 2
+	}
+}

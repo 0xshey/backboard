@@ -1,0 +1,26 @@
+# Checks that each free data source is reachable from GitHub's runners and still
+# matches our schemas. Read-only: prints the report and uploads it as an artifact.
+name: Probe data sources
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 14 * * 1" # Mondays 14:00 UTC
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Probe all sources
+        run: npx tsx scripts/sources.ts probe all
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: probe-report
+          path: src/data/_probe-report.json
